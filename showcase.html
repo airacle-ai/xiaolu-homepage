@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>芽计 YaPlan · 产品界面展示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(135deg, #0F1923 0%, #1C2B3A 50%, #0F1923 100%);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* 背景网格纹理 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 顶部橙色细线 */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, transparent, #FF8C42, #FFB347, #FF8C42, transparent);
+    z-index: 10;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: 50px 20px 40px;
+    min-height: 100vh;
+  }
+
+  /* 顶部标题区 */
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .page-title {
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    text-shadow: 0 0 40px rgba(255,140,66,0.4);
+  }
+
+  .page-title span {
+    background: linear-gradient(135deg, #FF8C42, #FFB347);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1px;
+  }
+
+  .page-subtitle em {
+    color: rgba(255,140,66,0.7);
+    font-style: normal;
+  }
+
+  /* 手机展示区容器 */
+  .phones-scroll-wrapper {
+    overflow-x: auto;
+    padding-bottom: 20px;
+  }
+
+  .phones-scroll-wrapper::-webkit-scrollbar {
+    height: 4px;
+  }
+  .phones-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+  }
+  .phones-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255,140,66,0.4);
+    border-radius: 2px;
+  }
+
+  .phones-container {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: nowrap;
+    min-width: max-content;
+    padding: 20px 40px;
+  }
+
+  /* 每个手机单元 */
+  .phone-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+  }
+
+  .phone-unit:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  .phone-unit:hover .phone-frame {
+    box-shadow:
+      0 0 0 8px #222,
+      0 0 0 10px #555,
+      0 40px 80px rgba(0,0,0,0.7),
+      0 0 60px rgba(255,140,66,0.25);
+  }
+
+  /* 手机外框 */
+  .phone-frame {
+    width: 260px;
+    height: 560px;
+    background: #111;
+    border-radius: 36px;
+    box-shadow:
+      0 0 0 8px #222,
+      0 0 0 10px #444,
+      0 30px 60px rgba(0,0,0,0.6),
+      0 0 40px rgba(255,140,66,0.08);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* 刘海 */
+  .phone-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 20px;
+    background: #111;
+    border-radius: 0 0 12px 12px;
+    z-index: 10;
+  }
+
+  /* 屏幕区域 */
+  .phone-screen {
+    flex: 1;
+    margin: 8px;
+    border-radius: 28px;
+    background: #F5F0E8;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* 屏幕内容 */
+  .screen-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 底部导航 */
+  .bottom-nav {
+    height: 52px;
+    background: #fff;
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .nav-item .nav-icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .nav-item .nav-label {
+    font-size: 8px;
+    color: #aaa;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .nav-item.active .nav-label {
+    color: #FF8C42;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 2px;
+    background: #FF8C42;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* 手机标签 */
+  .phone-label {
+    text-align: center;
+  }
+
+  .phone-label-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .phone-label-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* 底部版权 */
+  .page-footer {
+    text-align: center;
+    margin-top: 48px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+  }
+
+  /* ==================== PHONE 1 — 首页 ==================== */
+  .p1-header {
+    background: linear-gradient(135deg, #34A853, #1A73E8);
+    height: 72px;
+    padding: 10px 14px;
+    flex-shrink: 0;
+    padding-top: 22px;
+  }
+
+  .p1-header-row1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+
+  .p1-header-row1 span {
+    font-size: 10px;
+    color: #fff;
+    font-weight: 600;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .p1-header-row2 {
+    font-size: 9px;
+    color: rgba(255,255,255,0.75);
+    font-family: -apple-system, sans-serif;
+  }
+
+  .p1-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .p1-scrollable::-webkit-scrollbar { width: 0; }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    margin: 6px 8px;
+    padding: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    font-family: -apple-system, sans-serif;
+  }
+
+  /* 健康度卡片 */
+  .health-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .health-ring-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  .health-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .health-ring-pct {
+    font-size: 11px;
+    font-weight: 700;
+    color: #FF8C42;
+    line-height: 1;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .health-ring-label {
+    font-size: 8px;
+    color: #999;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .health-info {
+    flex: 1;
+  }
+
+  .health-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .health-saved {
+    font-size: 10px;
+    color: #34A853;
+    margin-bottom: 2px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .health-gap {
+    font-size: 10px;
+    color: #E53935;
+    margin-bottom: 4px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .health-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #FF8C42, #FFB347);
+    color: #fff;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-family: -apple-system, sans-serif;
+    font-weight: 600;
+  }
+
+  /* 本月支出卡片 */
+  .expense-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .expense-card-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .expense-card-amount {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .expense-warn {
+    font-size: 9px;
+    color: #E53935;
+    margin-bottom: 5px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .expense-bar-track {
+    height: 5px;
+    background: #e8e8e8;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .expense-bar-fill {
+    height: 100%;
+    background: #E53935;
+    border-radius: 3px;
+    width: 31%;
+  }
+
+  /* AI洞察卡片 */
+  .ai-insight-card {
+    background: #FFF3E8;
+    border-radius: 10px;
+    margin: 6px 8px;
+    padding: 8px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .ai-insight-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #FF8C42;
+    margin-bottom: 4px;
+  }
+
+  .ai-insight-text {
+    font-size: 9px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* 待办清单 */
+  .todo-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .todo-item {
+    font-size: 9px;
+    color: #555;
+    padding: 3px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .todo-item:last-child { border-bottom: none; }
+
+  /* ==================== PHONE 2 — 规划页 ==================== */
+  .p2-tabs {
+    display: flex;
+    background: #fff;
+    height: 36px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .p2-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #aaa;
+    font-family: -apple-system, sans-serif;
+    position: relative;
+  }
+
+  .p2-tab.active {
+    color: #FF8C42;
+    font-weight: 700;
+  }
+
+  .p2-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 15%; right: 15%;
+    height: 2px;
+    background: #FF8C42;
+    border-radius: 1px 1px 0 0;
+  }
+
+  .p2-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .p2-scrollable::-webkit-scrollbar { width: 0; }
+
+  /* 路线选择 */
+  .route-btns {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .route-btn {
+    font-size: 8px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    color: #999;
+    background: #f8f8f8;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .route-btn.active {
+    background: #FF8C42;
+    border-color: #FF8C42;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* 4数字网格 */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  .stat-cell {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 10px;
+    font-weight: 700;
+    display: block;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .stat-num.green { color: #34A853; }
+  .stat-num.blue { color: #1A73E8; }
+  .stat-num.red { color: #E53935; }
+  .stat-num.orange { color: #FF8C42; }
+
+  .stat-lbl {
+    font-size: 7px;
+    color: #aaa;
+    font-family: -apple-system, sans-serif;
+  }
+
+  /* 时间轴 */
+  .timeline-wrap {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .timeline-wrap::-webkit-scrollbar { height: 0; }
+
+  .timeline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    min-width: 300px;
+    padding: 4px 0;
+  }
+
+  .tl-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+  }
+
+  .tl-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #FF8C42;
+    z-index: 1;
+    margin-bottom: 3px;
+  }
+
+  .tl-dot.now {
+    width: 10px;
+    height: 10px;
+    border: 2px solid #FF8C42;
+    background: #fff;
+  }
+
+  .tl-year {
+    font-size: 8px;
+    font-weight: 700;
+    color: #333;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .tl-amount {
+    font-size: 7px;
+    color: #999;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .tl-line {
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+    margin-top: 4px;
+    position: relative;
+    top: 3px;
+  }
+
+  /* 对比表 */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .compare-table th {
+    font-size: 8px;
+    color: #aaa;
+    padding: 3px 4px;
+    text-align: center;
+    font-family: -apple-system, sans-serif;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+  }
+
+  .compare-table td {
+    font-size: 8px;
+    color: #555;
+    padding: 4px 4px;
+    text-align: center;
+    font-family: -apple-system, sans-serif;
+    border-bottom: 1px solid #f8f8f8;
+  }
+
+  .compare-table tr.highlight td {
+    background: #FFF3E8;
+    color: #FF8C42;
+    font-weight: 700;
+  }
+
+  .compare-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .compare-table tr.highlight td:first-child {
+    color: #FF8C42;
+  }
+
+  /* ==================== PHONE 3 — 账单页 ==================== */
+  .p3-header {
+    background: #fff;
+    padding: 22px 14px 8px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+  }
+
+  .p3-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2px;
+  }
+
+  .p3-header-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1a1a1a;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .p3-header-tag {
+    background: #FF8C42;
+    color: #fff;
+    font-size: 8px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-family: -apple-system, sans-serif;
+    font-weight: 600;
+  }
+
+  .p3-header-sub {
+    font-size: 9px;
+    color: #aaa;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .p3-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .p3-scrollable::-webkit-scrollbar { width: 0; }
+
+  /* 饼图区 */
+  .pie-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .pie-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8px;
+    color: #555;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .legend-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .legend-amount {
+    margin-left: auto;
+    color: #333;
+    font-weight: 600;
+  }
+
+  /* 焦虑识别卡 */
+  .anxiety-card {
+    background: #FFF0F0;
+    border-left: 3px solid #E53935;
+    border-radius: 0 8px 8px 0;
+    margin: 4px 8px;
+    padding: 8px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .anxiety-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #E53935;
+    margin-bottom: 5px;
+  }
+
+  .anxiety-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .anxiety-item-text {
+    font-size: 8px;
+    color: #555;
+    flex: 1;
+  }
+
+  .anxiety-badge {
+    font-size: 7px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .anxiety-badge.high {
+    background: #E53935;
+    color: #fff;
+  }
+
+  .anxiety-badge.mid {
+    background: #FF8C42;
+    color: #fff;
+  }
+
+  .anxiety-foot {
+    font-size: 8px;
+    color: #E53935;
+    margin-top: 3px;
+  }
+
+  /* 同龄对比 */
+  .compare-card {
+    background: #f8f8f8;
+    border-radius: 8px;
+    margin: 4px 8px;
+    padding: 8px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .compare-card-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  .compare-row {
+    margin-bottom: 4px;
+  }
+
+  .compare-row-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: #666;
+    margin-bottom: 2px;
+  }
+
+  .compare-row-label .diff {
+    color: #E53935;
+    font-weight: 700;
+  }
+
+  .bar-track {
+    height: 5px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2px;
+  }
+
+  .bar-fill-orange {
+    height: 100%;
+    background: #FF8C42;
+    border-radius: 3px;
+    width: 41%;
+  }
+
+  .bar-fill-gray {
+    height: 100%;
+    background: #bbb;
+    border-radius: 3px;
+    width: 28%;
+  }
+
+  /* ==================== PHONE 4 — AI对话页 ==================== */
+  .p4-header {
+    background: #fff;
+    padding: 18px 14px 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .p4-header-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .p4-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #34A853, #1A73E8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .p4-ai-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-family: -apple-system, sans-serif;
+    display: block;
+  }
+
+  .p4-ai-status {
+    font-size: 9px;
+    color: #34A853;
+    font-family: -apple-system, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .p4-ai-status::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #34A853;
+    display: inline-block;
+  }
+
+  .p4-menu {
+    font-size: 16px;
+    color: #aaa;
+    font-weight: 700;
+    font-family: -apple-system, sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    background: #F5F0E8;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .chat-area::-webkit-scrollbar { width: 0; }
+
+  .bubble {
+    max-width: 70%;
+    padding: 7px 10px;
+    border-radius: 10px;
+    font-size: 8px;
+    line-height: 1.5;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .bubble.ai {
+    background: #fff;
+    color: #333;
+    align-self: flex-start;
+    border-radius: 4px 10px 10px 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .bubble.user {
+    background: #FF8C42;
+    color: #fff;
+    align-self: flex-end;
+    border-radius: 10px 4px 10px 10px;
+  }
+
+  .bubble.report {
+    max-width: 85%;
+    background: #fff;
+    align-self: flex-start;
+    border-radius: 4px 10px 10px 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    padding: 8px 10px;
+  }
+
+  .report-title {
+    font-size: 9px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .report-divider {
+    height: 1px;
+    background: #eee;
+    margin: 4px 0;
+  }
+
+  .report-row {
+    font-size: 8px;
+    color: #555;
+    margin: 2px 0;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .report-row strong {
+    color: #1a1a1a;
+  }
+
+  .report-next {
+    font-size: 8px;
+    color: #FF8C42;
+    font-weight: 700;
+    margin-top: 4px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .p4-input-area {
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 6px 10px;
+    flex-shrink: 0;
+  }
+
+  .chips {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-size: 8px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #FFF3E8;
+    color: #FF8C42;
+    border: 1px solid rgba(255,140,66,0.3);
+    font-family: -apple-system, sans-serif;
+    font-weight: 500;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .fake-input {
+    flex: 1;
+    height: 24px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    border: 1px solid #eee;
+  }
+
+  .send-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF8C42, #FFB347);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* ==================== PHONE 5 — 财商页 ==================== */
+  .p5-header {
+    background: linear-gradient(135deg, #FF8C42, #FFB347);
+    height: 56px;
+    padding: 10px 14px;
+    flex-shrink: 0;
+    padding-top: 22px;
+  }
+
+  .p5-header-sub {
+    font-size: 9px;
+    color: rgba(255,255,255,0.85);
+    font-family: -apple-system, sans-serif;
+    margin-bottom: 1px;
+  }
+
+  .p5-header-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .p5-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .p5-scrollable::-webkit-scrollbar { width: 0; }
+
+  /* 三罐子 */
+  .jars-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .jars-row {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .jar-cell {
+    flex: 1;
+    border-radius: 8px;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .jar-cell.orange { background: #FFF3E8; }
+  .jar-cell.green { background: #E8F5E9; }
+  .jar-cell.purple { background: #F3E5F5; }
+
+  .jar-emoji {
+    font-size: 12px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .jar-name {
+    font-size: 7px;
+    color: #888;
+    display: block;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .jar-amount {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .jar-amount.orange { color: #FF8C42; }
+  .jar-amount.green { color: #34A853; }
+  .jar-amount.purple { color: #9C27B0; }
+
+  /* 心愿进度 */
+  .wish-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wish-label {
+    font-size: 9px;
+    color: #555;
+    flex-shrink: 0;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .wish-bar-track {
+    flex: 1;
+    height: 5px;
+    background: #e8e8e8;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .wish-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF8C42, #FFB347);
+    border-radius: 3px;
+    width: 52%;
+  }
+
+  .wish-pct {
+    font-size: 8px;
+    color: #FF8C42;
+    font-weight: 700;
+    font-family: -apple-system, sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* 劳动任务 */
+  .task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 9px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .task-item:last-child { border-bottom: none; }
+
+  .task-item.done { color: #34A853; }
+  .task-item.pending { color: #FF8C42; }
+
+  .task-reward {
+    font-size: 8px;
+    font-weight: 700;
+    color: #34A853;
+  }
+
+  .task-item.pending .task-reward { color: #9C27B0; }
+
+  /* AI月度报告 */
+  .ai-monthly-card {
+    background: #E3F2FD;
+    border-radius: 8px;
+    margin: 4px 8px;
+    padding: 8px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .ai-monthly-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1A73E8;
+    margin-bottom: 4px;
+  }
+
+  .ai-monthly-text {
+    font-size: 9px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  /* AI零花钱建议 */
+  .allowance-card {
+    background: #E8F5E9;
+    border-radius: 8px;
+    margin: 4px 8px;
+    padding: 8px;
+    font-size: 9px;
+    color: #2E7D32;
+    font-family: -apple-system, sans-serif;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- 顶部标题区 -->
+  <div class="page-header">
+    <div class="page-title">🌱 <span>芽计 YaPlan</span></div>
+    <div class="page-subtitle">亲子家庭 AI 财务规划 · <em>五大核心功能界面</em></div>
+  </div>
+
+  <!-- 手机展示区 -->
+  <div class="phones-scroll-wrapper">
+    <div class="phones-container">
+
+      <!-- ========== PHONE 1 — 首页 Dashboard ========== -->
+      <div class="phone-unit">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+
+            <!-- Header -->
+            <div class="p1-header">
+              <div class="p1-header-row1">
+                <span>🌱 芽计 YaPlan</span>
+                <span>林小鹿家 🔔</span>
+              </div>
+              <div class="p1-header-row2">林小鹿 · 女 · 5岁 · 距大学13年</div>
+            </div>
+
+            <div class="p1-scrollable">
+
+              <!-- 教育金健康度卡片 -->
+              <div class="card health-card">
+                <div class="health-ring-wrap">
+                  <svg width="64" height="64" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="26" fill="none" stroke="#e8e8e8" stroke-width="6"/>
+                    <circle cx="32" cy="32" r="26" fill="none" stroke="#FF8C42" stroke-width="6"
+                      stroke-dasharray="163.4" stroke-dashoffset="133.9"
+                      stroke-linecap="round" transform="rotate(-90 32 32)"/>
+                  </svg>
+                  <div class="health-ring-text">
+                    <span class="health-ring-pct">18%</span>
+                    <span class="health-ring-label">健康度</span>
+                  </div>
+                </div>
+                <div class="health-info">
+                  <div class="health-title">教育金储备</div>
+                  <div class="health-saved">已存 ¥8.2万 / 目标 ¥45万</div>
+                  <div class="health-gap">缺口 ¥36.8万</div>
+                  <span class="health-badge">建议月投 ¥1,850</span>
+                </div>
+              </div>
+
+              <!-- 本月支出卡片 -->
+              <div class="card">
+                <div class="expense-card-header">
+                  <span class="expense-card-title">本月育儿支出</span>
+                  <span class="expense-card-amount">¥6,840</span>
+                </div>
+                <div class="expense-warn">⚠️ 焦虑消费 ¥2,100（占31%）</div>
+                <div class="expense-bar-track">
+                  <div class="expense-bar-fill"></div>
+                </div>
+              </div>
+
+              <!-- AI洞察卡片 -->
+              <div class="ai-insight-card">
+                <div class="ai-insight-title">🤖 芽计AI洞察</div>
+                <div class="ai-insight-text">本月课外班支出超计划42%，检测到焦虑驱动消费，点击查看分析 →</div>
+              </div>
+
+              <!-- 待办清单 -->
+              <div class="card">
+                <div class="todo-title">📌 待处理（3）</div>
+                <div class="todo-item">⚠️ 父母重疾险未配置</div>
+                <div class="todo-item">📈 教育金缺口待规划</div>
+                <div class="todo-item">🔍 英语外教课ROI偏低</div>
+              </div>
+
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+              <div class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首页</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">规划</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💳</span>
+                <span class="nav-label">账单</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">财商</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="phone-label-title">🏠 首页</div>
+          <div class="phone-label-desc">家庭财务健康中心</div>
+        </div>
+      </div>
+
+      <!-- ========== PHONE 2 — 规划页 ========== -->
+      <div class="phone-unit">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+
+            <!-- 二级Tab -->
+            <div style="height:20px;background:#fff;flex-shrink:0;"></div>
+            <div class="p2-tabs">
+              <div class="p2-tab active">📈 教育金</div>
+              <div class="p2-tab">🛡️ 保险配置</div>
+            </div>
+
+            <div class="p2-scrollable">
+
+              <!-- 教育金主卡片 -->
+              <div class="card">
+                <!-- 路线选择 -->
+                <div class="route-btns">
+                  <div class="route-btn active">国内本科</div>
+                  <div class="route-btn">出国留学</div>
+                  <div class="route-btn">职业教育</div>
+                </div>
+
+                <!-- 4数字 -->
+                <div class="stats-grid">
+                  <div class="stat-cell">
+                    <span class="stat-num green">¥45万</span>
+                    <span class="stat-lbl">目标</span>
+                  </div>
+                  <div class="stat-cell">
+                    <span class="stat-num blue">¥8.2万</span>
+                    <span class="stat-lbl">已存</span>
+                  </div>
+                  <div class="stat-cell">
+                    <span class="stat-num red">¥36.8万</span>
+                    <span class="stat-lbl">缺口</span>
+                  </div>
+                  <div class="stat-cell">
+                    <span class="stat-num orange">13年</span>
+                    <span class="stat-lbl">剩余</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 时间轴 -->
+              <div class="card" style="overflow:hidden;padding:10px 6px;">
+                <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:6px;font-family:-apple-system,sans-serif;">📅 存款里程碑</div>
+                <div class="timeline-wrap">
+                  <div class="timeline">
+                    <div class="tl-node">
+                      <div class="tl-dot now"></div>
+                      <div class="tl-year">2026</div>
+                      <div class="tl-amount">¥5.5万</div>
+                    </div>
+                    <div class="tl-line"></div>
+                    <div class="tl-node">
+                      <div class="tl-dot"></div>
+                      <div class="tl-year">2029</div>
+                      <div class="tl-amount">¥12万</div>
+                    </div>
+                    <div class="tl-line"></div>
+                    <div class="tl-node">
+                      <div class="tl-dot"></div>
+                      <div class="tl-year">2032</div>
+                      <div class="tl-amount">¥22万</div>
+                    </div>
+                    <div class="tl-line"></div>
+                    <div class="tl-node">
+                      <div class="tl-dot"></div>
+                      <div class="tl-year">2035</div>
+                      <div class="tl-amount">¥35万</div>
+                    </div>
+                    <div class="tl-line"></div>
+                    <div class="tl-node">
+                      <div class="tl-dot" style="background:#34A853;"></div>
+                      <div class="tl-year" style="color:#34A853;">2039</div>
+                      <div class="tl-amount" style="color:#34A853;">¥45万</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 储蓄方案对比 -->
+              <div class="card" style="padding:8px;">
+                <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:6px;font-family:-apple-system,sans-serif;">📊 方案对比</div>
+                <table class="compare-table">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;">方案</th>
+                      <th>月投</th>
+                      <th>收益</th>
+                      <th>风险</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>教育储蓄险</td>
+                      <td>¥2,200</td>
+                      <td>3.5%</td>
+                      <td>低</td>
+                    </tr>
+                    <tr class="highlight">
+                      <td>基金定投 ⭐</td>
+                      <td>¥1,850</td>
+                      <td>6-8%</td>
+                      <td>中</td>
+                    </tr>
+                    <tr>
+                      <td>银行存款</td>
+                      <td>¥2,800</td>
+                      <td>2.1%</td>
+                      <td>极低</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+              <div class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首页</span>
+              </div>
+              <div class="nav-item active">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">规划</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💳</span>
+                <span class="nav-label">账单</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">财商</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="phone-label-title">📋 规划</div>
+          <div class="phone-label-desc">教育金 & 保险配置</div>
+        </div>
+      </div>
+
+      <!-- ========== PHONE 3 — 账单页 ========== -->
+      <div class="phone-unit">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+
+            <!-- Header -->
+            <div class="p3-header">
+              <div class="p3-header-top">
+                <div class="p3-header-title">本月支出分析</div>
+                <div class="p3-header-tag">5月</div>
+              </div>
+              <div class="p3-header-sub">5月 · ¥6,840</div>
+            </div>
+
+            <div class="p3-scrollable">
+
+              <!-- 饼图区 -->
+              <div class="pie-section">
+                <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0;">
+                  <!-- 课外班 41% orange -->
+                  <path d="M45,45 L45,5 A40,40 0 0,1 84.6,31.4 Z" fill="#FF8C42"/>
+                  <!-- 日常养育 28% green -->
+                  <path d="M45,45 L84.6,31.4 A40,40 0 0,1 70.6,81.6 Z" fill="#34A853"/>
+                  <!-- 玩具 12% yellow -->
+                  <path d="M45,45 L70.6,81.6 A40,40 0 0,1 36.4,84.2 Z" fill="#FBC02D"/>
+                  <!-- 其他 10% gray -->
+                  <path d="M45,45 L36.4,84.2 A40,40 0 0,1 17.6,73.0 Z" fill="#BDBDBD"/>
+                  <!-- 医疗 9% blue -->
+                  <path d="M45,45 L17.6,73.0 A40,40 0 0,1 45,5 Z" fill="#1A73E8"/>
+                  <circle cx="45" cy="45" r="18" fill="#F5F0E8"/>
+                  <text x="45" y="43" text-anchor="middle" font-size="8" fill="#555" font-family="-apple-system,sans-serif" font-weight="700">支出</text>
+                  <text x="45" y="53" text-anchor="middle" font-size="7" fill="#aaa" font-family="-apple-system,sans-serif">¥6,840</text>
+                </svg>
+                <div class="pie-legend">
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#FF8C42;"></div>
+                    <span>课外班 41%</span>
+                    <span class="legend-amount">¥2,805</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#34A853;"></div>
+                    <span>日常养育 28%</span>
+                    <span class="legend-amount">¥1,915</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#FBC02D;"></div>
+                    <span>玩具 12%</span>
+                    <span class="legend-amount">¥821</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#BDBDBD;"></div>
+                    <span>其他 10%</span>
+                    <span class="legend-amount">¥684</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:#1A73E8;"></div>
+                    <span>医疗 9%</span>
+                    <span class="legend-amount">¥615</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 焦虑消费识别 -->
+              <div class="anxiety-card">
+                <div class="anxiety-title">⚠️ 焦虑消费识别</div>
+                <div class="anxiety-item">
+                  <span class="anxiety-item-text">奥数班 ¥800 · 参与度低，建议评估</span>
+                  <span class="anxiety-badge high">高风险</span>
+                </div>
+                <div class="anxiety-item">
+                  <span class="anxiety-item-text">英语外教 ¥1,300 · 超龄适配，可降级</span>
+                  <span class="anxiety-badge mid">中风险</span>
+                </div>
+                <div class="anxiety-foot">¥2,100 可能属于焦虑驱动消费</div>
+              </div>
+
+              <!-- 同龄对比 -->
+              <div class="compare-card">
+                <div class="compare-card-title">👨‍👩‍👧 同龄家庭对比</div>
+                <div class="compare-row">
+                  <div class="compare-row-label">
+                    <span>课外班 · 您 41%</span>
+                    <span>均值 28% <span class="diff">+13%</span></span>
+                  </div>
+                  <div style="margin-bottom:2px;">
+                    <div style="font-size:7px;color:#aaa;margin-bottom:1px;font-family:-apple-system,sans-serif;">您</div>
+                    <div class="bar-track"><div class="bar-fill-orange"></div></div>
+                  </div>
+                  <div>
+                    <div style="font-size:7px;color:#aaa;margin-bottom:1px;font-family:-apple-system,sans-serif;">均值</div>
+                    <div class="bar-track"><div class="bar-fill-gray"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 折线图 -->
+              <div class="card" style="padding:8px;">
+                <div style="font-size:9px;font-weight:700;color:#1a1a1a;margin-bottom:4px;font-family:-apple-system,sans-serif;">📈 近三月趋势</div>
+                <svg width="100%" height="60" viewBox="0 0 220 60" preserveAspectRatio="none">
+                  <!-- 网格线 -->
+                  <line x1="0" y1="10" x2="220" y2="10" stroke="#f0f0f0" stroke-width="1"/>
+                  <line x1="0" y1="35" x2="220" y2="35" stroke="#f0f0f0" stroke-width="1"/>
+                  <!-- 折线 -->
+                  <polyline points="30,48 110,28 190,8" fill="none" stroke="#FF8C42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- 渐变填充 -->
+                  <polygon points="30,48 110,28 190,8 190,55 30,55" fill="rgba(255,140,66,0.1)"/>
+                  <!-- 点 -->
+                  <circle cx="30" cy="48" r="3.5" fill="#FF8C42"/>
+                  <circle cx="110" cy="28" r="3.5" fill="#FF8C42"/>
+                  <circle cx="190" cy="8" r="3.5" fill="#FF8C42"/>
+                  <!-- 标签 -->
+                  <text x="30" y="58" text-anchor="middle" font-size="7" fill="#aaa" font-family="-apple-system,sans-serif">3月</text>
+                  <text x="110" y="58" text-anchor="middle" font-size="7" fill="#aaa" font-family="-apple-system,sans-serif">4月</text>
+                  <text x="190" y="58" text-anchor="middle" font-size="7" fill="#aaa" font-family="-apple-system,sans-serif">5月</text>
+                  <text x="30" y="43" text-anchor="middle" font-size="6" fill="#999" font-family="-apple-system,sans-serif">5.2k</text>
+                  <text x="110" y="23" text-anchor="middle" font-size="6" fill="#999" font-family="-apple-system,sans-serif">6.1k</text>
+                  <text x="190" y="5" text-anchor="middle" font-size="6" fill="#FF8C42" font-family="-apple-system,sans-serif" font-weight="700">6.8k</text>
+                </svg>
+              </div>
+
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+              <div class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首页</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">规划</span>
+              </div>
+              <div class="nav-item active">
+                <span class="nav-icon">💳</span>
+                <span class="nav-label">账单</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">财商</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="phone-label-title">💳 账单</div>
+          <div class="phone-label-desc">支出分析 & 焦虑识别</div>
+        </div>
+      </div>
+
+      <!-- ========== PHONE 4 — AI对话页 ========== -->
+      <div class="phone-unit">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+
+            <!-- Header -->
+            <div class="p4-header">
+              <div class="p4-header-left">
+                <div class="p4-avatar">🌱</div>
+                <div>
+                  <span class="p4-ai-name">芽计AI</span>
+                  <span class="p4-ai-status">在线 · 家庭财务顾问</span>
+                </div>
+              </div>
+              <div class="p4-menu">···</div>
+            </div>
+
+            <!-- 聊天区 -->
+            <div class="chat-area">
+              <div class="bubble ai">您好！我是芽计AI，不卖保险不推基金，只帮您理清财务。先问：孩子现在几岁？</div>
+              <div class="bubble user">5岁，女儿</div>
+              <div class="bubble ai">5岁女生，正是好奇心旺盛的年纪！计划国内还是出国留学？</div>
+              <div class="bubble user">希望出国，但不确定</div>
+              <div class="bubble ai">明白，我帮两种情景都算。家庭月收入大概？</div>
+              <div class="bubble user">3-5万左右</div>
+              <!-- 规划报告气泡 -->
+              <div class="bubble report">
+                <div class="report-title">📊 初步规划报告</div>
+                <div class="report-divider"></div>
+                <div class="report-row"><strong>情景A</strong> 国内本科</div>
+                <div class="report-row">目标 ¥45万 · 月投 <strong style="color:#34A853;">¥1,850</strong></div>
+                <div class="report-divider"></div>
+                <div class="report-row"><strong>情景B</strong> 出国留学</div>
+                <div class="report-row">目标 ¥120万 · 月投 <strong style="color:#1A73E8;">¥4,900</strong></div>
+                <div class="report-divider"></div>
+                <div class="report-next">下一步建议 →</div>
+              </div>
+            </div>
+
+            <!-- 输入区 -->
+            <div class="p4-input-area">
+              <div class="chips">
+                <div class="chip">查看教育金</div>
+                <div class="chip">分析支出</div>
+                <div class="chip">保险建议</div>
+              </div>
+              <div class="input-row">
+                <div class="fake-input"></div>
+                <div class="send-btn">▶</div>
+              </div>
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+              <div class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首页</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">规划</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💳</span>
+                <span class="nav-label">账单</span>
+              </div>
+              <div class="nav-item active">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">财商</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="phone-label-title">🤖 AI</div>
+          <div class="phone-label-desc">对话式财务规划</div>
+        </div>
+      </div>
+
+      <!-- ========== PHONE 5 — 财商页 ========== -->
+      <div class="phone-unit">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+
+            <!-- Header -->
+            <div class="p5-header">
+              <div class="p5-header-sub">林小鹿 · 5岁</div>
+              <div class="p5-header-title">💰 财商成长中心</div>
+            </div>
+
+            <div class="p5-scrollable">
+
+              <!-- 三罐子卡片 -->
+              <div class="card">
+                <div class="jars-title">🫙 本周零花钱 · ¥20</div>
+                <div class="jars-row">
+                  <div class="jar-cell orange">
+                    <span class="jar-emoji">🟠</span>
+                    <span class="jar-name">自由支配</span>
+                    <span class="jar-amount orange">¥12</span>
+                  </div>
+                  <div class="jar-cell green">
+                    <span class="jar-emoji">🟢</span>
+                    <span class="jar-name">储蓄罐</span>
+                    <span class="jar-amount green">¥6</span>
+                  </div>
+                  <div class="jar-cell purple">
+                    <span class="jar-emoji">💜</span>
+                    <span class="jar-name">分享罐</span>
+                    <span class="jar-amount purple">¥2</span>
+                  </div>
+                </div>
+                <!-- 心愿进度 -->
+                <div class="wish-row">
+                  <span class="wish-label">🎯 乐高 ¥52/¥99</span>
+                  <div class="wish-bar-track">
+                    <div class="wish-bar-fill"></div>
+                  </div>
+                  <span class="wish-pct">52%</span>
+                </div>
+              </div>
+
+              <!-- 劳动任务卡 -->
+              <div class="card">
+                <div style="font-size:10px;font-weight:700;color:#1a1a1a;margin-bottom:5px;font-family:-apple-system,sans-serif;">✅ 劳动任务 · 本周3/5</div>
+                <div class="task-item done">
+                  <span>✅ 整理书包</span>
+                  <span class="task-reward">+¥3</span>
+                </div>
+                <div class="task-item done">
+                  <span>✅ 帮奶奶扫地</span>
+                  <span class="task-reward">+¥5</span>
+                </div>
+                <div class="task-item pending">
+                  <span>⭕ 读绘本讲给AI 📚</span>
+                  <span class="task-reward" style="color:#9C27B0;">+¥10</span>
+                </div>
+              </div>
+
+              <!-- AI月度报告 -->
+              <div class="ai-monthly-card">
+                <div class="ai-monthly-title">🤖 AI宝贝月度报告</div>
+                <div class="ai-monthly-text">小鹿本月完成12个任务，攒了¥58，为乐高坚持存钱的耐心令人惊喜！🌱</div>
+              </div>
+
+              <!-- AI零花钱建议 -->
+              <div class="allowance-card">
+                ¥15-25/周 适合5岁 ✅ 当前¥20处于合理区间
+              </div>
+
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+              <div class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">首页</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">规划</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">💳</span>
+                <span class="nav-label">账单</span>
+              </div>
+              <div class="nav-item">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">AI</span>
+              </div>
+              <div class="nav-item active">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">财商</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="phone-label-title">💰 财商</div>
+          <div class="phone-label-desc">亲子财商成长中心</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 底部版权 -->
+  <div class="page-footer">芽计 YaPlan · 产品原型展示</div>
+
+</div>
+
+</body>
+</html>
