@@ -749,6 +749,7 @@
     <div class="top-tab" onclick="switchTab(1)">🤖 AI助手</div>
     <div class="top-tab" onclick="switchTab(2)">📊 支出</div>
     <div class="top-tab" onclick="switchTab(3)">🎓 教育金</div>
+    <div class="top-tab" onclick="switchTab(4)">💰 财商</div>
   </div>
 
   <!-- ========== PAGE 1: DASHBOARD ========== -->
@@ -1369,6 +1370,151 @@
       <div class="nav-item"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
       <div class="nav-item"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
       <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">我的</div></div>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 5: 财商教育 ========== -->
+  <div class="page" id="page-4">
+    <div class="page-content" style="background:#FFF9F3;">
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#FF8C42,#F5C842);padding:16px;border-radius:0 0 16px 16px;margin-bottom:12px;">
+        <div style="color:#fff;font-size:11px;opacity:.8;margin-bottom:2px;">林小鹿 · 5岁 · 幼儿园大班</div>
+        <div style="color:#fff;font-size:17px;font-weight:700;">💰 财商成长中心</div>
+        <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:4px;">让孩子在真实场景中学习金钱</div>
+      </div>
+
+      <!-- 零花钱账本 -->
+      <div style="background:#fff;border-radius:14px;margin:0 12px 10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;">🪙 零花钱账本</div>
+          <div style="font-size:10px;color:#FF8C42;background:#FFF3E8;padding:3px 8px;border-radius:20px;">本周</div>
+        </div>
+        <!-- 收支条 -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <div style="flex:1;background:#F0FBF4;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:#4EBF8F;margin-bottom:2px;">收入</div>
+            <div style="font-size:18px;font-weight:700;color:#4EBF8F;">¥30</div>
+            <div style="font-size:9px;color:#888;">周零花钱 ¥20<br>帮奶奶 ¥10</div>
+          </div>
+          <div style="flex:1;background:#FFF3F0;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:#FF6B6B;margin-bottom:2px;">支出</div>
+            <div style="font-size:18px;font-weight:700;color:#FF6B6B;">¥12</div>
+            <div style="font-size:9px;color:#888;">橡皮泥 ¥8<br>零食 ¥4</div>
+          </div>
+          <div style="flex:1;background:#FFF9E8;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:#F5C842;margin-bottom:2px;">结余</div>
+            <div style="font-size:18px;font-weight:700;color:#F5A830;">¥18</div>
+            <div style="font-size:9px;color:#888;">存入心愿罐<br>🐷</div>
+          </div>
+        </div>
+        <!-- 心愿目标 -->
+        <div style="background:#FFF9E8;border-radius:10px;padding:10px;border-left:3px solid #F5C842;">
+          <div style="font-size:11px;font-weight:600;color:#B8860B;margin-bottom:6px;">🌟 心愿目标：乐高积木套装</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden;">
+              <div style="width:52%;height:100%;background:linear-gradient(90deg,#F5C842,#FF8C42);border-radius:3px;"></div>
+            </div>
+            <div style="font-size:10px;color:#888;">¥52 / ¥99</div>
+          </div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">还差 ¥47，约再攒 3 周 🎯</div>
+        </div>
+      </div>
+
+      <!-- 劳动奖励任务 -->
+      <div style="background:#fff;border-radius:14px;margin:0 12px 10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;">✅ 劳动奖励任务</div>
+          <div style="font-size:10px;color:#4EBF8F;">本周完成 3/5</div>
+        </div>
+        <!-- 任务列表 -->
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#F0FBF4;border-radius:9px;padding:8px 10px;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="font-size:14px;">✅</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#333;text-decoration:line-through;opacity:.6;">整理自己的书包</div>
+                <div style="font-size:10px;color:#4EBF8F;">已完成 · 今天</div>
+              </div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#4EBF8F;">+¥3</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#F0FBF4;border-radius:9px;padding:8px 10px;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="font-size:14px;">✅</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#333;text-decoration:line-through;opacity:.6;">帮奶奶扫地</div>
+                <div style="font-size:10px;color:#4EBF8F;">已完成 · 昨天</div>
+              </div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#4EBF8F;">+¥5</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#FFF9F3;border-radius:9px;padding:8px 10px;border:1px dashed #FFD4A8;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="font-size:14px;">⭕</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#333;">读绘本30分钟</div>
+                <div style="font-size:10px;color:#aaa;">今天还未完成</div>
+              </div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#FF8C42;">+¥5</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#FFF9F3;border-radius:9px;padding:8px 10px;border:1px dashed #FFD4A8;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="font-size:14px;">⭕</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#333;">饭后收拾碗筷</div>
+                <div style="font-size:10px;color:#aaa;">本周剩余2次</div>
+              </div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#FF8C42;">+¥2/次</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:8px;background:#FFF3E8;border-radius:8px;font-size:10px;color:#888;text-align:center;">
+          💡 义务家务（如吃饭、刷牙）不计入奖励，培养责任感
+        </div>
+      </div>
+
+      <!-- 亲子共同参与 -->
+      <div style="background:#fff;border-radius:14px;margin:0 12px 10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">👨‍👩‍👧 亲子共同参与</div>
+        <!-- 本周家庭财务小任务 -->
+        <div style="background:linear-gradient(135deg,#667eea22,#764ba222);border-radius:10px;padding:11px;margin-bottom:8px;border-left:3px solid #764ba2;">
+          <div style="font-size:11px;font-weight:600;color:#764ba2;margin-bottom:4px;">📌 本周亲子任务</div>
+          <div style="font-size:12px;color:#333;line-height:1.6;">去超市前，给小鹿 <strong>¥20</strong> 预算，让她选今晚的水果。剩余的归她零花钱 🛒</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+            <div style="font-size:10px;color:#888;">AI推荐 · 适合5岁</div>
+            <div style="font-size:10px;color:#764ba2;background:#764ba222;padding:3px 8px;border-radius:20px;">标记完成</div>
+          </div>
+        </div>
+        <!-- AI月度报告 -->
+        <div style="background:#F8F9FF;border-radius:10px;padding:11px;border-left:3px solid #4E90BF;">
+          <div style="font-size:11px;font-weight:600;color:#4E90BF;margin-bottom:5px;">🤖 AI 宝贝月度报告</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">「小鹿这个月完成了 <strong>12</strong> 个劳动任务，攒了 <strong>¥58</strong>。她为乐高存钱的耐心令人惊喜！建议这周聊聊：<em>「为什么等待有时候是值得的」</em> 🌱」</div>
+        </div>
+      </div>
+
+      <!-- AI零花钱建议 -->
+      <div style="background:#fff;border-radius:14px;margin:0 12px 16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">🧠 AI 零花钱建议</div>
+        <div style="background:#F0FBF4;border-radius:10px;padding:10px;">
+          <div style="font-size:11px;color:#333;line-height:1.7;">根据小鹿年龄（5岁）和您所在城市，建议周零花钱在 <strong style="color:#4EBF8F;">¥15-25</strong> 之间。当前 ¥20/周 处于合理区间 ✅</div>
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+            <div style="font-size:10px;background:#fff;border:1px solid #4EBF8F;color:#4EBF8F;padding:3px 8px;border-radius:20px;">调整金额</div>
+            <div style="font-size:10px;background:#fff;border:1px solid #FF8C42;color:#FF8C42;padding:3px 8px;border-radius:20px;">查看同龄参考</div>
+            <div style="font-size:10px;background:#fff;border:1px solid #888;color:#888;padding:3px 8px;border-radius:20px;">财商小课 📖</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+      <div class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
+      <div class="nav-item"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
+      <div class="nav-item"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
+      <div class="nav-item active"><div class="nav-icon" style="color:#FF8C42;">💰</div><div class="nav-label" style="color:#FF8C42;">财商</div></div>
     </div>
   </div>
 
