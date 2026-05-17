@@ -71,7 +71,7 @@ def _set_cell_bg(cell, rgb):
 
 
 def tb(slide, text, l, t, w, h,
-       sz=11, bold=False, color=None, align='left',
+       sz=14, bold=False, color=None, align='left',
        italic=False, wrap=True):
     """单段文本框"""
     box = slide.shapes.add_textbox(
@@ -93,7 +93,7 @@ def tb(slide, text, l, t, w, h,
 
 
 def mtb(slide, lines, l, t, w, h,
-        sz=11, bold=False, color=None, align='left', gap=2):
+        sz=14, bold=False, color=None, align='left', gap=2):
     """多行文本框（行间距可调）"""
     box = slide.shapes.add_textbox(
         Inches(l), Inches(t), Inches(w), Inches(h))
@@ -167,23 +167,23 @@ def slide_title(slide, title, subtitle=None, num=1, tag=None):
     rec(slide, 0.45, 0.28, 0.04, 0.62, fill=CMB_RED)
     # 主标题
     tb(slide, title, 0.62, 0.30, 11.2, 0.58,
-       sz=22, bold=True, color=CMB_DARK)
+       sz=25, bold=True, color=CMB_DARK)
     # 标题下红线
     rec(slide, 0.45, 0.92, 12.4, 0.018, fill=CMB_RED)
     # 副标题
     if subtitle:
         tb(slide, subtitle, 0.62, 0.96, 11.2, 0.36,
-           sz=10, color=CMB_GRAY2)
+           sz=13, color=CMB_GRAY2)
     # 右上章节标签
     if tag:
         rec(slide, 11.0, 0.22, 2.15, 0.32, fill=CMB_DARK)
         tb(slide, tag, 11.0, 0.22, 2.15, 0.32,
-           sz=8, color=CMB_WHITE, align='c')
+           sz=11, color=CMB_WHITE, align='c')
     # 右下页码 + 品牌
     tb(slide, f"{num:02d}  /  {TOTAL:02d}",
-       12.05, 7.12, 1.1, 0.28, sz=8, color=CMB_GRAY2, align='r')
+       12.05, 7.12, 1.1, 0.28, sz=11, color=CMB_GRAY2, align='r')
     tb(slide, "芽计  YaPlan",
-       10.3, 7.12, 1.6, 0.28, sz=8, color=CMB_GRAY2, align='r')
+       10.3, 7.12, 1.6, 0.28, sz=11, color=CMB_GRAY2, align='r')
 
 
 # ── 内容区节标题（章节内分区） ─────────────────────────
@@ -191,7 +191,7 @@ def section_head(slide, text, l, t, w=None):
     """小节标题：左红色竖条 + 文字 + 下细线"""
     redbar(slide, l, t, w=0.035, h=0.32)
     tb(slide, text, l + 0.1, t + 0.01, (w or 5.0) - 0.15, 0.30,
-       sz=12, bold=True, color=CMB_DARK)
+       sz=15, bold=True, color=CMB_DARK)
     hbar(slide, l, t + 0.33, (w or 5.0), color=CMB_GRAY3)
 
 
@@ -206,19 +206,19 @@ def big_stat(slide, l, t, w, h,
     if bg:
         rec(slide, l, t, w, h, fill=bg)
     tb(slide, number, l + 0.12, t + 0.10, w - 0.15, h * 0.55,
-       sz=36, bold=True, color=num_color)
+       sz=39, bold=True, color=num_color)
     if unit:
         tb(slide, unit, l + 0.12, t + h * 0.54, w - 0.15, 0.30,
-           sz=11, color=CMB_GRAY1)
+           sz=14, color=CMB_GRAY1)
     tb(slide, label, l + 0.12, t + h * 0.72, w - 0.15, h * 0.26,
-       sz=10, color=CMB_GRAY2)
+       sz=13, color=CMB_GRAY2)
 
 
 # ── 功能卡片（极简版：顶部细红线 + 白底） ───────────────
 def feature_card(slide, l, t, w, h,
                  title, body_lines,
                  accent=CMB_RED,
-                 title_sz=12, body_sz=10.5):
+                 title_sz=15, body_sz=13.5):
     """顶部 3px accent 线 + 白底卡片"""
     rec(slide, l, t, w, h, fill=CMB_BG)
     rec(slide, l, t, w, 0.032, fill=accent)
@@ -236,12 +236,12 @@ def ph(slide, l, t, w, h, label, note="", accent=CMB_RED):
     rec(slide, l, t, w, h, fill=RGBColor(0xF2, 0xF2, 0xF2),
         line=accent, lw=0.75)
     mid = t + h / 2
-    tb(slide, "📷", l, mid - 0.45, w, 0.45, sz=20, align='c', color=CMB_GRAY2)
+    tb(slide, "📷", l, mid - 0.45, w, 0.45, sz=23, align='c', color=CMB_GRAY2)
     tb(slide, label, l, mid + 0.05, w, 0.35,
-       sz=10, bold=True, color=accent, align='c')
+       sz=13, bold=True, color=accent, align='c')
     if note:
         tb(slide, note, l, mid + 0.45, w, 0.30,
-           sz=9, color=CMB_GRAY2, align='c')
+           sz=12, color=CMB_GRAY2, align='c')
 
 
 # ═══════════════════════════════════════════════════════
@@ -292,11 +292,11 @@ for i, (cx, accent, ttl, body) in enumerate(
     rec(sl, cx, col_top, col_w, col_h, fill=CMB_WHITE)
     rec(sl, cx, col_top, col_w, 0.038, fill=accent)   # 顶部accent线
     tb(sl, ttl, cx + 0.18, col_top + 0.10, col_w - 0.26, 0.38,
-       sz=12, bold=True, color=accent)
+       sz=15, bold=True, color=accent)
     hbar(sl, cx + 0.14, col_top + 0.50, col_w - 0.26, color=CMB_GRAY3)
     mtb(sl, ["• " + b for b in body],
         cx + 0.18, col_top + 0.58, col_w - 0.26, 4.65,
-        sz=11, color=CMB_GRAY1, gap=4)
+        sz=14, color=CMB_GRAY1, gap=4)
     # 列间分隔线
     if i < 2:
         rec(sl, cx + col_w, col_top, 0.016, col_h, fill=CMB_GRAY3)
@@ -311,7 +311,7 @@ for bx, btxt, baccent in bottom_items:
     rec(sl, bx, 6.98, 3.95, 0.40, fill=CMB_DARK)
     rec(sl, bx, 6.98, 0.04, 0.40, fill=baccent)
     tb(sl, btxt, bx + 0.12, 7.0, 3.75, 0.36,
-       sz=10, color=CMB_WHITE, align='c')
+       sz=13, color=CMB_WHITE, align='c')
 
 print("  完成")
 
@@ -348,21 +348,21 @@ for sx, accent, period, user, pains, spend in stages:
     # 顶部色条
     rec(sl, sx, 1.32, 3.95, 0.50, fill=accent)
     tb(sl, period, sx + 0.12, 1.33, 3.72, 0.46,
-       sz=14, bold=True, color=CMB_WHITE, align='c')
+       sz=17, bold=True, color=CMB_WHITE, align='c')
     # 内容区（白底）
     rec(sl, sx, 1.82, 3.95, 5.06, fill=CMB_WHITE)
-    tb(sl, user, sx + 0.18, 1.90, 3.6, 0.34, sz=10, color=CMB_GRAY2)
+    tb(sl, user, sx + 0.18, 1.90, 3.6, 0.34, sz=13, color=CMB_GRAY2)
     hbar(sl, sx + 0.14, 2.26, 3.68, color=CMB_GRAY3)
     tb(sl, "核心痛点", sx + 0.18, 2.34, 3.6, 0.28,
-       sz=10, bold=True, color=CMB_DARK)
+       sz=13, bold=True, color=CMB_DARK)
     mtb(sl, ["→  " + p for p in pains],
         sx + 0.18, 2.66, 3.6, 1.85,
-        sz=10.5, color=CMB_GRAY1, gap=3)
+        sz=13.5, color=CMB_GRAY1, gap=3)
     hbar(sl, sx + 0.14, 4.55, 3.68, color=CMB_GRAY3)
     tb(sl, "月均教育支出",
-       sx + 0.18, 4.62, 3.6, 0.28, sz=9, color=CMB_GRAY2)
+       sx + 0.18, 4.62, 3.6, 0.28, sz=12, color=CMB_GRAY2)
     tb(sl, spend,
-       sx + 0.18, 4.92, 3.6, 0.90, sz=36, bold=True, color=accent)
+       sx + 0.18, 4.92, 3.6, 0.90, sz=39, bold=True, color=accent)
     # 列间线
     if sx < 8.0:
         rec(sl, sx + 3.95, 1.32, 0.016, 5.56, fill=CMB_GRAY3)
@@ -401,12 +401,12 @@ mtb(sl, [
     "•  周末深夜突击报班",
     "•  无 ROI 评估，跟风即买",
     "•  孩子不感兴趣，仍续费",
-], 0.60, 3.56, 5.52, 3.20, sz=12, color=CMB_GRAY1, gap=5)
+], 0.60, 3.56, 5.52, 3.20, sz=15, color=CMB_GRAY1, gap=5)
 
 # 中间箭头标注
 rec(sl, 6.36, 3.46, 0.78, 3.42, fill=CMB_RED)
 tb(sl, "芽\n计\n识\n别", 6.36, 3.72, 0.78, 2.90,
-   sz=13, bold=True, color=CMB_WHITE, align='c')
+   sz=16, bold=True, color=CMB_WHITE, align='c')
 
 # 右侧：理性型
 section_head(sl, "✅  理性规划型消费", 7.24, 3.08, w=5.65)
@@ -418,11 +418,11 @@ mtb(sl, [
     "•  评估性价比后理性决定",
     "•  定期复盘课程出勤与效果",
     "•  纳入家庭月度预算管控",
-], 7.40, 3.56, 5.36, 3.20, sz=12, color=CMB_GRAY1, gap=5)
+], 7.40, 3.56, 5.36, 3.20, sz=15, color=CMB_GRAY1, gap=5)
 
 tb(sl,
    "芽计通过  行为信号  ×  NLP语义情绪  ×  综合评分  三层机制，在消费决策前给出理性提醒",
-   0.45, 7.0, 12.4, 0.35, sz=9, color=CMB_GRAY2, align='c')
+   0.45, 7.0, 12.4, 0.35, sz=12, color=CMB_GRAY2, align='c')
 
 print("  完成")
 
@@ -450,7 +450,7 @@ tam_data = [
 for lx, tp, w, h, bg, txt, accent in tam_data:
     rec(sl, lx, tp, w, h, fill=bg, line=accent, lw=0.8)
     tb(sl, txt, lx + 0.2, tp + 0.12, w - 0.3, 0.36,
-       sz=11, bold=True, color=accent)
+       sz=14, bold=True, color=accent)
 
 # 右侧 4 个大数字卡片（无边框风格）
 hbar(sl, 8.68, 1.32, 4.5, color=CMB_RED, h=0.030)
@@ -466,7 +466,7 @@ for i, (num, unit, label, accent) in enumerate([
              num, unit, label, num_color=accent)
 
 tb(sl, "数据来源：艾瑞咨询 2025  /  国家统计局  /  CFPS 家庭追踪调查",
-   0.5, 7.1, 9.0, 0.28, sz=8, color=CMB_GRAY2)
+   0.5, 7.1, 9.0, 0.28, sz=11, color=CMB_GRAY2)
 
 print("  完成")
 
@@ -483,7 +483,7 @@ slide_title(sl, "产品方案  ·  攒·保·理·教  四模块定位",
 rec(sl, 0.45, 1.32, 12.43, 0.40, fill=CMB_DARK)
 rec(sl, 0.45, 1.32, 0.04, 0.40, fill=CMB_RED)
 tb(sl, "所有功能通过对话式 AI 串联  ·  角色定位：🏥 家庭财务医生（客观专业）× 👩‍🎓 成长陪伴学姐（温暖懂孩子）",
-   0.58, 1.33, 12.2, 0.36, sz=10.5, color=CMB_WHITE)
+   0.58, 1.33, 12.2, 0.36, sz=13.5, color=CMB_WHITE)
 
 modules = [
     (0.45, 1.85, CMB_TEAL,  "📈  攒  ·  教育金规划",
@@ -510,7 +510,7 @@ modules = [
 for lx, tp, accent, ttl, body in modules:
     feature_card(sl, lx, tp, 6.28, 2.54,
                  ttl, body, accent=accent,
-                 title_sz=13, body_sz=11)
+                 title_sz=16, body_sz=14)
 
 print("  完成")
 
@@ -585,9 +585,9 @@ for i, (accent, icon_title, sub) in enumerate([
     lx = 0.45 + i * 4.29
     rec(sl, lx, 5.82, 4.15, 1.06, fill=accent)
     tb(sl, icon_title, lx + 0.14, 5.88, 3.9, 0.42,
-       sz=13, bold=True, color=CMB_WHITE, align='c')
+       sz=16, bold=True, color=CMB_WHITE, align='c')
     tb(sl, sub, lx + 0.14, 6.30, 3.9, 0.42,
-       sz=10, color=CMB_WHITE, align='c')
+       sz=13, color=CMB_WHITE, align='c')
 
 print("  完成")
 
@@ -605,7 +605,7 @@ rec(sl, 0.45, 1.32, 12.43, 0.42, fill=CMB_DARK)
 rec(sl, 0.45, 1.32, 0.04, 0.42, fill=CMB_RED)
 tb(sl, "AI 双重角色：🏥 家庭财务医生（客观、专业、不卖东西）"
        "  ×  👩‍🎓 成长陪伴学姐（温暖、真实、懂孩子）",
-   0.58, 1.33, 12.2, 0.38, sz=10.5, color=CMB_WHITE)
+   0.58, 1.33, 12.2, 0.38, sz=13.5, color=CMB_WHITE)
 
 # 左侧：5步流程（竖向时间轴）
 steps = [
@@ -621,11 +621,11 @@ for i, (accent, stitle, sdesc) in enumerate(steps):
     rec(sl, 0.45, y, 0.04, 0.84, fill=accent)
     rec(sl, 0.55, y + 0.22, 0.38, 0.38, fill=accent)
     tb(sl, stitle.split("  ")[0], 0.56, y + 0.22, 0.36, 0.38,
-       sz=13, bold=True, color=CMB_WHITE, align='c')
+       sz=16, bold=True, color=CMB_WHITE, align='c')
     tb(sl, stitle.split("  ")[1], 1.05, y + 0.08, 5.55, 0.34,
-       sz=12, bold=True, color=CMB_DARK)
+       sz=15, bold=True, color=CMB_DARK)
     tb(sl, sdesc, 1.05, y + 0.44, 5.55, 0.32,
-       sz=10, color=CMB_GRAY1)
+       sz=13, color=CMB_GRAY1)
     if i < 4:
         rec(sl, 0.69, y + 0.84, 0.016, 0.16, fill=accent)
 
@@ -641,9 +641,9 @@ for j, (icon, desc) in enumerate([
         line=CMB_GRAY3, lw=0.6)
     rec(sl, lx, 2.28, 1.98, 0.028, fill=CMB_TEAL)
     tb(sl, icon, lx + 0.1, 2.36, 1.8, 0.38,
-       sz=11, bold=True, color=CMB_DARK)
+       sz=14, bold=True, color=CMB_DARK)
     tb(sl, desc, lx + 0.1, 2.78, 1.8, 0.36,
-       sz=10, color=CMB_GRAY2)
+       sz=13, color=CMB_GRAY2)
 
 section_head(sl, "对话示例", 6.88, 3.80, w=6.2)
 rec(sl, 6.88, 4.18, 6.2, 1.32, fill=RGBColor(0xF0, 0xF4, 0xFF))
@@ -652,16 +652,16 @@ mtb(sl, [
     "用户：「5 岁女儿，想出国，月入 3–5 万」",
     "→  芽计：「目标 ¥120 万，月投 ¥4,900，",
     "    相当于每天少一杯奶茶 + 咖啡 ☕」",
-], 7.06, 4.28, 5.9, 1.12, sz=11, color=CMB_NAVY)
+], 7.06, 4.28, 5.9, 1.12, sz=14, color=CMB_NAVY)
 
 section_head(sl, "焦虑检测三层引擎", 6.88, 5.66, w=6.2)
 rec(sl, 6.88, 6.04, 6.2, 0.80, fill=RGBColor(0xFF, 0xF5, 0xF4))
 rec(sl, 6.88, 6.04, 0.04, 0.80, fill=CMB_RED)
 tb(sl, "Layer 1  行为信号  →  Layer 2  NLP语义情绪  →  Layer 3  综合风险评分",
-   7.06, 6.14, 5.9, 0.55, sz=10.5, color=CMB_DARK)
+   7.06, 6.14, 5.9, 0.55, sz=13.5, color=CMB_DARK)
 
 tb(sl, "底层：Claude API  ·  多模态 OCR  ·  规则引擎",
-   6.88, 7.0, 6.2, 0.30, sz=9, color=CMB_GRAY2, align='c')
+   6.88, 7.0, 6.2, 0.30, sz=12, color=CMB_GRAY2, align='c')
 
 print("  完成")
 
@@ -702,16 +702,16 @@ for lx, accent, plan, badge, features, highlight in pricing:
     rec(sl, lx, tp, 3.95, h, fill=CMB_WHITE)
     rec(sl, lx, tp, 3.95, 0.56, fill=accent)
     tb(sl, plan, lx + 0.12, tp + 0.08, 3.72, 0.42,
-       sz=13, bold=True, color=CMB_WHITE, align='c')
+       sz=16, bold=True, color=CMB_WHITE, align='c')
     if badge:
         rec(sl, lx + 2.96, tp, 0.99, 0.32, fill=CMB_RED)
         tb(sl, badge, lx + 2.96, tp + 0.02, 0.99, 0.28,
-           sz=9, bold=True, color=CMB_WHITE, align='c')
+           sz=12, bold=True, color=CMB_WHITE, align='c')
     hbar(sl, lx + 0.14, tp + 0.60, 3.68, color=CMB_GRAY3)
     for j, feat in enumerate(features):
         tb(sl, f"✓  {feat}",
            lx + 0.18, tp + 0.70 + j * 0.60, 3.62, 0.50,
-           sz=11, color=CMB_GRAY1)
+           sz=14, color=CMB_GRAY1)
     # 底部边框
     rec(sl, lx, tp, 3.95, h, line=accent, lw=0.6)
 
@@ -722,14 +722,14 @@ for i, node in enumerate(flywheel):
     lx = 0.65 + i * 2.44
     rec(sl, lx, 6.12, 2.0, 0.68, fill=CMB_RED)
     tb(sl, node, lx, 6.17, 2.0, 0.58,
-       sz=11, bold=True, color=CMB_WHITE, align='c')
+       sz=14, bold=True, color=CMB_WHITE, align='c')
     if i < 4:
         tb(sl, "→", lx + 2.0, 6.23, 0.44, 0.44,
-           sz=16, bold=True, color=CMB_RED, align='c')
+           sz=19, bold=True, color=CMB_RED, align='c')
 
 rec(sl, 0.45, 6.96, 12.43, 0.38, fill=CMB_BG)
 tb(sl, "3年路径：免费用户 100 万  →  付费转化 10%  →  标准版 ARR ¥9,900 万",
-   0.65, 7.0, 12.1, 0.30, sz=10, color=CMB_GRAY1, align='c')
+   0.65, 7.0, 12.1, 0.30, sz=13, color=CMB_GRAY1, align='c')
 
 print("  完成")
 
@@ -767,10 +767,10 @@ for i, (accent, name, desc) in enumerate(screens):
     y = 1.40 + i * 0.96
     rec(sl, 9.18, y, 0.04, 0.80, fill=accent)
     tb(sl, name, 9.30, y + 0.02, 1.8, 0.32,
-       sz=11, bold=True, color=accent)
+       sz=14, bold=True, color=accent)
     mtb(sl, desc.split('\n'),
         9.30, y + 0.34, 3.85, 0.50,
-        sz=9.5, color=CMB_GRAY1)
+        sz=12.5, color=CMB_GRAY1)
     if i < 4:
         hbar(sl, 9.18, y + 0.88, 4.0, color=CMB_GRAY3)
 
@@ -877,7 +877,7 @@ fn_cards = [
 for i, (accent, ttl, body) in enumerate(fn_cards):
     feature_card(sl, 6.80, 1.32 + i * 1.97, 6.08, 1.84,
                  ttl, body, accent=accent,
-                 title_sz=12, body_sz=10.5)
+                 title_sz=15, body_sz=13.5)
 
 print("  完成")
 
@@ -913,14 +913,14 @@ for i, (accent, num_text, question, answer) in enumerate(qa):
     rec(sl, 0.45, y + 0.028, 0.04, 1.69, fill=accent)  # 左侧细竖线
     # 数字
     tb(sl, num_text, 0.60, y + 0.28, 0.88, 1.0,
-       sz=40, bold=True, color=accent)
+       sz=43, bold=True, color=accent)
     # 问题
     tb(sl, question, 1.60, y + 0.12, 10.72, 0.44,
-       sz=13, bold=True, color=CMB_DARK)
+       sz=16, bold=True, color=CMB_DARK)
     hbar(sl, 1.60, y + 0.58, 10.72, color=CMB_GRAY3)
     # 回答
     tb(sl, answer, 1.60, y + 0.66, 10.72, 0.96,
-       sz=11, color=CMB_GRAY1)
+       sz=14, color=CMB_GRAY1)
 
 # 底部金句（CMB深底白字）
 rec(sl, 0.45, 6.95, 12.43, 0.42, fill=CMB_DARK)
@@ -928,7 +928,7 @@ rec(sl, 0.45, 6.95, 0.04, 0.42, fill=CMB_RED)
 tb(sl,
    '"我们相信，最好的财务顾问不是推销产品，而是帮你想清楚。"  —  芽计  YaPlan',
    0.62, 6.97, 12.15, 0.38,
-   sz=12, bold=True, color=CMB_WHITE, align='c')
+   sz=15, bold=True, color=CMB_WHITE, align='c')
 
 print("  完成")
 
