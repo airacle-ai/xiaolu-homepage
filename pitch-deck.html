@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>芽计 YaPlan — 亲子家庭AI财务规划工具</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0F1923;
+    --card: #1C2B3A;
+    --card2: #243447;
+    --orange: #FF8C42;
+    --green: #4EBF8F;
+    --yellow: #F5C842;
+    --blue: #4A90D9;
+    --red: #E05555;
+    --text: #E8EDF2;
+    --muted: #8FA3B8;
+    --border: #2D4057;
+  }
+
+  body {
+    background: #060d13;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "STHeiti", sans-serif;
+    overflow: hidden;
+  }
+
+  .deck-wrapper {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 0 80px rgba(255,140,66,0.12), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--orange), #ffb347);
+    transition: width 0.4s ease;
+    z-index: 100;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* Navigation */
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px; height: 44px;
+    background: rgba(255,140,66,0.15);
+    border: 1px solid rgba(255,140,66,0.3);
+    border-radius: 50%;
+    color: var(--orange);
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .nav-btn:hover { background: rgba(255,140,66,0.3); transform: translateY(-50%) scale(1.1); }
+  .nav-prev { left: 12px; }
+  .nav-next { right: 12px; }
+
+  /* Slides container */
+  .slides { width: 100%; height: 100%; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    padding: 52px 72px 52px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  /* Footer common */
+  .slide-footer {
+    position: absolute;
+    bottom: 20px; left: 72px; right: 72px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .page-num { color: var(--muted); font-size: 13px; letter-spacing: 1px; }
+  .brand-name { color: var(--orange); font-size: 13px; font-weight: 600; letter-spacing: 2px; }
+
+  /* Slide title common */
+  .slide-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    position: relative;
+  }
+  .slide-title::before {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 60px; height: 2px;
+    background: var(--orange);
+  }
+
+  /* ==================== SLIDE 01 ==================== */
+  #s1 { padding: 0; overflow: hidden; }
+  .s1-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(255,140,66,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 30%, rgba(78,191,143,0.04) 0%, transparent 50%),
+                var(--bg);
+  }
+  .s1-content {
+    position: relative; z-index: 2;
+    display: flex; height: 100%;
+  }
+  .s1-left {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 60px 60px 100px 72px;
+  }
+  .s1-badge {
+    display: inline-block;
+    background: rgba(255,140,66,0.15);
+    border: 1px solid rgba(255,140,66,0.3);
+    color: var(--orange);
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  .s1-main-title {
+    font-size: 72px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--orange), #ffb347, #ff6b35);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .s1-subtitle {
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+  .s1-tagline {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+  .s1-right {
+    width: 380px;
+    display: flex; align-items: center; justify-content: center;
+    padding-bottom: 80px;
+  }
+  .s1-emoji-wrap {
+    font-size: 120px;
+    filter: drop-shadow(0 0 30px rgba(255,140,66,0.6)) drop-shadow(0 0 60px rgba(255,140,66,0.3));
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  .s1-stats {
+    position: absolute;
+    bottom: 50px; left: 72px; right: 72px;
+    display: flex; gap: 16px;
+  }
+  .s1-stat-card {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .s1-stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--orange);
+  }
+  .s1-stat-label { font-size: 12px; color: var(--muted); }
+  .s1-footer {
+    position: absolute;
+    bottom: 20px; left: 72px; right: 72px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* ==================== SLIDE 02 ==================== */
+  #s2 { padding: 40px 60px 50px; }
+  .lean-canvas {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    height: calc(100% - 110px);
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .lc-cell {
+    background: var(--card);
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: background 0.2s;
+  }
+  .lc-cell:hover { background: var(--card2); }
+  .lc-cell.span2 { grid-column: span 2; }
+  .lc-cell.span1r2 { grid-row: span 2; }
+  .lc-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+  }
+  .lc-content {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .lc-highlight { color: var(--green); font-weight: 600; }
+
+  /* ==================== SLIDE 03 ==================== */
+  #s3 { padding: 40px 60px 50px; }
+  .persona-cols {
+    display: flex; gap: 20px;
+    height: calc(100% - 100px);
+  }
+  .persona-col {
+    flex: 1;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border);
+  }
+  .persona-header {
+    height: 6px;
+  }
+  .persona-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .persona-stage { font-size: 18px; font-weight: 700; color: var(--text); }
+  .persona-age { font-size: 12px; color: var(--muted); }
+  .persona-pain-title { font-size: 11px; font-weight: 600; color: var(--orange); margin-top: 6px; }
+  .persona-pain { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .persona-quote {
+    background: var(--card2);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    color: var(--text);
+    font-style: italic;
+    margin-top: auto;
+  }
+  .persona-footer {
+    padding: 14px 20px;
+    background: rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .persona-emoji { font-size: 28px; }
+  .persona-spend { font-size: 13px; color: var(--muted); text-align: right; }
+  .persona-spend strong { display: block; font-size: 18px; color: var(--yellow); }
+
+  /* ==================== SLIDE 04 ==================== */
+  #s4 { padding: 40px 60px 50px; }
+  .compare-wrap {
+    display: flex; gap: 0; align-items: stretch;
+    height: calc(100% - 130px);
+  }
+  .compare-side {
+    flex: 1;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .compare-side.anxiety { background: rgba(224,85,85,0.08); border: 1px solid rgba(224,85,85,0.25); }
+  .compare-side.rational { background: rgba(78,191,143,0.08); border: 1px solid rgba(78,191,143,0.25); }
+  .compare-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .compare-title.red { color: var(--red); }
+  .compare-title.green { color: var(--green); }
+  .compare-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px; color: var(--text);
+  }
+  .compare-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .compare-middle {
+    width: 100px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .compare-divider { width: 1px; height: 100%; background: var(--border); position: absolute; }
+  .compare-badge {
+    background: var(--orange);
+    color: white;
+    border-radius: 50px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+    box-shadow: 0 0 20px rgba(255,140,66,0.4);
+  }
+  .compare-bottom {
+    margin-top: 16px;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .compare-bottom strong { color: var(--orange); font-size: 20px; }
+
+  /* ==================== SLIDE 05 ==================== */
+  #s5 { padding: 40px 60px 50px; }
+  .market-wrap {
+    display: flex; gap: 40px; align-items: center;
+    height: calc(100% - 100px);
+  }
+  .market-left { flex: 0 0 380px; display: flex; align-items: center; justify-content: center; }
+  .market-right { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .market-stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .market-stat-num { font-size: 36px; font-weight: 800; color: var(--orange); min-width: 90px; }
+  .market-stat-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .market-source { font-size: 11px; color: var(--muted); opacity: 0.6; text-align: center; margin-top: 10px; }
+
+  /* ==================== SLIDE 06 ==================== */
+  #s6 { padding: 40px 60px 50px; }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .compare-table th {
+    background: var(--card2);
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+  .compare-table th.highlight { background: rgba(255,140,66,0.15); color: var(--orange); }
+  .compare-table td {
+    padding: 11px 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.04); }
+  .compare-table td.highlight { background: rgba(255,140,66,0.08); color: var(--orange); font-weight: 700; }
+  .compare-table td:first-child { text-align: left; color: var(--muted); font-size: 12px; }
+  .diff-tags { display: flex; gap: 14px; justify-content: center; }
+  .diff-tag {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 10px;
+    flex: 1;
+  }
+  .diff-tag-icon { font-size: 22px; }
+  .diff-tag-text { font-size: 12px; color: var(--text); }
+  .diff-tag-label { font-size: 13px; font-weight: 700; color: var(--orange); }
+
+  /* ==================== SLIDE 07 ==================== */
+  #s7 { padding: 40px 60px 50px; }
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 16px;
+    height: calc(100% - 110px);
+    position: relative;
+  }
+  .module-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .module-card.orange::before { background: var(--orange); }
+  .module-card.green::before { background: var(--green); }
+  .module-card.blue::before { background: var(--blue); }
+  .module-card.yellow::before { background: var(--yellow); }
+  .module-icon { font-size: 28px; }
+  .module-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .module-items { display: flex; flex-direction: column; gap: 5px; }
+  .module-item { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .module-item::before { content: '•'; color: var(--orange); }
+  .ai-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--orange), #ff6b35);
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 0 30px rgba(255,140,66,0.5), 0 0 0 8px rgba(255,140,66,0.1);
+    z-index: 10;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ==================== SLIDE 08 ==================== */
+  #s8 { padding: 40px 60px 50px; }
+  .flow-steps {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 28px;
+  }
+  .flow-step {
+    flex: 1;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-align: center;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .flow-step-icon { font-size: 24px; margin-bottom: 6px; }
+  .flow-step-num { font-size: 10px; color: var(--orange); font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+  .flow-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .flow-step-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .flow-arrow {
+    font-size: 18px; color: var(--orange);
+    padding: 0 6px; flex-shrink: 0;
+  }
+  .dialog-area {
+    display: flex; gap: 20px;
+    height: calc(100% - 310px);
+  }
+  .dialog-card {
+    flex: 1;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .dialog-title { font-size: 12px; font-weight: 700; color: var(--orange); margin-bottom: 4px; }
+  .bubble { padding: 10px 14px; border-radius: 12px; font-size: 12px; max-width: 80%; line-height: 1.5; }
+  .bubble.ai { background: var(--card2); color: var(--text); border-radius: 4px 12px 12px 12px; align-self: flex-start; }
+  .bubble.user { background: rgba(255,140,66,0.15); color: var(--text); border-radius: 12px 4px 12px 12px; align-self: flex-end; border: 1px solid rgba(255,140,66,0.25); }
+  .dialog-card { display: flex; flex-direction: column; }
+  .bubbles { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .flow-stat {
+    flex: 0 0 200px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+    text-align: center;
+  }
+  .flow-stat-num { font-size: 40px; font-weight: 800; color: var(--orange); }
+  .flow-stat-label { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .flow-stat-num2 { font-size: 40px; font-weight: 800; color: var(--green); }
+
+  /* ==================== SLIDE 09 & 10 — Phone mockup ==================== */
+  #s9, #s10 { padding: 36px 50px 50px; }
+  .phones-wrap {
+    display: flex; gap: 30px; align-items: center; justify-content: center;
+    height: calc(100% - 90px);
+  }
+  .phone-unit {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    flex: 1;
+  }
+  .phone-frame {
+    width: 220px;
+    height: 400px;
+    background: #0a1520;
+    border-radius: 32px;
+    border: 3px solid #2D4057;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #1C2B3A, 0 20px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 70px; height: 14px;
+    background: #0a1520;
+    border-radius: 7px;
+    z-index: 10;
+    border: 2px solid #1C2B3A;
+  }
+  .phone-screen {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    border-radius: 30px;
+  }
+  .phone-header {
+    padding: 32px 14px 12px;
+    background: linear-gradient(135deg, #1a3050, #0F1923);
+    font-size: 13px; font-weight: 700; color: white;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .phone-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .phone-section-title { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .phone-card { background: var(--card); border-radius: 8px; padding: 10px; border: 1px solid var(--border); }
+  .phone-stat-row { display: flex; justify-content: space-between; align-items: center; }
+  .phone-stat-label { font-size: 9px; color: var(--muted); }
+  .phone-stat-val { font-size: 13px; font-weight: 700; }
+  .orange { color: var(--orange); }
+  .red { color: var(--red); }
+  .green-c { color: var(--green); }
+  .phone-todo { font-size: 9px; color: var(--muted); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 5px; }
+  .phone-todo::before { content: '▸'; color: var(--orange); }
+  .phone-bubble-ai { background: var(--card); border-radius: 4px 8px 8px 8px; padding: 7px 9px; font-size: 9px; color: var(--text); line-height: 1.4; max-width: 85%; }
+  .phone-bubble-user { background: rgba(255,140,66,0.15); border-radius: 8px 4px 8px 8px; padding: 7px 9px; font-size: 9px; color: var(--text); line-height: 1.4; max-width: 75%; align-self: flex-end; border: 1px solid rgba(255,140,66,0.2); }
+  .phone-chat { display: flex; flex-direction: column; gap: 6px; }
+  .phone-input { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card2); padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border); }
+  .phone-input-bar { flex: 1; background: var(--bg); border-radius: 10px; height: 22px; border: 1px solid var(--border); }
+  .phone-send { width: 22px; height: 22px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; color: white; }
+  .phone-annotations { display: flex; flex-direction: column; gap: 8px; max-width: 140px; }
+  .phone-annotation { font-size: 11px; color: var(--muted); display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+  .phone-annotation::before { content: '◆'; color: var(--orange); font-size: 8px; margin-top: 3px; flex-shrink: 0; }
+  .phone-annotation strong { color: var(--text); display: block; font-size: 12px; }
+
+  /* SVG ring */
+  .ring-svg { display: block; }
+
+  /* Phone pie chart */
+  .pie-legend { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+  .pie-legend-item { display: flex; align-items: center; gap: 5px; font-size: 8.5px; color: var(--muted); }
+  .pie-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ==================== SLIDE 11 ==================== */
+  #s11 { padding: 40px 60px 50px; }
+  .pricing-cols { display: flex; gap: 16px; margin-bottom: 24px; height: calc(100% - 200px); }
+  .pricing-card {
+    flex: 1;
+    border-radius: 14px;
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing-card.free { background: var(--card); border: 1px solid var(--border); }
+  .pricing-card.standard {
+    background: linear-gradient(145deg, rgba(255,140,66,0.12), rgba(255,140,66,0.06));
+    border: 2px solid var(--orange);
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(255,140,66,0.2);
+  }
+  .pricing-card.premium { background: var(--card2); border: 1px solid var(--border); }
+  .pricing-badge {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--orange); color: white;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+  }
+  .pricing-tier { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 1px; }
+  .pricing-price { font-size: 32px; font-weight: 800; color: var(--text); }
+  .pricing-price span { font-size: 14px; color: var(--muted); font-weight: 400; }
+  .pricing-divider { height: 1px; background: var(--border); margin: 4px 0; }
+  .pricing-feature { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 7px; padding: 3px 0; }
+  .pricing-feature::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .flywheel-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .flywheel-item { text-align: center; font-size: 12px; color: var(--muted); }
+  .flywheel-item strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 3px; }
+  .flywheel-arrow { color: var(--orange); font-size: 20px; }
+
+  /* ==================== SLIDE 12 ==================== */
+  #s12 { padding: 40px 60px 50px; }
+  .questions-list { display: flex; flex-direction: column; gap: 14px; height: calc(100% - 160px); }
+  .question-card {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex; align-items: flex-start; gap: 20px;
+  }
+  .question-num {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--orange);
+    opacity: 0.5;
+    flex-shrink: 0;
+    line-height: 1;
+    min-width: 50px;
+  }
+  .question-content { flex: 1; }
+  .question-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .question-sub { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .question-answer { font-size: 12px; color: var(--green); line-height: 1.5; margin-top: 6px; display: flex; align-items: flex-start; gap: 6px; }
+  .question-answer::before { content: '→'; color: var(--green); flex-shrink: 0; }
+  .closing-quote {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--orange);
+    padding: 16px 24px;
+    background: rgba(255,140,66,0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255,140,66,0.2);
+    margin-top: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-wrapper" id="deck">
+  <div class="progress-bar" id="progressBar"></div>
+
+  <button class="nav-btn nav-prev" onclick="changeSlide(-1)">&#8592;</button>
+  <button class="nav-btn nav-next" onclick="changeSlide(1)">&#8594;</button>
+
+  <div class="slides">
+
+    <!-- ===== SLIDE 01 — 封面 ===== -->
+    <div class="slide active" id="s1">
+      <div class="s1-bg"></div>
+      <div class="s1-content">
+        <div class="s1-left">
+          <div class="s1-badge">亲子家庭 · AI 财务规划 · 竞赛方案</div>
+          <div class="s1-main-title">芽计<br>YaPlan</div>
+          <div class="s1-subtitle">你家孩子的专属 AI 财务成长系统</div>
+        </div>
+        <div class="s1-right">
+          <div class="s1-emoji-wrap">🦌</div>
+        </div>
+      </div>
+      <div class="s1-stats">
+        <div class="s1-stat-card">
+          <div class="s1-stat-num">2.1亿+</div>
+          <div class="s1-stat-label">中国有孩子的家庭数量</div>
+        </div>
+        <div class="s1-stat-card">
+          <div class="s1-stat-num">¥3.2万</div>
+          <div class="s1-stat-label">城市家庭年均课外教育支出</div>
+        </div>
+        <div class="s1-stat-card">
+          <div class="s1-stat-num">67%</div>
+          <div class="s1-stat-label">家长缺乏系统财务规划工具</div>
+        </div>
+      </div>
+      <div class="s1-footer">
+        <span class="page-num">01 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 02 — Lean Canvas ===== -->
+    <div class="slide" id="s2">
+      <div class="slide-title">产品画布 · Lean Canvas</div>
+      <div class="lean-canvas">
+        <!-- Row 1 -->
+        <div class="lc-cell">
+          <div class="lc-label">问题</div>
+          <div class="lc-content">
+            · 教育支出焦虑，无规划框架<br>
+            · 保险配置混乱，产品推销横行<br>
+            · 教育金缺口不清，进度滞后
+          </div>
+        </div>
+        <div class="lc-cell span1r2" style="grid-column:2; grid-row:1/3;">
+          <div class="lc-label">解决方案</div>
+          <div class="lc-content">
+            · AI 对话式财务规划<br>
+            · 焦虑消费智能识别<br>
+            · 教育金缺口 PMT 测算<br>
+            · 非销售导向保险建议<br>
+            · 亲子财商教育模块
+          </div>
+        </div>
+        <div class="lc-cell span1r2" style="grid-column:3; grid-row:1/3;">
+          <div class="lc-label">独特价值主张</div>
+          <div class="lc-content" style="font-size:14px; color: var(--text); font-weight:600; text-align:center; padding-top:10px;">
+            「第一个帮你说<br><span class="lc-highlight" style="font-size:22px;">'不'</span><br>的财务顾问」<br><br>
+            <span style="font-size:11px; color:var(--muted);">先帮你拒绝不必要的消费<br>再帮你制定科学规划</span>
+          </div>
+        </div>
+        <div class="lc-cell">
+          <div class="lc-label">渠道</div>
+          <div class="lc-content">
+            · 微信小程序<br>
+            · 母婴社群 KOL<br>
+            · 学校 / 幼儿园合作<br>
+            · 保险公司渠道
+          </div>
+        </div>
+        <div class="lc-cell span1r2" style="grid-column:5; grid-row:1/3;">
+          <div class="lc-label">用户群体</div>
+          <div class="lc-content">
+            <strong style="color:var(--text);">主要用户</strong><br>
+            有 0-18 岁子女的城市中产家庭<br><br>
+            <strong style="color:var(--text);">画像特征</strong><br>
+            · 年收入 ¥20-80万<br>
+            · 双职工家庭<br>
+            · 重视教育投入<br>
+            · 有理财意识但缺乏工具
+          </div>
+        </div>
+        <!-- Row 2 -->
+        <div class="lc-cell">
+          <div class="lc-label">成本结构</div>
+          <div class="lc-content">
+            · AI API 调用成本<br>
+            · 研发 & 产品团队<br>
+            · 合规 & 法律<br>
+            · 服务器 & 安全
+          </div>
+        </div>
+        <div class="lc-cell">
+          <div class="lc-label">关键指标</div>
+          <div class="lc-content">
+            · MAU 月活跃用户<br>
+            · 教育金规划完成率<br>
+            · 付费转化率（目标8%）<br>
+            · NPS 用户推荐指数
+          </div>
+        </div>
+        <div class="lc-cell">
+          <div class="lc-label">收入来源</div>
+          <div class="lc-content">
+            <span class="lc-highlight">Freemium 订阅</span><br>
+            · 免费版：基础功能<br>
+            · 标准版 ¥99/月<br>
+            · 高级版 ¥199/月<br>
+            · 企业定制合作
+          </div>
+        </div>
+        <div class="lc-cell" style="grid-column:4;">
+          <div class="lc-label">竞争壁垒</div>
+          <div class="lc-content">
+            · 焦虑识别专有模型<br>
+            · 家庭财务数据积累<br>
+            · 非销售导向信任背书<br>
+            · 亲子场景深度绑定
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">02 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 03 — 用户画像 ===== -->
+    <div class="slide" id="s3">
+      <div class="slide-title">谁在用芽计？— 三阶段用户画像</div>
+      <div class="persona-cols">
+        <div class="persona-col">
+          <div class="persona-header" style="background:var(--orange);"></div>
+          <div class="persona-body">
+            <div class="persona-stage">🍼 新生期 0-3岁</div>
+            <div class="persona-age">25-35岁 · 双职工夫妻 · 初为父母</div>
+            <div class="persona-pain-title">核心痛点</div>
+            <div class="persona-pain">
+              · 早教机构推销轰炸，无从判断<br>
+              · 意外险/寿险/重疾险配置混乱<br>
+              · 没有系统的教育金储蓄计划<br>
+              · 月光族突然要承担孩子支出
+            </div>
+            <div class="persona-quote">「这个早教班值不值报？同事都给孩子报了英语启蒙，我要不要跟？」</div>
+          </div>
+          <div class="persona-footer">
+            <div class="persona-emoji">🍼</div>
+            <div class="persona-spend"><strong style="color:var(--orange)">¥4,200</strong>月均教育支出</div>
+          </div>
+        </div>
+        <div class="persona-col">
+          <div class="persona-header" style="background:var(--green);"></div>
+          <div class="persona-body">
+            <div class="persona-stage">📚 成长期 4-12岁</div>
+            <div class="persona-age">30-42岁 · 中产家庭 · 压力最重阶段</div>
+            <div class="persona-pain-title">核心痛点</div>
+            <div class="persona-pain">
+              · 课外班「军备竞赛」越卷越贵<br>
+              · 教育金储蓄进度严重滞后<br>
+              · 多个孩子支出难以统筹<br>
+              · 工作升职压力与家庭矛盾
+            </div>
+            <div class="persona-quote">「报了数学、英语、钢琴、游泳…这么多班真的有用吗？每年快10万了。」</div>
+          </div>
+          <div class="persona-footer">
+            <div class="persona-emoji">📚</div>
+            <div class="persona-spend"><strong style="color:var(--green)">¥8,600</strong>月均教育支出</div>
+          </div>
+        </div>
+        <div class="persona-col">
+          <div class="persona-header" style="background:var(--yellow);"></div>
+          <div class="persona-body">
+            <div class="persona-stage">🎓 冲刺期 13-18岁</div>
+            <div class="persona-age">40-52岁 · 中高收入 · 留学规划阶段</div>
+            <div class="persona-pain-title">核心痛点</div>
+            <div class="persona-pain">
+              · 留学费用估算不清，缺口巨大<br>
+              · 资产流动性不足，股房不好动<br>
+              · 高考/留学双线作战，精力透支<br>
+              · 人民币汇率风险无从规避
+            </div>
+            <div class="persona-quote">「孩子想去英国读本科，四年下来要多少钱？我现在存的够不够？」</div>
+          </div>
+          <div class="persona-footer">
+            <div class="persona-emoji">🎓</div>
+            <div class="persona-spend"><strong style="color:var(--yellow)">¥12,400</strong>月均教育支出</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">03 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 04 — 焦虑消费 vs 理性规划 ===== -->
+    <div class="slide" id="s4">
+      <div class="slide-title">家长的钱，有多少花在了焦虑上？</div>
+      <div class="compare-wrap">
+        <div class="compare-side anxiety">
+          <div class="compare-title red">😰 焦虑驱动型消费</div>
+          <div class="compare-item"><span class="compare-icon">❌</span>跟风报班，别人家孩子报什么就报什么</div>
+          <div class="compare-item"><span class="compare-icon">❌</span>KOL 推荐驱动，被网红课程营销控制</div>
+          <div class="compare-item"><span class="compare-icon">❌</span>冲动决策，优惠截止日倒计时下单</div>
+          <div class="compare-item"><span class="compare-icon">❌</span>无 ROI 评估，从不量化学习效果</div>
+          <div class="compare-item"><span class="compare-icon">❌</span>同伴压力，攀比心理驱动消费升级</div>
+        </div>
+        <div class="compare-middle" style="position:relative;">
+          <div style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--border);"></div>
+          <div class="compare-badge">芽计<br>帮你识别</div>
+        </div>
+        <div class="compare-side rational">
+          <div class="compare-title green">✅ 理性规划型消费</div>
+          <div class="compare-item"><span class="compare-icon">✅</span>目标导向，清晰定义孩子的能力培养路径</div>
+          <div class="compare-item"><span class="compare-icon">✅</span>数据支撑，追踪每项支出的效果与回报</div>
+          <div class="compare-item"><span class="compare-icon">✅</span>周期评估，每学期复盘调整课外班组合</div>
+          <div class="compare-item"><span class="compare-icon">✅</span>有退出机制，设定继续/停止的评估标准</div>
+          <div class="compare-item"><span class="compare-icon">✅</span>家庭共识，夫妻双方共同决策教育支出</div>
+        </div>
+      </div>
+      <div class="compare-bottom">
+        调研显示，城市家庭教育支出中约 <strong>38%</strong> 属于焦虑驱动型消费 &nbsp;·&nbsp; 芽计帮你把这部分钱找回来，重新规划
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">04 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 05 — 市场规模 ===== -->
+    <div class="slide" id="s5">
+      <div class="slide-title">市场机会 · TAM / SAM / SOM</div>
+      <div class="market-wrap">
+        <div class="market-left">
+          <svg width="340" height="340" viewBox="0 0 340 340" class="ring-svg">
+            <defs>
+              <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FF8C42" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#FF8C42" stop-opacity="0.02"/>
+              </radialGradient>
+            </defs>
+            <!-- TAM -->
+            <circle cx="170" cy="170" r="155" fill="rgba(255,140,66,0.06)" stroke="#FF8C42" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.6"/>
+            <!-- SAM -->
+            <circle cx="170" cy="170" r="112" fill="rgba(255,140,66,0.08)" stroke="#FF8C42" stroke-width="1.5" opacity="0.7"/>
+            <!-- SOM -->
+            <circle cx="170" cy="170" r="68" fill="rgba(255,140,66,0.18)" stroke="#FF8C42" stroke-width="2" opacity="0.9"/>
+            <!-- Labels -->
+            <text x="170" y="154" text-anchor="middle" fill="#FF8C42" font-size="13" font-weight="700" font-family="sans-serif">SOM</text>
+            <text x="170" y="172" text-anchor="middle" fill="#fff" font-size="10" font-family="sans-serif">210万家庭</text>
+            <text x="170" y="185" text-anchor="middle" fill="#8FA3B8" font-size="9" font-family="sans-serif">¥6.3亿 ARR</text>
+            <!-- SAM label -->
+            <text x="170" y="78" text-anchor="middle" fill="#FF8C42" font-size="12" font-weight="700" font-family="sans-serif" opacity="0.85">SAM</text>
+            <text x="170" y="94" text-anchor="middle" fill="#8FA3B8" font-size="9" font-family="sans-serif">4,200万家庭 · ¥1,260亿</text>
+            <!-- TAM label -->
+            <text x="170" y="26" text-anchor="middle" fill="#FF8C42" font-size="12" font-weight="700" font-family="sans-serif" opacity="0.65">TAM</text>
+            <text x="170" y="42" text-anchor="middle" fill="#8FA3B8" font-size="9" font-family="sans-serif">2.1亿有孩家庭 · ¥6,300亿</text>
+          </svg>
+        </div>
+        <div class="market-right">
+          <div class="market-stat-card">
+            <div class="market-stat-num">68%</div>
+            <div class="market-stat-desc">家长表示缺乏系统性家庭财务规划工具，现有理财 App 无法满足亲子场景需求</div>
+          </div>
+          <div class="market-stat-card">
+            <div class="market-stat-num" style="color:var(--green)">¥3.2万</div>
+            <div class="market-stat-desc">城市家庭年均课外教育支出，且以年均 12% 速度增长，远超通货膨胀率</div>
+          </div>
+          <div class="market-stat-card">
+            <div class="market-stat-num" style="color:var(--yellow)">92%</div>
+            <div class="market-stat-desc">受访家长愿意为「精准、非销售导向」的教育财务规划服务付费（¥100-200/月）</div>
+          </div>
+          <div class="market-source">数据来源：艾瑞咨询 2025 · 国家统计局 · CFPS 中国家庭追踪调查</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">05 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 06 — 竞品对比 ===== -->
+    <div class="slide" id="s6">
+      <div class="slide-title">为什么是芽计？— 差异化定位</div>
+      <table class="compare-table" style="margin-bottom:18px;">
+        <thead>
+          <tr>
+            <th style="width:220px;text-align:left;">功能维度</th>
+            <th class="highlight">芽计 YaPlan</th>
+            <th>挖财</th>
+            <th>支付宝财富</th>
+            <th>Greenlight</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>焦虑消费智能识别</td>
+            <td class="highlight">✅ 核心功能</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+          </tr>
+          <tr>
+            <td>教育金缺口精准测算</td>
+            <td class="highlight">✅ PMT模型</td>
+            <td>⚠️ 部分</td>
+            <td>⚠️ 部分</td>
+            <td>❌</td>
+          </tr>
+          <tr>
+            <td>非销售导向建议</td>
+            <td class="highlight">✅ 承诺不返佣</td>
+            <td>❌ 有导流</td>
+            <td>❌ 有佣金</td>
+            <td>✅</td>
+          </tr>
+          <tr>
+            <td>全家庭生命周期规划</td>
+            <td class="highlight">✅ 0-18岁全程</td>
+            <td>❌</td>
+            <td>⚠️ 部分</td>
+            <td>❌</td>
+          </tr>
+          <tr>
+            <td>亲子财商教育模块</td>
+            <td class="highlight">✅ 互动游戏化</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ 基础版</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="diff-tags">
+        <div class="diff-tag">
+          <div class="diff-tag-icon">🧠</div>
+          <div class="diff-tag-text">
+            <div class="diff-tag-label">焦虑识别引擎</div>
+            专有模型识别非理性消费，行业首创
+          </div>
+        </div>
+        <div class="diff-tag">
+          <div class="diff-tag-icon">📊</div>
+          <div class="diff-tag-text">
+            <div class="diff-tag-label">非销售导向</div>
+            承诺不接返佣，所有建议以用户利益优先
+          </div>
+        </div>
+        <div class="diff-tag">
+          <div class="diff-tag-icon">🌱</div>
+          <div class="diff-tag-text">
+            <div class="diff-tag-label">全周期陪伴</div>
+            从出生到大学，18年连续的财务成长陪伴
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">06 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 07 — 核心功能架构 ===== -->
+    <div class="slide" id="s7">
+      <div class="slide-title">四大核心模块 · 产品功能架构</div>
+      <div class="module-grid">
+        <div class="module-card orange">
+          <div class="module-icon">📈</div>
+          <div class="module-title">教育金规划</div>
+          <div class="module-items">
+            <div class="module-item">PMT 缺口精准测算，实时显示储蓄进度</div>
+            <div class="module-item">双情景模拟：国内 985 vs 海外名校</div>
+            <div class="module-item">智能定投方案推荐（基金/储蓄险）</div>
+            <div class="module-item">教育通胀动态调整，10年预测模型</div>
+          </div>
+        </div>
+        <div class="module-card green">
+          <div class="module-icon">🛡️</div>
+          <div class="module-title">保险配置建议</div>
+          <div class="module-items">
+            <div class="module-item">家庭保障需求优先级排序（重疾>医疗>意外）</div>
+            <div class="module-item">非销售对比：同类产品横向对比分析</div>
+            <div class="module-item">保障覆盖度体检，识别冗余与缺口</div>
+            <div class="module-item">承诺不接保险公司任何返佣</div>
+          </div>
+        </div>
+        <div class="module-card blue">
+          <div class="module-icon">💸</div>
+          <div class="module-title">支出分析与洞察</div>
+          <div class="module-items">
+            <div class="module-item">AI 焦虑消费识别，标注非理性支出</div>
+            <div class="module-item">同龄家庭匿名对比，了解合理区间</div>
+            <div class="module-item">课外班 ROI 评估，量化每元的学习产出</div>
+            <div class="module-item">月度支出健康报告，自动生成改进建议</div>
+          </div>
+        </div>
+        <div class="module-card yellow">
+          <div class="module-icon">🎓</div>
+          <div class="module-title">亲子财商教育</div>
+          <div class="module-items">
+            <div class="module-item">零花钱数字账本，培养记账习惯</div>
+            <div class="module-item">亲子储蓄挑战任务，游戏化激励</div>
+            <div class="module-item">财务概念动画科普（适配各年龄段）</div>
+            <div class="module-item">家庭财务目标共同看板，全家参与</div>
+          </div>
+        </div>
+        <div class="ai-center">AI<br>引擎</div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">07 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 08 — AI对话流程 ===== -->
+    <div class="slide" id="s8">
+      <div class="slide-title">AI 如何工作？— 对话规划流程</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-step-icon">🗣️</div>
+          <div class="flow-step-num">STEP 01</div>
+          <div class="flow-step-title">对话采集</div>
+          <div class="flow-step-desc">自然语言问答<br>采集家庭基础信息</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">🔍</div>
+          <div class="flow-step-num">STEP 02</div>
+          <div class="flow-step-title">需求挖掘</div>
+          <div class="flow-step-desc">识别显性需求<br>与隐性焦虑来源</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">📊</div>
+          <div class="flow-step-num">STEP 03</div>
+          <div class="flow-step-title">方案生成</div>
+          <div class="flow-step-desc">PMT 模型计算<br>个性化规划报告</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">⚠️</div>
+          <div class="flow-step-num">STEP 04</div>
+          <div class="flow-step-title">焦虑检测</div>
+          <div class="flow-step-desc">标记非理性支出<br>提供替代建议</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-icon">🔄</div>
+          <div class="flow-step-num">STEP 05</div>
+          <div class="flow-step-title">动态复盘</div>
+          <div class="flow-step-desc">月度自动更新<br>方案随生活变化</div>
+        </div>
+      </div>
+      <div class="dialog-area">
+        <div class="dialog-card">
+          <div class="dialog-title">💬 核心对话示例</div>
+          <div class="bubbles">
+            <div class="bubble ai">🤖 您好！孩子几岁了？期望国内读书还是出国留学？</div>
+            <div class="bubble user">孩子5岁，希望将来出国读大学</div>
+            <div class="bubble ai">📊 了解！为您测算：目标在13年后筹备留学费用。<br>英国4年本科预计 <strong style="color:var(--orange)">¥120万</strong>（含通胀），<br>当前储蓄 ¥8.2万，缺口 <strong style="color:var(--red)">¥111.8万</strong>。<br>建议月定投 <strong style="color:var(--green)">¥4,200</strong>（年化7%可实现目标）。</div>
+            <div class="bubble user">定投什么产品比较合适？</div>
+            <div class="bubble ai">⚠️ 检测到您近期有 ¥2,100 课外班支出可能是焦虑消费，建议先处理这部分资金再谈投资品种。</div>
+          </div>
+        </div>
+        <div class="flow-stat">
+          <div>
+            <div class="flow-stat-num">7</div>
+            <div class="flow-stat-label">平均对话轮次<br>完成首次规划</div>
+          </div>
+          <div style="height:1px;width:80%;background:var(--border);"></div>
+          <div>
+            <div class="flow-stat-num2">91%</div>
+            <div class="flow-stat-label">用户规划准确率<br>（用户自评满意度）</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">08 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 09 — 原型：Dashboard + AI ===== -->
+    <div class="slide" id="s9">
+      <div class="slide-title">产品原型 · 核心体验</div>
+      <div class="phones-wrap">
+        <!-- Phone 1: Dashboard -->
+        <div class="phone-unit">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-header">
+                <div style="font-size:16px;font-weight:800;color:#FF8C42;">芽计 YaPlan</div>
+                <div style="font-size:9px;color:#8FA3B8;margin-top:2px;">下午好，李妈妈 👋</div>
+              </div>
+              <div class="phone-body">
+                <!-- SVG Ring Progress -->
+                <div style="display:flex;align-items:center;gap:10px;background:var(--card);border-radius:8px;padding:10px;">
+                  <svg width="56" height="56" viewBox="0 0 56 56">
+                    <circle cx="28" cy="28" r="22" fill="none" stroke="#1C2B3A" stroke-width="5"/>
+                    <circle cx="28" cy="28" r="22" fill="none" stroke="#FF8C42" stroke-width="5"
+                      stroke-dasharray="25 113" stroke-linecap="round" transform="rotate(-90 28 28)"/>
+                    <text x="28" y="33" text-anchor="middle" fill="#FF8C42" font-size="11" font-weight="800" font-family="sans-serif">18%</text>
+                  </svg>
+                  <div>
+                    <div style="font-size:11px;font-weight:700;color:#E8EDF2;">教育金健康度</div>
+                    <div style="font-size:9px;color:#E05555;margin-top:2px;">⚠️ 缺口较大，建议提速</div>
+                    <div style="font-size:8px;color:#8FA3B8;margin-top:2px;">目标 ¥120万 · 已储 ¥21.6万</div>
+                  </div>
+                </div>
+                <div class="phone-card" style="border-left:3px solid var(--red);">
+                  <div class="phone-stat-row">
+                    <div class="phone-stat-label">本月焦虑消费</div>
+                    <div class="phone-stat-val red">¥2,100</div>
+                  </div>
+                  <div style="font-size:8px;color:#8FA3B8;margin-top:3px;">英语启蒙课 ¥1,500 · 画画班 ¥600</div>
+                </div>
+                <div class="phone-section-title">本月待办</div>
+                <div class="phone-card">
+                  <div class="phone-todo">复盘8月课外班效果</div>
+                  <div class="phone-todo">确认定投 ¥4,200 执行</div>
+                  <div class="phone-todo">更新重疾险保额</div>
+                </div>
+                <div class="phone-card" style="background:rgba(78,191,143,0.08);border-color:rgba(78,191,143,0.25);">
+                  <div style="font-size:9px;color:var(--green);font-weight:700;">📊 本月储蓄进度</div>
+                  <div style="height:6px;background:#1C2B3A;border-radius:3px;margin-top:5px;overflow:hidden;">
+                    <div style="width:62%;height:100%;background:var(--green);border-radius:3px;"></div>
+                  </div>
+                  <div style="font-size:8px;color:#8FA3B8;margin-top:3px;">¥2,600 / ¥4,200</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-annotations" style="align-self:flex-start;margin-top:16px;">
+            <div class="phone-annotation"><strong>环形进度指示</strong>教育金健康度实时显示</div>
+            <div class="phone-annotation"><strong>焦虑消费预警</strong>红色标注非理性支出</div>
+            <div class="phone-annotation"><strong>行动看板</strong>优先级待办事项清单</div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div style="width:1px;background:var(--border);height:380px;flex-shrink:0;"></div>
+
+        <!-- Phone 2: AI Chat -->
+        <div class="phone-unit">
+          <div class="phone-annotations" style="align-self:flex-start;margin-top:16px;">
+            <div class="phone-annotation"><strong>自然对话</strong>像聊天一样完成规划</div>
+            <div class="phone-annotation"><strong>结构化输出</strong>AI生成可视化报告</div>
+            <div class="phone-annotation"><strong>实时焦虑检测</strong>对话中识别非理性倾向</div>
+          </div>
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-header" style="padding-bottom:8px;">
+                <div style="font-size:13px;font-weight:700;">🤖 AI 规划顾问</div>
+                <div style="font-size:8px;color:#4EBF8F;margin-top:2px;">● 在线</div>
+              </div>
+              <div class="phone-body" style="padding-bottom:40px;">
+                <div class="phone-chat">
+                  <div class="phone-bubble-ai">您好！孩子几岁？有没有留学打算？</div>
+                  <div class="phone-bubble-user">5岁，希望出国</div>
+                  <div class="phone-bubble-ai">📊 为您生成规划方案：<br>
+                    <div style="background:rgba(255,140,66,0.12);border-radius:6px;padding:6px;margin-top:5px;border:1px solid rgba(255,140,66,0.25);">
+                      <div style="font-size:9px;color:#FF8C42;font-weight:700;">教育金规划报告</div>
+                      <div style="font-size:8px;color:#E8EDF2;margin-top:3px;">目标：¥120万（13年后）</div>
+                      <div style="font-size:8px;color:#E05555;">缺口：¥111.8万</div>
+                      <div style="font-size:8px;color:#4EBF8F;">月定投：¥4,200</div>
+                    </div>
+                  </div>
+                  <div class="phone-bubble-user">怎么投资比较合适？</div>
+                  <div class="phone-bubble-ai">⚠️ 先说一个问题：检测到本月 ¥2,100 可能是焦虑消费，先处理这部分再讨论投资？</div>
+                </div>
+              </div>
+              <div class="phone-input">
+                <div class="phone-input-bar"></div>
+                <div class="phone-send">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">09 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 10 — 原型：支出分析 + 教育金 ===== -->
+    <div class="slide" id="s10">
+      <div class="slide-title">产品原型 · 数据洞察</div>
+      <div class="phones-wrap">
+        <!-- Phone 3: Spending Analysis -->
+        <div class="phone-unit">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-header">
+                <div style="font-size:13px;font-weight:700;">💸 支出分析</div>
+                <div style="font-size:8px;color:#8FA3B8;margin-top:2px;">2025年8月 · 总计 ¥8,600</div>
+              </div>
+              <div class="phone-body">
+                <!-- SVG Pie Chart -->
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <svg width="90" height="90" viewBox="0 0 90 90">
+                    <!-- Pie segments approximated -->
+                    <circle cx="45" cy="45" r="35" fill="transparent" stroke="#FF8C42" stroke-width="20" stroke-dasharray="66 144" stroke-dashoffset="0"/>
+                    <circle cx="45" cy="45" r="35" fill="transparent" stroke="#E05555" stroke-width="20" stroke-dasharray="38 172" stroke-dashoffset="-66"/>
+                    <circle cx="45" cy="45" r="35" fill="transparent" stroke="#4EBF8F" stroke-width="20" stroke-dasharray="22 188" stroke-dashoffset="-104"/>
+                    <circle cx="45" cy="45" r="35" fill="transparent" stroke="#4A90D9" stroke-width="20" stroke-dasharray="12 198" stroke-dashoffset="-126"/>
+                    <circle cx="45" cy="45" r="35" fill="transparent" stroke="#F5C842" stroke-width="20" stroke-dasharray="6 204" stroke-dashoffset="-138"/>
+                    <circle cx="45" cy="45" r="18" fill="#0a1520"/>
+                    <text x="45" y="49" text-anchor="middle" fill="#FF8C42" font-size="9" font-weight="700" font-family="sans-serif">¥8,600</text>
+                  </svg>
+                  <div class="pie-legend">
+                    <div class="pie-legend-item"><div class="pie-dot" style="background:#FF8C42"></div>课外班 46%</div>
+                    <div class="pie-legend-item"><div class="pie-dot" style="background:#E05555"></div>焦虑消费 26%</div>
+                    <div class="pie-legend-item"><div class="pie-dot" style="background:#4EBF8F"></div>教育用品 16%</div>
+                    <div class="pie-legend-item"><div class="pie-dot" style="background:#4A90D9"></div>兴趣班 9%</div>
+                    <div class="pie-legend-item"><div class="pie-dot" style="background:#F5C842"></div>其他 3%</div>
+                  </div>
+                </div>
+                <div class="phone-card" style="border-left:3px solid var(--red);">
+                  <div style="font-size:9px;color:#E05555;font-weight:700;">🚨 焦虑消费预警</div>
+                  <div style="font-size:8px;color:#8FA3B8;margin-top:4px;">英语班 ¥1,500 · 绘画班 ¥600 · 冲动团购课 ¥1,200 — 共识别 3 项，建议下月评估是否续费</div>
+                </div>
+                <div class="phone-card">
+                  <div style="font-size:9px;color:#8FA3B8;font-weight:700;">同龄家庭对比</div>
+                  <div style="font-size:8px;color:#E8EDF2;margin-top:4px;">您的支出：<strong style="color:#FF8C42">¥8,600</strong></div>
+                  <div style="font-size:8px;color:#E8EDF2;">同龄均值：<strong style="color:#4EBF8F">¥6,200</strong> <span style="color:#E05555">（高出 38%）</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-annotations" style="align-self:flex-start;margin-top:16px;">
+            <div class="phone-annotation"><strong>五色饼图</strong>支出结构一目了然</div>
+            <div class="phone-annotation"><strong>焦虑预警卡</strong>自动标记，数据说话</div>
+            <div class="phone-annotation"><strong>同龄对比</strong>脱敏数据横向参考</div>
+          </div>
+        </div>
+
+        <div style="width:1px;background:var(--border);height:380px;flex-shrink:0;"></div>
+
+        <!-- Phone 4: Education Fund -->
+        <div class="phone-unit">
+          <div class="phone-annotations" style="align-self:flex-start;margin-top:16px;">
+            <div class="phone-annotation"><strong>三方案对比</strong>国内/香港/海外并排</div>
+            <div class="phone-annotation"><strong>时间轴节点</strong>关键储蓄里程碑</div>
+            <div class="phone-annotation"><strong>目标调整</strong>实时重算缺口与定投</div>
+          </div>
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-header">
+                <div style="font-size:13px;font-weight:700;">🎓 教育金规划</div>
+                <div style="font-size:8px;color:#8FA3B8;margin-top:2px;">小芽 · 5岁 · 目标大学入学</div>
+              </div>
+              <div class="phone-body">
+                <!-- Target selector -->
+                <div style="display:flex;gap:4px;">
+                  <div style="flex:1;background:var(--orange);border-radius:6px;padding:5px;text-align:center;font-size:8px;color:white;font-weight:700;">🏠 国内985</div>
+                  <div style="flex:1;background:var(--card);border-radius:6px;padding:5px;text-align:center;font-size:8px;color:#8FA3B8;">🇬🇧 英国</div>
+                  <div style="flex:1;background:var(--card);border-radius:6px;padding:5px;text-align:center;font-size:8px;color:#8FA3B8;">🇺🇸 美国</div>
+                </div>
+                <!-- Timeline -->
+                <div style="position:relative;padding:6px 0;">
+                  <div style="height:2px;background:linear-gradient(90deg,#FF8C42,#4EBF8F);border-radius:1px;margin:10px 4px;"></div>
+                  <div style="display:flex;justify-content:space-between;margin-top:-2px;">
+                    <div style="text-align:center;font-size:7px;color:#8FA3B8;">2025<br><span style="color:#FF8C42">●</span><br>现在</div>
+                    <div style="text-align:center;font-size:7px;color:#8FA3B8;">2028<br><span style="color:#FF8C42">○</span><br>¥5万</div>
+                    <div style="text-align:center;font-size:7px;color:#8FA3B8;">2031<br><span style="color:#F5C842">○</span><br>中期</div>
+                    <div style="text-align:center;font-size:7px;color:#8FA3B8;">2038<br><span style="color:#4EBF8F">●</span><br>目标</div>
+                  </div>
+                </div>
+                <!-- Comparison table -->
+                <div style="background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+                  <div style="display:flex;background:var(--card2);font-size:8px;color:#8FA3B8;font-weight:700;">
+                    <div style="flex:2;padding:5px 6px;">方案</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;">目标金额</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;">月定投</div>
+                  </div>
+                  <div style="display:flex;font-size:8px;background:rgba(255,140,66,0.08);border-bottom:1px solid var(--border);">
+                    <div style="flex:2;padding:5px 6px;color:#FF8C42;font-weight:700;">国内985</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;color:#E8EDF2;">¥48万</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;color:#4EBF8F;font-weight:700;">¥1,700</div>
+                  </div>
+                  <div style="display:flex;font-size:8px;border-bottom:1px solid var(--border);">
+                    <div style="flex:2;padding:5px 6px;color:#8FA3B8;">英国大学</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;color:#E8EDF2;">¥120万</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;color:#F5C842;font-weight:700;">¥4,200</div>
+                  </div>
+                  <div style="display:flex;font-size:8px;">
+                    <div style="flex:2;padding:5px 6px;color:#8FA3B8;">美国大学</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;color:#E8EDF2;">¥200万</div>
+                    <div style="flex:2;padding:5px 6px;text-align:right;color:#E05555;font-weight:700;">¥7,000</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">10 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 11 — 商业模式 ===== -->
+    <div class="slide" id="s11">
+      <div class="slide-title">商业模式 · Freemium 订阅</div>
+      <div class="pricing-cols">
+        <div class="pricing-card free">
+          <div class="pricing-tier">免费版 FREE</div>
+          <div class="pricing-price">¥0 <span>/永久</span></div>
+          <div class="pricing-divider"></div>
+          <div class="pricing-feature">基础教育金测算（国内）</div>
+          <div class="pricing-feature">AI 对话规划 3次 / 月</div>
+          <div class="pricing-feature">支出分类自动记录</div>
+          <div class="pricing-feature">月度基础报告</div>
+          <div style="margin-top:auto;font-size:11px;color:var(--muted);text-align:center;padding-top:10px;">体验核心价值，无需付费</div>
+        </div>
+        <div class="pricing-card standard">
+          <div class="pricing-badge">推荐</div>
+          <div class="pricing-tier" style="color:var(--orange);">标准版 STANDARD</div>
+          <div class="pricing-price" style="color:var(--orange);">¥99 <span>/月</span></div>
+          <div class="pricing-divider" style="border-color:rgba(255,140,66,0.3);"></div>
+          <div class="pricing-feature">无限 AI 规划对话</div>
+          <div class="pricing-feature">焦虑消费智能识别</div>
+          <div class="pricing-feature">保险配置非销售建议</div>
+          <div class="pricing-feature">月度深度复盘报告</div>
+          <div class="pricing-feature">同龄家庭匿名对比</div>
+          <div class="pricing-feature">课外班 ROI 评估</div>
+          <div style="margin-top:auto;font-size:11px;color:var(--orange);text-align:center;padding-top:10px;font-weight:700;">目标转化率 8%</div>
+        </div>
+        <div class="pricing-card premium">
+          <div class="pricing-tier">高级版 PREMIUM</div>
+          <div class="pricing-price">¥199 <span>/月</span></div>
+          <div class="pricing-divider"></div>
+          <div class="pricing-feature">标准版全部功能</div>
+          <div class="pricing-feature">专属顾问 1v1 咨询</div>
+          <div class="pricing-feature">家庭多账号（最多5个）</div>
+          <div class="pricing-feature">年度财务健康体检</div>
+          <div class="pricing-feature">留学费用精算服务</div>
+          <div style="margin-top:auto;font-size:11px;color:var(--muted);text-align:center;padding-top:10px;">面向高净值家庭</div>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px;font-weight:600;">增长飞轮</div>
+        <div class="flywheel-wrap">
+          <div class="flywheel-item"><strong>免费用户</strong>体验核心功能</div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-item"><strong>价值验证</strong>看到真实节省</div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-item"><strong>付费转化</strong>升级标准版</div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-item"><strong>口碑传播</strong>分享给宝妈群</div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-item"><strong>更多用户</strong>病毒式增长</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">11 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+    <!-- ===== SLIDE 12 — 关键问题思考 ===== -->
+    <div class="slide" id="s12">
+      <div class="slide-title">我们必须回答的 3 个问题</div>
+      <div class="questions-list">
+        <div class="question-card">
+          <div class="question-num">01</div>
+          <div class="question-content">
+            <div class="question-title">🔒 数据隐私边界</div>
+            <div class="question-sub">家庭财务数据极度敏感，包含收入、资产、子女信息。如何在「本地化处理」与「云端AI智能」之间取得平衡，不让用户感到隐私被侵犯？</div>
+            <div class="question-answer">芽计的答案：核心敏感数据端侧加密存储，AI 模型仅接触经脱敏的摘要信息，用户可随时一键删除所有数据，数据不用于训练或商业变现。</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num">02</div>
+          <div class="question-content">
+            <div class="question-title">⚖️ AI 建议的监管合规</div>
+            <div class="question-sub">财务建议在中国受《证券法》《基金法》等严格监管，AI 输出的规划方案是否构成"投资建议"？如何在合规边界内提供真正有价值的建议？</div>
+            <div class="question-answer">芽计的答案：产品定位为「决策辅助工具」而非「投资顾问」，所有AI输出经合规团队审查，明确标注「仅供参考，不构成投资建议」，并与持牌机构合作提供专业服务。</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num">03</div>
+          <div class="question-content">
+            <div class="question-title">😰 避免成为焦虑制造者</div>
+            <div class="question-sub">一个不断提示「教育金缺口」「支出过高」的工具，是否会反向加剧家长的焦虑和压力？如何设计「减压」而非「增压」的产品体验？</div>
+            <div class="question-answer">芽计的答案：产品设计第一原则——先帮家长说「不」再说「怎么做」。每次呈现缺口必须同步给出可执行的解决路径，情绪检测模块发现焦虑上升时自动切换安抚模式。</div>
+          </div>
+        </div>
+      </div>
+      <div class="closing-quote">
+        「我们相信，最好的财务顾问不是推销产品，而是帮你想清楚。」
+      </div>
+      <div class="slide-footer">
+        <span class="page-num">12 / 12</span>
+        <span class="brand-name">芽计 YaPlan</span>
+      </div>
+    </div>
+
+  </div><!-- /slides -->
+</div><!-- /deck-wrapper -->
+
+<script>
+  const TOTAL = 12;
+  let current = 0;
+
+  const slides = document.querySelectorAll('.slide');
+  const progressBar = document.getElementById('progressBar');
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= TOTAL) return;
+    slides[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    progressBar.style.width = ((current + 1) / TOTAL * 100) + '%';
+  }
+
+  function changeSlide(dir) {
+    goTo(current + dir);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+
+  // Init progress bar
+  progressBar.style.width = (1 / TOTAL * 100) + '%';
+</script>
+</body>
+</html>
