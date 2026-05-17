@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>芽计 YaPlan · 产品设计图表集</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #FF8C42;
+    --green: #4EBF8F;
+    --blue: #4A90D9;
+    --purple: #9B59B6;
+    --yellow: #F5C842;
+    --bg: #F5F0E8;
+    --white: #FFFFFF;
+    --text: #2C2C2C;
+    --text-light: #6B6B6B;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --radius: 16px;
+  }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 0 24px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    height: 56px;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .header-brand span {
+    color: var(--orange);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex: 1;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-light);
+    padding: 0 16px;
+    position: relative;
+    transition: color 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+
+  .tab-btn:hover { color: var(--orange); }
+
+  .tab-btn.active {
+    color: var(--orange);
+    font-weight: 700;
+  }
+
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 8px; right: 8px;
+    height: 3px;
+    background: var(--orange);
+    border-radius: 3px 3px 0 0;
+  }
+
+  /* Main content */
+  .main {
+    margin-top: 56px;
+    padding: 32px 24px 48px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 56px;
+  }
+
+  /* Diagram panels */
+  .diagram-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .diagram-panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .diagram-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 28px;
+    padding-top: 8px;
+  }
+
+  .diagram-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .legend {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .legend-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-light);
+  }
+
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-rect {
+    width: 16px; height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .legend-diamond {
+    width: 12px; height: 12px;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--text-light);
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .footer strong { color: var(--orange); }
+
+  /* SVG base */
+  svg { display: block; width: 100%; }
+
+  /* Tab 2 Journey Map specific styles */
+  .journey-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #E8E4DC;
+  }
+
+  .journey-col { border-right: 1px solid #E8E4DC; }
+  .journey-col:last-child { border-right: none; }
+
+  .journey-phase {
+    padding: 16px 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+  }
+
+  .journey-actions {
+    padding: 12px;
+    background: #F9F6F0;
+    min-height: 100px;
+    border-bottom: 1px solid #E8E4DC;
+  }
+
+  .journey-action-item {
+    font-size: 12px;
+    color: var(--text);
+    background: white;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    line-height: 1.4;
+  }
+
+  .journey-emotion-row {
+    background: #FAFAF9;
+    border-bottom: 1px solid #E8E4DC;
+  }
+
+  .journey-touchpoints {
+    padding: 12px;
+    min-height: 110px;
+    background: #F0FAF5;
+  }
+
+  .journey-touch-item {
+    font-size: 11px;
+    color: #2E7D5E;
+    background: #D8F5E8;
+    border-radius: 5px;
+    padding: 5px 8px;
+    margin-bottom: 5px;
+    line-height: 1.4;
+  }
+
+  /* Tab 4 anxiety layers */
+  .anxiety-layer {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .anxiety-layer-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .anxiety-cards-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .anxiety-card {
+    background: white;
+    border-radius: 10px;
+    padding: 12px 14px;
+    flex: 1;
+    min-width: 140px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    line-height: 1.5;
+  }
+
+  .anxiety-card .card-emoji {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .layer-output {
+    margin-top: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+    background: white;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .layer-arrow {
+    text-align: center;
+    font-size: 22px;
+    color: var(--text-light);
+    margin: 4px 0;
+  }
+
+  /* Tab 6 architecture */
+  .arch-layer {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 0;
+  }
+
+  .arch-layer-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .arch-cards-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .arch-card {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    line-height: 1.5;
+  }
+
+  .arch-card .card-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .arch-card .card-sub {
+    color: var(--text-light);
+    font-size: 11px;
+  }
+
+  .arch-arrow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 0;
+    color: var(--text-light);
+    font-size: 12px;
+  }
+
+  .arch-arrow-row svg { width: auto; }
+
+  .security-note {
+    background: #FFF8E7;
+    border: 1.5px solid #F5C842;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: #7A6000;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .promise-card {
+    background: #FFF3E0;
+    border: 1.5px solid var(--orange);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: #8B4000;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="tabs" role="tablist" aria-label="图表导航">
+    <button class="tab-btn active" role="tab" aria-selected="true" data-tab="1" tabindex="0">功能思维导图</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="2" tabindex="-1">用户旅程地图</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="3" tabindex="-1">AI对话流程图</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="4" tabindex="-1">焦虑消费识别</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="5" tabindex="-1">保险决策树</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="6" tabindex="-1">技术架构图</button>
+  </div>
+  <div class="header-brand"><span>芽计 YaPlan</span> · 产品设计图表集</div>
+</header>
+
+<main class="main">
+
+  <!-- ===== TAB 1: 思维导图 ===== -->
+  <section class="diagram-panel active" id="tab-1" role="tabpanel">
+    <h2 class="diagram-title">芽计 YaPlan · 产品功能全景</h2>
+    <div class="diagram-card">
+      <svg viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg" aria-label="产品功能思维导图">
+        <defs>
+          <marker id="arrowO" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <circle cx="4" cy="4" r="2.5" fill="#FF8C42"/>
+          </marker>
+          <marker id="arrowG" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <circle cx="4" cy="4" r="2.5" fill="#4EBF8F"/>
+          </marker>
+          <marker id="arrowB" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <circle cx="4" cy="4" r="2.5" fill="#4A90D9"/>
+          </marker>
+          <marker id="arrowP" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <circle cx="4" cy="4" r="2.5" fill="#9B59B6"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Center -->
+        <circle cx="550" cy="310" r="48" fill="#FF8C42" filter="url(#glow)"/>
+        <text x="550" y="305" text-anchor="middle" font-size="15" font-weight="800" fill="white" font-family="-apple-system,PingFang SC,Microsoft YaHei,sans-serif">芽计</text>
+        <text x="550" y="323" text-anchor="middle" font-size="13" font-weight="600" fill="white" font-family="-apple-system,PingFang SC,Microsoft YaHei,sans-serif">YaPlan</text>
+
+        <!-- AI engine small circle -->
+        <circle cx="550" cy="310" r="72" fill="none" stroke="#FF8C42" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.5"/>
+        <circle cx="620" cy="258" r="22" fill="#FFF3E0" stroke="#FF8C42" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="620" y="254" text-anchor="middle" font-size="9" fill="#FF8C42" font-weight="600" font-family="-apple-system,PingFang SC,sans-serif">🤖 AI</text>
+        <text x="620" y="267" text-anchor="middle" font-size="9" fill="#FF8C42" font-weight="600" font-family="-apple-system,PingFang SC,sans-serif">引擎串联</text>
+
+        <!-- ===== UP: 攒 ===== -->
+        <!-- trunk line -->
+        <path d="M550 262 Q550 180 550 148" stroke="#FF8C42" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- main node -->
+        <rect x="460" y="112" width="180" height="36" rx="18" fill="#FF8C42"/>
+        <text x="550" y="135" text-anchor="middle" font-size="13" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">📈 攒 · 教育金规划</text>
+        <!-- sub lines + nodes -->
+        <line x1="460" y1="130" x2="370" y2="84" stroke="#FF8C42" stroke-width="1.8" opacity="0.7"/>
+        <line x1="460" y1="130" x2="370" y2="42" stroke="#FF8C42" stroke-width="1.8" opacity="0.7"/>
+        <line x1="640" y1="130" x2="730" y2="84" stroke="#FF8C42" stroke-width="1.8" opacity="0.7"/>
+        <line x1="640" y1="130" x2="730" y2="42" stroke="#FF8C42" stroke-width="1.8" opacity="0.7"/>
+        <line x1="550" y1="112" x2="550" y2="52" stroke="#FF8C42" stroke-width="1.8" opacity="0.7"/>
+
+        <circle cx="350" cy="84" r="5" fill="#FF8C42"/>
+        <text x="358" y="88" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">双情景测算</text>
+        <circle cx="350" cy="42" r="5" fill="#FF8C42"/>
+        <text x="358" y="46" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">PMT月定投计算</text>
+        <circle cx="550" cy="52" r="5" fill="#FF8C42"/>
+        <text x="516" y="37" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">通胀动态校准</text>
+        <circle cx="748" cy="84" r="5" fill="#FF8C42"/>
+        <text x="628" y="88" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">生活化比喻输出</text>
+        <circle cx="748" cy="42" r="5" fill="#FF8C42"/>
+        <text x="658" y="46" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">每年开学季复盘</text>
+
+        <!-- ===== RIGHT: 保 ===== -->
+        <path d="M598 310 Q720 310 756 310" stroke="#4EBF8F" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="756" y="292" width="180" height="36" rx="18" fill="#4EBF8F"/>
+        <text x="846" y="315" text-anchor="middle" font-size="13" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">🛡️ 保 · 保险配置</text>
+
+        <line x1="936" y1="300" x2="990" y2="248" stroke="#4EBF8F" stroke-width="1.8" opacity="0.7"/>
+        <line x1="936" y1="310" x2="1010" y2="310" stroke="#4EBF8F" stroke-width="1.8" opacity="0.7"/>
+        <line x1="936" y1="320" x2="990" y2="372" stroke="#4EBF8F" stroke-width="1.8" opacity="0.7"/>
+        <line x1="936" y1="295" x2="990" y2="200" stroke="#4EBF8F" stroke-width="1.8" opacity="0.7"/>
+        <line x1="936" y1="325" x2="990" y2="418" stroke="#4EBF8F" stroke-width="1.8" opacity="0.7"/>
+
+        <circle cx="996" cy="248" r="5" fill="#4EBF8F"/>
+        <text x="1004" y="252" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">保单OCR解读</text>
+        <circle cx="1016" cy="310" r="5" fill="#4EBF8F"/>
+        <text x="1024" y="314" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">保障缺口雷达图</text>
+        <circle cx="996" cy="372" r="5" fill="#4EBF8F"/>
+        <text x="1004" y="376" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">先大人后小孩</text>
+        <circle cx="996" cy="200" r="5" fill="#4EBF8F"/>
+        <text x="1004" y="204" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">险种通俗比喻</text>
+        <circle cx="996" cy="418" r="5" fill="#4EBF8F"/>
+        <text x="1004" y="422" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">非销售承诺</text>
+
+        <!-- ===== DOWN: 理 ===== -->
+        <path d="M550 358 Q550 430 550 462" stroke="#4A90D9" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="460" y="462" width="180" height="36" rx="18" fill="#4A90D9"/>
+        <text x="550" y="485" text-anchor="middle" font-size="13" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">💸 理 · 支出管理</text>
+
+        <line x1="460" y1="480" x2="370" y2="526" stroke="#4A90D9" stroke-width="1.8" opacity="0.7"/>
+        <line x1="460" y1="480" x2="370" y2="570" stroke="#4A90D9" stroke-width="1.8" opacity="0.7"/>
+        <line x1="640" y1="480" x2="730" y2="526" stroke="#4A90D9" stroke-width="1.8" opacity="0.7"/>
+        <line x1="640" y1="480" x2="730" y2="570" stroke="#4A90D9" stroke-width="1.8" opacity="0.7"/>
+        <line x1="550" y1="498" x2="550" y2="578" stroke="#4A90D9" stroke-width="1.8" opacity="0.7"/>
+
+        <circle cx="352" cy="526" r="5" fill="#4A90D9"/>
+        <text x="360" y="530" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">多模态记账</text>
+        <circle cx="352" cy="570" r="5" fill="#4A90D9"/>
+        <text x="360" y="574" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">焦虑消费识别</text>
+        <circle cx="550" cy="578" r="5" fill="#4A90D9"/>
+        <text x="516" y="598" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">兴趣班ROI热力表</text>
+        <circle cx="748" cy="526" r="5" fill="#4A90D9"/>
+        <text x="622" y="530" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">24h冷静期</text>
+        <circle cx="748" cy="570" r="5" fill="#4A90D9"/>
+        <text x="656" y="574" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">月度财务小报</text>
+
+        <!-- ===== LEFT: 教 ===== -->
+        <path d="M502 310 Q380 310 344 310" stroke="#9B59B6" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="164" y="292" width="180" height="36" rx="18" fill="#9B59B6"/>
+        <text x="254" y="315" text-anchor="middle" font-size="13" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">💰 教 · 财商教育</text>
+
+        <line x1="164" y1="300" x2="110" y2="248" stroke="#9B59B6" stroke-width="1.8" opacity="0.7"/>
+        <line x1="164" y1="310" x2="84" y2="310" stroke="#9B59B6" stroke-width="1.8" opacity="0.7"/>
+        <line x1="164" y1="320" x2="110" y2="372" stroke="#9B59B6" stroke-width="1.8" opacity="0.7"/>
+        <line x1="164" y1="295" x2="110" y2="200" stroke="#9B59B6" stroke-width="1.8" opacity="0.7"/>
+        <line x1="164" y1="325" x2="110" y2="418" stroke="#9B59B6" stroke-width="1.8" opacity="0.7"/>
+
+        <circle cx="104" cy="248" r="5" fill="#9B59B6"/>
+        <text x="14" y="252" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">三罐子模型</text>
+        <circle cx="78" cy="310" r="5" fill="#9B59B6"/>
+        <text x="14" y="314" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">劳动奖励机制</text>
+        <circle cx="104" cy="372" r="5" fill="#9B59B6"/>
+        <text x="14" y="376" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">财商绘本任务</text>
+        <circle cx="104" cy="200" r="5" fill="#9B59B6"/>
+        <text x="14" y="204" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">AI在线小课堂</text>
+        <circle cx="104" cy="418" r="5" fill="#9B59B6"/>
+        <text x="12" y="422" font-size="11" fill="#333" font-family="-apple-system,PingFang SC,sans-serif">亲子共同参与</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span class="legend-title">图例</span>
+      <div class="legend-item"><span class="legend-dot" style="background:#FF8C42"></span>攒 · 教育金规划</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4EBF8F"></span>保 · 保险配置</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4A90D9"></span>理 · 支出管理</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#9B59B6"></span>教 · 财商教育</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#F5C842"></span>AI引擎串联（虚线圆环）</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#ccc;border:1px solid #999"></span>子功能节点</div>
+    </div>
+  </section>
+
+  <!-- ===== TAB 2: 用户旅程地图 ===== -->
+  <section class="diagram-panel" id="tab-2" role="tabpanel">
+    <h2 class="diagram-title">用户旅程地图 · 从焦虑到规划</h2>
+    <div class="diagram-card" style="padding:24px;">
+      <div class="journey-grid">
+        <!-- Phase headers -->
+        <div class="journey-col">
+          <div class="journey-phase" style="background:#FF8C42;">😰<br>发现</div>
+          <div class="journey-actions">
+            <div class="journey-action-item">在育儿群看到「别人孩子」攒了多少教育金</div>
+            <div class="journey-action-item">搜索「小孩教育要花多少钱」</div>
+            <div class="journey-action-item">刷到KOL推荐芽计</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-phase" style="background:#4A90D9;">🤔<br>注册</div>
+          <div class="journey-actions">
+            <div class="journey-action-item">微信一键登录，无需填表单</div>
+            <div class="journey-action-item">AI发起3分钟对话了解家庭情况</div>
+            <div class="journey-action-item">立即获得教育金缺口数字</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-phase" style="background:#4EBF8F;">🎉<br>首次规划</div>
+          <div class="journey-actions">
+            <div class="journey-action-item">生成双情景教育金报告</div>
+            <div class="journey-action-item">查看保险体检雷达图</div>
+            <div class="journey-action-item">获得焦虑消费初诊</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-phase" style="background:#9B59B6;">😌<br>日常使用</div>
+          <div class="journey-actions">
+            <div class="journey-action-item">拍票据/截图记账</div>
+            <div class="journey-action-item">收到冷静期提醒避免冲动消费</div>
+            <div class="journey-action-item">收到月度财务小报</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-phase" style="background:#F5C842;color:#333;">🌱<br>长期留存</div>
+          <div class="journey-actions">
+            <div class="journey-action-item">年度财务报告生成</div>
+            <div class="journey-action-item">孩子升学提醒复盘</div>
+            <div class="journey-action-item">财商成长记录回顾</div>
+          </div>
+        </div>
+
+        <!-- Emotion curve row spanning all columns -->
+        <div class="journey-emotion-row" style="grid-column: 1 / -1; padding: 0;">
+          <div style="text-align:center;font-size:11px;color:#888;padding:6px 0 2px;font-weight:600;">· 情绪曲线 ·</div>
+          <svg viewBox="0 0 1000 90" style="width:100%;height:90px;" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background bands -->
+            <rect x="0" y="0" width="200" height="90" fill="#FFF5F5" opacity="0.5"/>
+            <rect x="200" y="0" width="200" height="90" fill="#F0F8FF" opacity="0.5"/>
+            <rect x="400" y="0" width="200" height="90" fill="#F0FFF8" opacity="0.5"/>
+            <rect x="600" y="0" width="200" height="90" fill="#F5F0FF" opacity="0.5"/>
+            <rect x="800" y="0" width="200" height="90" fill="#FFFDF0" opacity="0.5"/>
+            <!-- Emotion curve path -->
+            <path d="M100 60 C150 55 175 30 300 22 C380 16 420 10 500 12 C560 14 620 35 700 30 C780 26 850 20 900 18"
+              stroke="#FF8C42" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- Area fill -->
+            <path d="M100 60 C150 55 175 30 300 22 C380 16 420 10 500 12 C560 14 620 35 700 30 C780 26 850 20 900 18 L900 80 L100 80 Z"
+              fill="#FF8C42" opacity="0.08"/>
+            <!-- Data points -->
+            <circle cx="100" cy="60" r="5" fill="#FF8C42"/>
+            <circle cx="300" cy="22" r="5" fill="#4A90D9"/>
+            <circle cx="500" cy="12" r="5" fill="#4EBF8F"/>
+            <circle cx="700" cy="30" r="5" fill="#9B59B6"/>
+            <circle cx="900" cy="18" r="5" fill="#F5C842" stroke="#999" stroke-width="1"/>
+            <!-- Labels -->
+            <text x="100" y="78" text-anchor="middle" font-size="10" fill="#FF8C42" font-family="-apple-system,PingFang SC,sans-serif" font-weight="600">焦虑</text>
+            <text x="300" y="16" text-anchor="middle" font-size="10" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif" font-weight="600">好奇</text>
+            <text x="500" y="8" text-anchor="middle" font-size="10" fill="#4EBF8F" font-family="-apple-system,PingFang SC,sans-serif" font-weight="600">惊喜</text>
+            <text x="700" y="48" text-anchor="middle" font-size="10" fill="#9B59B6" font-family="-apple-system,PingFang SC,sans-serif" font-weight="600">满意</text>
+            <text x="900" y="14" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif" font-weight="600">依赖</text>
+          </svg>
+        </div>
+
+        <!-- Touchpoints -->
+        <div class="journey-col">
+          <div class="journey-touchpoints">
+            <div class="journey-touch-item">📱 社群分享触达</div>
+            <div class="journey-touch-item">🔍 焦虑搜索关键词</div>
+            <div class="journey-touch-item">👑 KOL推荐内容</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-touchpoints">
+            <div class="journey-touch-item">⚡ 3分钟对话不填表单</div>
+            <div class="journey-touch-item">📊 首次即给缺口数字</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-touchpoints">
+            <div class="journey-touch-item">📋 双情景教育金报告</div>
+            <div class="journey-touch-item">🎯 保险雷达图体检</div>
+            <div class="journey-touch-item">💡 焦虑消费初诊</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-touchpoints">
+            <div class="journey-touch-item">📷 拍票据记账</div>
+            <div class="journey-touch-item">⏱️ 冷静期提醒</div>
+            <div class="journey-touch-item">📰 月度小报推送</div>
+            <div class="journey-touch-item">🎮 财商任务</div>
+          </div>
+        </div>
+        <div class="journey-col">
+          <div class="journey-touchpoints">
+            <div class="journey-touch-item">📅 年度财务报告</div>
+            <div class="journey-touch-item">🎓 升学提醒复盘</div>
+            <div class="journey-touch-item">🌱 财商成长记录</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend-title">图例</span>
+      <div class="legend-item"><span class="legend-rect" style="background:#F9F6F0;border:1px solid #ddd"></span>用户行为区</div>
+      <div class="legend-item">
+        <svg width="30" height="14" viewBox="0 0 30 14"><path d="M2 11 Q8 4 28 4" stroke="#FF8C42" stroke-width="2.5" fill="none"/></svg>
+        情绪曲线
+      </div>
+      <div class="legend-item"><span class="legend-rect" style="background:#D8F5E8"></span>产品关键触点</div>
+    </div>
+  </section>
+
+  <!-- ===== TAB 3: AI Onboarding 流程图 ===== -->
+  <section class="diagram-panel" id="tab-3" role="tabpanel">
+    <h2 class="diagram-title">AI对话式 Onboarding 流程</h2>
+    <div class="diagram-card">
+      <svg viewBox="0 0 1060 900" xmlns="http://www.w3.org/2000/svg" aria-label="AI Onboarding流程图">
+        <defs>
+          <marker id="arr" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+            <path d="M0,1 L0,9 L9,5 Z" fill="#888"/>
+          </marker>
+          <marker id="arrO" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+            <path d="M0,1 L0,9 L9,5 Z" fill="#FF8C42"/>
+          </marker>
+          <marker id="arrG" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+            <path d="M0,1 L0,9 L9,5 Z" fill="#4EBF8F"/>
+          </marker>
+          <marker id="arrP" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+            <path d="M0,1 L0,9 L9,5 Z" fill="#9B59B6"/>
+          </marker>
+          <filter id="glow2">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Node 1: 用户首次打开 -->
+        <rect x="380" y="20" width="200" height="44" rx="22" fill="#FF8C42"/>
+        <text x="480" y="47" text-anchor="middle" font-size="14" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">用户首次打开</text>
+        <!-- Arrow down -->
+        <line x1="480" y1="64" x2="480" y2="88" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Node 2: AI问孩子几岁 (bubble shape) -->
+        <rect x="360" y="92" width="240" height="44" rx="10" fill="#EEF5FF" stroke="#4A90D9" stroke-width="2"/>
+        <rect x="468" y="136" width="12" height="12" rx="2" fill="#4A90D9" transform="rotate(45 474 142)"/>
+        <text x="480" y="113" text-anchor="middle" font-size="12" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">🤖 AI问：</text>
+        <text x="480" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#2C3E50" font-family="-apple-system,PingFang SC,sans-serif">「孩子现在几岁？」</text>
+
+        <!-- Arrow down to diamond -->
+        <line x1="480" y1="150" x2="480" y2="174" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Diamond: Age branch -->
+        <polygon points="480,178 556,218 480,258 404,218" fill="#FFF9F0" stroke="#FF8C42" stroke-width="2"/>
+        <text x="480" y="213" text-anchor="middle" font-size="11" fill="#FF8C42" font-weight="700" font-family="-apple-system,PingFang SC,sans-serif">年龄判断</text>
+        <text x="480" y="228" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">选择路径</text>
+
+        <!-- Branch A: 0-3岁 (left) -->
+        <line x1="404" y1="218" x2="210" y2="218" stroke="#9B59B6" stroke-width="2" marker-end="url(#arrP)"/>
+        <text x="307" y="210" text-anchor="middle" font-size="10" fill="#9B59B6" font-family="-apple-system,PingFang SC,sans-serif">0-3岁</text>
+        <rect x="80" y="200" width="130" height="36" rx="10" fill="#F3E8FF" stroke="#9B59B6" stroke-width="1.5"/>
+        <text x="145" y="219" text-anchor="middle" font-size="11" font-weight="700" fill="#9B59B6" font-family="-apple-system,PingFang SC,sans-serif">新生期路径</text>
+        <text x="145" y="232" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">（紫色通道）</text>
+
+        <!-- Branch C: 13-18岁 (right) -->
+        <line x1="556" y1="218" x2="750" y2="218" stroke="#FF8C42" stroke-width="2" marker-end="url(#arrO)"/>
+        <text x="653" y="210" text-anchor="middle" font-size="10" fill="#FF8C42" font-family="-apple-system,PingFang SC,sans-serif">13-18岁</text>
+        <rect x="750" y="200" width="130" height="36" rx="10" fill="#FFF0E0" stroke="#FF8C42" stroke-width="1.5"/>
+        <text x="815" y="219" text-anchor="middle" font-size="11" font-weight="700" fill="#FF8C42" font-family="-apple-system,PingFang SC,sans-serif">冲刺期路径</text>
+        <text x="815" y="232" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">（橙色通道）</text>
+
+        <!-- Branch B: 4-12岁 main (down) -->
+        <line x1="480" y1="258" x2="480" y2="282" stroke="#4EBF8F" stroke-width="2.5" marker-end="url(#arrG)"/>
+        <text x="494" y="274" font-size="10" fill="#4EBF8F" font-weight="700" font-family="-apple-system,PingFang SC,sans-serif">4-12岁（主流程）</text>
+
+        <!-- Main flow nodes -->
+        <!-- Q2: 国内还是出国 -->
+        <rect x="360" y="286" width="240" height="40" rx="8" fill="#EEF5FF" stroke="#4A90D9" stroke-width="1.5"/>
+        <text x="480" y="302" text-anchor="middle" font-size="11" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">🤖 AI问：</text>
+        <text x="480" y="318" text-anchor="middle" font-size="12" font-weight="700" fill="#2C3E50" font-family="-apple-system,PingFang SC,sans-serif">「期望国内还是出国？」</text>
+
+        <!-- Branches for Q2 -->
+        <line x1="360" y1="306" x2="270" y2="306" stroke="#4A90D9" stroke-width="1.2" opacity="0.5"/>
+        <text x="305" y="300" text-anchor="middle" font-size="9" fill="#888" font-family="sans-serif">国内/出国/两手准备</text>
+        <path d="M270 306 Q240 306 240 340 Q240 360 270 360 L360 360" stroke="#4A90D9" stroke-width="1.2" fill="none" stroke-dasharray="4 3" opacity="0.5" marker-end="url(#arr)"/>
+
+        <line x1="480" y1="326" x2="480" y2="350" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Q3: 月收入 -->
+        <rect x="360" y="354" width="240" height="40" rx="8" fill="#EEF5FF" stroke="#4A90D9" stroke-width="1.5"/>
+        <text x="480" y="370" text-anchor="middle" font-size="11" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">🤖 AI问：</text>
+        <text x="480" y="386" text-anchor="middle" font-size="12" font-weight="700" fill="#2C3E50" font-family="-apple-system,PingFang SC,sans-serif">「家庭月收入范围？」（A~E）</text>
+
+        <line x1="480" y1="394" x2="480" y2="414" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Q4: 专门储蓄 -->
+        <rect x="360" y="418" width="240" height="40" rx="8" fill="#EEF5FF" stroke="#4A90D9" stroke-width="1.5"/>
+        <text x="480" y="434" text-anchor="middle" font-size="11" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">🤖 AI问：</text>
+        <text x="480" y="450" text-anchor="middle" font-size="12" font-weight="700" fill="#2C3E50" font-family="-apple-system,PingFang SC,sans-serif">「目前有专门储蓄吗？」</text>
+
+        <line x1="480" y1="458" x2="480" y2="478" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Q5: 主要支出压力 -->
+        <rect x="360" y="482" width="240" height="40" rx="8" fill="#EEF5FF" stroke="#4A90D9" stroke-width="1.5"/>
+        <text x="480" y="498" text-anchor="middle" font-size="11" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">🤖 AI问：</text>
+        <text x="480" y="514" text-anchor="middle" font-size="12" font-weight="700" fill="#2C3E50" font-family="-apple-system,PingFang SC,sans-serif">「主要支出压力？」（可多选）</text>
+
+        <line x1="480" y1="522" x2="480" y2="542" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Diamond: 信息完整？ -->
+        <polygon points="480,546 556,580 480,614 404,580" fill="#FFF9F0" stroke="#FF8C42" stroke-width="2"/>
+        <text x="480" y="577" text-anchor="middle" font-size="11" fill="#FF8C42" font-weight="700" font-family="-apple-system,PingFang SC,sans-serif">信息采集</text>
+        <text x="480" y="592" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">完成？</text>
+
+        <!-- No branch: back to Q -->
+        <line x1="556" y1="580" x2="780" y2="580" stroke="#888" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+        <text x="668" y="572" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">否</text>
+        <rect x="780" y="562" width="104" height="36" rx="8" fill="#FFF3F0" stroke="#ccc" stroke-width="1"/>
+        <text x="832" y="581" text-anchor="middle" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">补充追问</text>
+        <text x="832" y="594" text-anchor="middle" font-size="10" fill="#aaa" font-family="-apple-system,PingFang SC,sans-serif">↩ 返回上步</text>
+
+        <!-- Yes: 生成报告 -->
+        <line x1="480" y1="614" x2="480" y2="638" stroke="#4EBF8F" stroke-width="2.5" marker-end="url(#arrG)"/>
+        <text x="494" y="630" font-size="10" fill="#4EBF8F" font-family="-apple-system,PingFang SC,sans-serif">是</text>
+
+        <!-- 生成初步规划报告 -->
+        <rect x="360" y="642" width="240" height="48" rx="12" fill="#E8F8F0" stroke="#4EBF8F" stroke-width="2.5" filter="url(#glow2)"/>
+        <text x="480" y="663" text-anchor="middle" font-size="12" fill="#4EBF8F" font-family="-apple-system,PingFang SC,sans-serif">✨</text>
+        <text x="480" y="681" text-anchor="middle" font-size="13" font-weight="800" fill="#2E7D5E" font-family="-apple-system,PingFang SC,sans-serif">生成初步规划报告</text>
+
+        <!-- 3 output branches -->
+        <line x1="480" y1="690" x2="480" y2="710" stroke="#4EBF8F" stroke-width="2"/>
+
+        <!-- Branch to left -->
+        <line x1="480" y1="710" x2="170" y2="710" stroke="#4EBF8F" stroke-width="1.8"/>
+        <line x1="170" y1="710" x2="170" y2="730" stroke="#4EBF8F" stroke-width="1.8" marker-end="url(#arrG)"/>
+        <rect x="80" y="730" width="180" height="48" rx="10" fill="#E8F8F0" stroke="#4EBF8F" stroke-width="1.5"/>
+        <text x="170" y="750" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D5E" font-family="-apple-system,PingFang SC,sans-serif">📈 教育金缺口图</text>
+        <text x="170" y="768" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">+ 月定投建议</text>
+
+        <!-- Branch center -->
+        <line x1="480" y1="710" x2="480" y2="730" stroke="#4EBF8F" stroke-width="1.8" marker-end="url(#arrG)"/>
+        <rect x="380" y="730" width="200" height="48" rx="10" fill="#E8F8F0" stroke="#4EBF8F" stroke-width="1.5"/>
+        <text x="480" y="750" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D5E" font-family="-apple-system,PingFang SC,sans-serif">🛡️ 保险配置</text>
+        <text x="480" y="768" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">优先级清单</text>
+
+        <!-- Branch right -->
+        <line x1="480" y1="710" x2="790" y2="710" stroke="#4EBF8F" stroke-width="1.8"/>
+        <line x1="790" y1="710" x2="790" y2="730" stroke="#4EBF8F" stroke-width="1.8" marker-end="url(#arrG)"/>
+        <rect x="700" y="730" width="180" height="48" rx="10" fill="#E8F8F0" stroke="#4EBF8F" stroke-width="1.5"/>
+        <text x="790" y="750" text-anchor="middle" font-size="11" font-weight="700" fill="#2E7D5E" font-family="-apple-system,PingFang SC,sans-serif">💸 焦虑消费</text>
+        <text x="790" y="768" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">初步诊断</text>
+
+        <!-- Legend inline -->
+        <rect x="20" y="830" width="14" height="10" rx="3" fill="#FF8C42"/>
+        <text x="40" y="839" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">操作节点（圆角矩形）</text>
+        <polygon points="180,829 193,836 180,843 167,836" fill="#FFF9F0" stroke="#FF8C42" stroke-width="1.5"/>
+        <text x="200" y="839" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">判断节点（菱形）</text>
+        <rect x="360" y="829" width="14" height="10" rx="3" fill="#EEF5FF" stroke="#4A90D9" stroke-width="1.5"/>
+        <text x="380" y="839" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">AI对话气泡</text>
+        <rect x="520" y="829" width="14" height="10" rx="3" fill="#E8F8F0" stroke="#4EBF8F" stroke-width="1.5"/>
+        <text x="540" y="839" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">输出成果节点</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span class="legend-title">图例</span>
+      <div class="legend-item"><span class="legend-rect" style="background:#FF8C42"></span>用户操作节点</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#EEF5FF;border:1.5px solid #4A90D9"></span>AI对话气泡</div>
+      <div class="legend-item"><span class="legend-diamond" style="background:#FFF9F0;border:1.5px solid #FF8C42"></span>判断分支（菱形）</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#E8F8F0;border:1.5px solid #4EBF8F"></span>输出成果节点</div>
+      <div class="legend-item">
+        <svg width="24" height="10" viewBox="0 0 24 10"><line x1="0" y1="5" x2="20" y2="5" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3"/></svg>
+        可选/回退路径
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TAB 4: 焦虑消费识别 ===== -->
+  <section class="diagram-panel" id="tab-4" role="tabpanel">
+    <h2 class="diagram-title">焦虑消费识别 · 三层检测机制</h2>
+    <div class="diagram-card">
+
+      <!-- Layer 1 -->
+      <div class="anxiety-layer" style="background:#FFF5F5;border:1.5px solid #FFB3B3;">
+        <div class="anxiety-layer-title" style="color:#C0392B;">Layer 1 &nbsp;·&nbsp; 行为信号检测（规则层）</div>
+        <div class="anxiety-cards-row">
+          <div class="anxiety-card" style="border-left:3px solid #E74C3C;">
+            <span class="card-emoji">📅</span>
+            <strong>近30天</strong><br>无同类消费记录
+          </div>
+          <div class="anxiety-card" style="border-left:3px solid #E74C3C;">
+            <span class="card-emoji">⏰</span>
+            <strong>周末夜间</strong><br>20:00 - 23:00 下单
+          </div>
+          <div class="anxiety-card" style="border-left:3px solid #E74C3C;">
+            <span class="card-emoji">📈</span>
+            <strong>金额超标</strong><br>超历史月均值 150%
+          </div>
+          <div class="anxiety-card" style="border-left:3px solid #E74C3C;">
+            <span class="card-emoji">🔄</span>
+            <strong>重复消费</strong><br>30天内同商家第二次大额
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:#888;">满足任意 <strong style="color:#C0392B;">2条</strong> 即标记为「待评估」</div>
+        <div class="layer-output" style="color:#C0392B;border:1px solid #FFB3B3;">
+          📤 输出：焦虑行为评分 <strong>+0.3</strong>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <!-- Layer 2 -->
+      <div class="anxiety-layer" style="background:#FFFBF0;border:1.5px solid #F5C842;">
+        <div class="anxiety-layer-title" style="color:#B7950B;">Layer 2 &nbsp;·&nbsp; 语义情绪检测（NLP层）</div>
+        <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+          <div style="flex:1;min-width:260px;">
+            <div style="font-size:12px;color:#888;margin-bottom:10px;">📡 监听对话关键词（情绪触发词云）：</div>
+            <svg viewBox="0 0 440 130" style="width:100%;max-width:440px;background:#FFFDF5;border-radius:10px;padding:4px;">
+              <text x="80" y="36" font-size="18" font-weight="800" fill="#E67E22" font-family="-apple-system,PingFang SC,sans-serif">别人家孩子</text>
+              <text x="260" y="26" font-size="13" font-weight="700" fill="#F39C12" font-family="-apple-system,PingFang SC,sans-serif">不想输</text>
+              <text x="10" y="68" font-size="14" font-weight="700" fill="#E74C3C" font-family="-apple-system,PingFang SC,sans-serif">老师说必须</text>
+              <text x="160" y="75" font-size="21" font-weight="800" fill="#D35400" font-family="-apple-system,PingFang SC,sans-serif">大家都报了</text>
+              <text x="360" y="68" font-size="13" font-weight="600" fill="#E67E22" font-family="-apple-system,PingFang SC,sans-serif">怕落后</text>
+              <text x="60" y="108" font-size="12" font-weight="600" fill="#BDC3C7" font-family="-apple-system,PingFang SC,sans-serif">比别人差</text>
+              <text x="200" y="114" font-size="15" font-weight="700" fill="#F5C842" font-family="-apple-system,PingFang SC,sans-serif">焦虑排行榜</text>
+              <text x="340" y="112" font-size="11" fill="#BDC3C7" font-family="-apple-system,PingFang SC,sans-serif">来不及了</text>
+            </svg>
+          </div>
+          <div style="flex:0 0 200px;padding-top:8px;">
+            <div style="font-size:12px;color:#888;margin-bottom:8px;">情感分析模型输出：</div>
+            <svg viewBox="0 0 200 80" style="width:100%;max-width:200px;">
+              <rect x="0" y="20" width="160" height="16" rx="8" fill="#F0F0F0"/>
+              <rect x="0" y="20" width="112" height="16" rx="8" fill="#F5C842"/>
+              <text x="168" y="32" font-size="11" fill="#B7950B" font-weight="700" font-family="-apple-system,PingFang SC,sans-serif">0.7</text>
+              <text x="0" y="14" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">焦虑强度</text>
+              <text x="0" y="54" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">0（平静）</text>
+              <text x="130" y="54" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">1（极焦虑）</text>
+            </svg>
+          </div>
+        </div>
+        <div class="layer-output" style="color:#B7950B;border:1px solid #F5C842;">
+          📤 输出：情绪权重评分 <strong>0 ~ 1</strong>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <!-- Layer 3 -->
+      <div class="anxiety-layer" style="background:#F0FFF8;border:1.5px solid #4EBF8F;">
+        <div class="anxiety-layer-title" style="color:#27AE60;">Layer 3 &nbsp;·&nbsp; 综合判断与干预（决策层）</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+          <div style="background:white;border-radius:10px;padding:14px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.07);flex:0 0 auto;">
+            <div style="font-size:11px;color:#888;margin-bottom:6px;">综合评分公式</div>
+            <div style="font-size:15px;font-weight:800;color:#2C3E50;font-family:monospace;">
+              最终分 = (行为分 × 0.4)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + (语义分 × 0.6)
+            </div>
+          </div>
+          <div style="flex:1;min-width:300px;">
+            <div style="font-size:12px;color:#888;margin-bottom:10px;">干预分支：</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <div style="background:#E8F8F0;border:1.5px solid #4EBF8F;border-radius:10px;padding:12px;flex:1;min-width:120px;">
+                <div style="font-size:13px;font-weight:700;color:#4EBF8F;margin-bottom:4px;">评分 &lt; 0.4</div>
+                <div style="font-size:12px;color:#2E7D5E;">✅ 正常记录</div>
+              </div>
+              <div style="background:#FFFBF0;border:1.5px solid #F5C842;border-radius:10px;padding:12px;flex:1;min-width:140px;">
+                <div style="font-size:13px;font-weight:700;color:#B7950B;margin-bottom:4px;">0.4 - 0.7</div>
+                <div style="font-size:12px;color:#7A6000;">💛 温馨提示<br>考虑24h后再决定</div>
+              </div>
+              <div style="background:#FFF5F5;border:1.5px solid #E74C3C;border-radius:10px;padding:12px;flex:1;min-width:140px;">
+                <div style="font-size:13px;font-weight:700;color:#C0392B;margin-bottom:4px;">评分 &gt; 0.7</div>
+                <div style="font-size:12px;color:#922B21;">🔴 慢一拍<br>加入冷静期<br>AI主动发起对话</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend-title">图例</span>
+      <div class="legend-item"><span class="legend-rect" style="background:#FFF5F5;border:1.5px solid #FFB3B3"></span>Layer 1 规则层</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#FFFBF0;border:1.5px solid #F5C842"></span>Layer 2 NLP语义层</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#F0FFF8;border:1.5px solid #4EBF8F"></span>Layer 3 综合决策层</div>
+      <div class="legend-item"><span style="font-size:14px;">🔴</span>高风险干预 &nbsp;<span style="font-size:14px;">💛</span>中风险提示 &nbsp;<span style="font-size:14px;">✅</span>正常记录</div>
+    </div>
+  </section>
+
+  <!-- ===== TAB 5: 保险决策树 ===== -->
+  <section class="diagram-panel" id="tab-5" role="tabpanel">
+    <h2 class="diagram-title">保险配置决策树 · 家庭保障优先级</h2>
+    <div class="diagram-card">
+      <div style="display:flex;gap:20px;">
+        <div style="flex:1;">
+          <svg viewBox="0 0 740 920" xmlns="http://www.w3.org/2000/svg" aria-label="保险配置决策树">
+            <defs>
+              <marker id="arrD" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                <path d="M0,1 L0,9 L9,5 Z" fill="#888"/>
+              </marker>
+              <marker id="arrDG" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                <path d="M0,1 L0,9 L9,5 Z" fill="#4EBF8F"/>
+              </marker>
+              <marker id="arrDO" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                <path d="M0,1 L0,9 L9,5 Z" fill="#FF8C42"/>
+              </marker>
+              <marker id="arrDR" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                <path d="M0,1 L0,9 L9,5 Z" fill="#E74C3C"/>
+              </marker>
+            </defs>
+
+            <!-- Root -->
+            <rect x="220" y="14" width="300" height="44" rx="22" fill="#FF8C42"/>
+            <text x="370" y="41" text-anchor="middle" font-size="14" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">🏥 开始家庭保障体检</text>
+
+            <!-- Arrow -->
+            <line x1="370" y1="58" x2="370" y2="80" stroke="#888" stroke-width="2" marker-end="url(#arrD)"/>
+
+            <!-- Diamond 1 -->
+            <polygon points="370,84 460,126 370,168 280,126" fill="#FFF9F0" stroke="#FF8C42" stroke-width="2"/>
+            <text x="370" y="121" text-anchor="middle" font-size="11" font-weight="700" fill="#FF8C42" font-family="-apple-system,PingFang SC,sans-serif">家长是家庭主要</text>
+            <text x="370" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#FF8C42" font-family="-apple-system,PingFang SC,sans-serif">收入来源吗？</text>
+
+            <!-- Yes branch -->
+            <line x1="370" y1="168" x2="370" y2="190" stroke="#E74C3C" stroke-width="2" marker-end="url(#arrDR)"/>
+            <text x="384" y="182" font-size="10" fill="#E74C3C" font-family="-apple-system,PingFang SC,sans-serif">是</text>
+            <rect x="180" y="194" width="380" height="54" rx="10" fill="#FFF0F0" stroke="#E74C3C" stroke-width="2"/>
+            <text x="370" y="214" text-anchor="middle" font-size="13" font-weight="800" fill="#C0392B" font-family="-apple-system,PingFang SC,sans-serif">⭐ P1 优先：父母重疾险</text>
+            <text x="370" y="232" text-anchor="middle" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">保额建议 = 家庭3-5年年支出，无论如何先配这个</text>
+
+            <!-- No branch for D1 -->
+            <line x1="460" y1="126" x2="590" y2="126" stroke="#888" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <text x="525" y="118" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">否（双收入）</text>
+            <rect x="590" y="110" width="130" height="32" rx="8" fill="#F9F9F9" stroke="#ccc" stroke-width="1"/>
+            <text x="655" y="126" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">同等优先，</text>
+            <text x="655" y="138" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">额度可降</text>
+            <path d="M655 142 Q655 218 550 218 L560 218" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrD)"/>
+
+            <!-- Arrow to D2 -->
+            <line x1="370" y1="248" x2="370" y2="270" stroke="#888" stroke-width="2" marker-end="url(#arrD)"/>
+
+            <!-- Diamond 2 -->
+            <polygon points="370,274 460,316 370,358 280,316" fill="#FFF9F0" stroke="#4A90D9" stroke-width="2"/>
+            <text x="370" y="311" text-anchor="middle" font-size="11" font-weight="700" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">家庭有房贷或</text>
+            <text x="370" y="326" text-anchor="middle" font-size="11" font-weight="700" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">长期债务吗？</text>
+
+            <line x1="370" y1="358" x2="370" y2="380" stroke="#4A90D9" stroke-width="2" marker-end="url(#arrD)"/>
+            <text x="384" y="372" font-size="10" fill="#4A90D9" font-family="-apple-system,PingFang SC,sans-serif">是</text>
+            <rect x="180" y="384" width="380" height="54" rx="10" fill="#F0F4FF" stroke="#4A90D9" stroke-width="2"/>
+            <text x="370" y="404" text-anchor="middle" font-size="13" font-weight="800" fill="#2471A3" font-family="-apple-system,PingFang SC,sans-serif">⭐ P2 补充：父母定期寿险</text>
+            <text x="370" y="422" text-anchor="middle" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">保额 ≥ 未还贷款 + 子女抚养至18岁费用</text>
+
+            <line x1="460" y1="316" x2="590" y2="316" stroke="#888" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <text x="525" y="308" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">否</text>
+            <rect x="590" y="302" width="120" height="28" rx="8" fill="#F9F9F9" stroke="#ccc" stroke-width="1"/>
+            <text x="650" y="321" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">P2优先级可降</text>
+            <path d="M650 330 Q650 411 560 411 L560 411" stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrD)"/>
+
+            <!-- Arrow to D3 -->
+            <line x1="370" y1="438" x2="370" y2="460" stroke="#888" stroke-width="2" marker-end="url(#arrD)"/>
+
+            <!-- Diamond 3 -->
+            <polygon points="370,464 460,506 370,548 280,506" fill="#FFF9F0" stroke="#4EBF8F" stroke-width="2"/>
+            <text x="370" y="501" text-anchor="middle" font-size="11" font-weight="700" fill="#4EBF8F" font-family="-apple-system,PingFang SC,sans-serif">孩子是否已有</text>
+            <text x="370" y="516" text-anchor="middle" font-size="11" font-weight="700" fill="#4EBF8F" font-family="-apple-system,PingFang SC,sans-serif">百万医疗险？</text>
+
+            <line x1="280" y1="506" x2="120" y2="506" stroke="#E74C3C" stroke-width="2" marker-end="url(#arrDR)"/>
+            <text x="200" y="498" text-anchor="middle" font-size="10" fill="#E74C3C" font-family="-apple-system,PingFang SC,sans-serif">否</text>
+            <rect x="14" y="484" width="106" height="44" rx="8" fill="#FFF0F0" stroke="#E74C3C" stroke-width="1.5"/>
+            <text x="67" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#C0392B" font-family="-apple-system,PingFang SC,sans-serif">⭐ P3 立即补充</text>
+            <text x="67" y="517" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">儿童百万医疗险</text>
+            <text x="67" y="540" text-anchor="middle" font-size="9" fill="#aaa" font-family="-apple-system,PingFang SC,sans-serif">年费约¥200-500</text>
+            <path d="M67 548 Q67 570 200 570 L280 570 L370 570" stroke="#E74C3C" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrD)"/>
+
+            <line x1="460" y1="506" x2="590" y2="506" stroke="#4EBF8F" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <text x="525" y="498" text-anchor="middle" font-size="10" fill="#4EBF8F" font-family="-apple-system,PingFang SC,sans-serif">是 ✅ 已配置</text>
+            <path d="M590 506 Q610 506 610 570 L610 570 L480 570" stroke="#4EBF8F" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrD)"/>
+
+            <!-- Arrow to D4 (from y=570) -->
+            <line x1="370" y1="548" x2="370" y2="590" stroke="#888" stroke-width="2" marker-end="url(#arrD)"/>
+
+            <!-- Diamond 4 -->
+            <polygon points="370,594 460,636 370,678 280,636" fill="#FFF9F0" stroke="#9B59B6" stroke-width="2"/>
+            <text x="370" y="628" text-anchor="middle" font-size="11" font-weight="700" fill="#9B59B6" font-family="-apple-system,PingFang SC,sans-serif">家庭月现金流充裕？</text>
+            <text x="370" y="644" text-anchor="middle" font-size="10" fill="#9B59B6" font-family="-apple-system,PingFang SC,sans-serif">（可投入 &gt; 月收入10%）</text>
+
+            <line x1="370" y1="678" x2="370" y2="700" stroke="#9B59B6" stroke-width="2" marker-end="url(#arrD)"/>
+            <text x="384" y="692" font-size="10" fill="#9B59B6" font-family="-apple-system,PingFang SC,sans-serif">是</text>
+            <rect x="200" y="704" width="340" height="54" rx="10" fill="#F5EEFF" stroke="#9B59B6" stroke-width="2"/>
+            <text x="370" y="724" text-anchor="middle" font-size="13" font-weight="800" fill="#7D3C98" font-family="-apple-system,PingFang SC,sans-serif">P4 可选：儿童重疾险</text>
+            <text x="370" y="742" text-anchor="middle" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">保额建议≥50万，规避捆绑理财型产品</text>
+
+            <line x1="460" y1="636" x2="590" y2="636" stroke="#888" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <text x="525" y="628" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">否</text>
+            <rect x="590" y="618" width="130" height="36" rx="8" fill="#F9F9F9" stroke="#ccc" stroke-width="1"/>
+            <text x="655" y="635" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">暂缓，先提升</text>
+            <text x="655" y="649" text-anchor="middle" font-size="10" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">储蓄率</text>
+
+            <!-- Arrow to endpoint -->
+            <line x1="370" y1="758" x2="370" y2="782" stroke="#4EBF8F" stroke-width="2.5" marker-end="url(#arrDG)"/>
+
+            <!-- Final node -->
+            <rect x="130" y="786" width="480" height="48" rx="24" fill="#4EBF8F"/>
+            <text x="370" y="807" text-anchor="middle" font-size="12" font-weight="700" fill="white" font-family="-apple-system,PingFang SC,sans-serif">✅ 保障配置方案完成</text>
+            <text x="370" y="825" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.85)" font-family="-apple-system,PingFang SC,sans-serif">→ 生成保障缺口雷达图</text>
+
+            <!-- Legend -->
+            <polygon points="40,874 54,882 40,890 26,882" fill="#FFF9F0" stroke="#FF8C42" stroke-width="1.5"/>
+            <text x="62" y="886" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">判断节点</text>
+            <rect x="160" y="874" width="16" height="12" rx="4" fill="#FFF0F0" stroke="#E74C3C" stroke-width="1.5"/>
+            <text x="182" y="886" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">高优先级险种</text>
+            <rect x="310" y="874" width="16" height="12" rx="4" fill="#F5EEFF" stroke="#9B59B6" stroke-width="1.5"/>
+            <text x="332" y="886" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">可选险种</text>
+            <rect x="420" y="874" width="16" height="12" rx="4" fill="#4EBF8F"/>
+            <text x="442" y="886" font-size="11" fill="#888" font-family="-apple-system,PingFang SC,sans-serif">完成节点</text>
+          </svg>
+        </div>
+
+        <!-- Right: Promise card -->
+        <div style="flex:0 0 200px;padding-top:20px;">
+          <div class="promise-card">
+            <div style="font-size:14px;font-weight:800;color:#FF8C42;margin-bottom:8px;">⚠️ 芽计承诺</div>
+            <div style="line-height:1.8;font-size:12px;">
+              以上建议仅帮助家庭判断自身保障优先级，<br><br>
+              <strong>不推荐任何具体产品，</strong><br><br>
+              <strong>不接收保险公司返佣。</strong><br><br>
+              您的家庭安全，由您做主。
+            </div>
+          </div>
+          <div style="margin-top:16px;background:#F0FFF8;border:1.5px solid #4EBF8F;border-radius:10px;padding:14px;font-size:11px;color:#2E7D5E;line-height:1.7;">
+            <strong>💡 配置原则</strong><br>
+            先大人，后小孩<br>
+            先保障，后理财<br>
+            先必需，后可选
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend-title">图例</span>
+      <div class="legend-item"><span class="legend-dot" style="background:#FF8C42"></span>入口节点</div>
+      <div class="legend-item"><span class="legend-diamond" style="background:#FFF9F0;border:1.5px solid #FF8C42"></span>判断菱形</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#FFF0F0;border:1.5px solid #E74C3C"></span>高优先险种（P1/P3）</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#F0F4FF;border:1.5px solid #4A90D9"></span>中优先险种（P2）</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#F5EEFF;border:1.5px solid #9B59B6"></span>可选险种（P4）</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#4EBF8F"></span>完成节点</div>
+    </div>
+  </section>
+
+  <!-- ===== TAB 6: 技术架构 ===== -->
+  <section class="diagram-panel" id="tab-6" role="tabpanel">
+    <h2 class="diagram-title">系统技术架构 · 三层架构设计</h2>
+    <div class="diagram-card">
+
+      <!-- Layer 1: Frontend -->
+      <div class="arch-layer" style="background:#EEF5FF;border:1.5px solid #4A90D9;">
+        <div class="arch-layer-title" style="color:#2471A3;">第一层 · 前端展示层</div>
+        <div class="arch-cards-row">
+          <div class="arch-card" style="border-top:3px solid #4A90D9;">
+            <div class="card-title">📱 微信小程序</div>
+            <div class="card-sub">主入口 · 最高频使用<br>记账/对话/提醒</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4A90D9;">
+            <div class="card-title">🌐 Web端</div>
+            <div class="card-sub">规划报告查看<br>复杂图表展示</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4A90D9;">
+            <div class="card-title">🎮 儿童简化端</div>
+            <div class="card-sub">财商教育模块<br>三罐子·绘本·任务</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4A90D9;">
+            <div class="card-title">🏠 家庭看板</div>
+            <div class="card-sub">多人共享视图<br>夫妻协同规划</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow between layers -->
+      <div class="arch-arrow-row">
+        <svg width="60" height="24" viewBox="0 0 60 24">
+          <line x1="30" y1="2" x2="30" y2="18" stroke="#888" stroke-width="2"/>
+          <polygon points="30,22 26,14 34,14" fill="#888"/>
+        </svg>
+        <span style="color:#888;font-size:11px;">API调用 / 数据请求</span>
+        <svg width="60" height="24" viewBox="0 0 60 24" style="transform:scaleY(-1)">
+          <line x1="30" y1="2" x2="30" y2="18" stroke="#4EBF8F" stroke-width="2"/>
+          <polygon points="30,22 26,14 34,14" fill="#4EBF8F"/>
+        </svg>
+        <span style="color:#4EBF8F;font-size:11px;">响应 / 渲染结果</span>
+      </div>
+
+      <!-- Layer 2: AI -->
+      <div class="arch-layer" style="background:#FFF3E0;border:1.5px solid #FF8C42;">
+        <div class="arch-layer-title" style="color:#E67E22;">第二层 · AI能力层</div>
+        <div class="arch-cards-row" style="gap:16px;">
+          <div class="arch-card" style="border-top:3px solid #FF8C42;flex:1.4;">
+            <div class="card-title">🤖 Claude API · 主体对话</div>
+            <div class="card-sub">
+              · 多轮上下文理解<br>
+              · 家庭财务方案生成<br>
+              · 生活化比喻输出<br>
+              · 焦虑情绪识别与疏导
+            </div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #F5C842;flex:1.2;">
+            <div class="card-title">📷 多模态模型</div>
+            <div class="card-sub">
+              · 保单OCR解读<br>
+              · 票据图片识别<br>
+              · 语音记账转写
+            </div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4EBF8F;flex:1.2;">
+            <div class="card-title">⚡ 轻量分类模型（本地）</div>
+            <div class="card-sub">
+              · 支出自动分类<br>
+              · 焦虑评分计算<br>
+              · 情绪强度识别
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="arch-arrow-row">
+        <svg width="60" height="24" viewBox="0 0 60 24">
+          <line x1="30" y1="2" x2="30" y2="18" stroke="#888" stroke-width="2"/>
+          <polygon points="30,22 26,14 34,14" fill="#888"/>
+        </svg>
+        <span style="color:#888;font-size:11px;">数据查询 / 规则调用</span>
+        <svg width="60" height="24" viewBox="0 0 60 24" style="transform:scaleY(-1)">
+          <line x1="30" y1="2" x2="30" y2="18" stroke="#4EBF8F" stroke-width="2"/>
+          <polygon points="30,22 26,14 34,14" fill="#4EBF8F"/>
+        </svg>
+        <span style="color:#4EBF8F;font-size:11px;">结构化数据返回</span>
+      </div>
+
+      <!-- Layer 3: Data -->
+      <div class="arch-layer" style="background:#F0FFF8;border:1.5px solid #4EBF8F;">
+        <div class="arch-layer-title" style="color:#27AE60;">第三层 · 数据服务层</div>
+        <div class="arch-cards-row" style="flex-wrap:wrap;">
+          <div class="arch-card" style="border-top:3px solid #4EBF8F;min-width:130px;">
+            <div class="card-title">🎓 教育成本数据库</div>
+            <div class="card-sub">各地学费数据<br>通胀历史数据</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4EBF8F;min-width:130px;">
+            <div class="card-title">🔐 家庭财务档案</div>
+            <div class="card-sub">本地加密存储<br>端侧安全优先</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4EBF8F;min-width:130px;">
+            <div class="card-title">🧮 规则计算引擎</div>
+            <div class="card-sub">PMT月定投公式<br>保障缺口计算</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4EBF8F;min-width:130px;">
+            <div class="card-title">📊 同龄对比数据库</div>
+            <div class="card-sub">匿名聚合数据<br>横向参考基准</div>
+          </div>
+          <div class="arch-card" style="border-top:3px solid #4EBF8F;min-width:130px;">
+            <div class="card-title">⏰ 通知与复盘调度</div>
+            <div class="card-sub">定时任务引擎<br>开学季/年度提醒</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security note -->
+      <div class="security-note" style="margin-top:16px;">
+        🔒 <strong>数据安全承诺：</strong>核心财务数据端侧加密存储，AI模型仅接触脱敏摘要，不上传敏感财务原始数据。用户数据主权归用户所有。
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend-title">图例</span>
+      <div class="legend-item"><span class="legend-rect" style="background:#EEF5FF;border:1.5px solid #4A90D9"></span>前端展示层（蓝）</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#FFF3E0;border:1.5px solid #FF8C42"></span>AI能力层（橙）</div>
+      <div class="legend-item"><span class="legend-rect" style="background:#F0FFF8;border:1.5px solid #4EBF8F"></span>数据服务层（绿）</div>
+      <div class="legend-item">
+        <svg width="30" height="14" viewBox="0 0 30 14">
+          <line x1="2" y1="7" x2="28" y2="7" stroke="#888" stroke-width="2"/>
+          <polygon points="28,3 28,11 24,7" fill="#888"/>
+        </svg>
+        数据请求方向
+      </div>
+      <div class="legend-item">
+        <svg width="30" height="14" viewBox="0 0 30 14">
+          <line x1="2" y1="7" x2="28" y2="7" stroke="#4EBF8F" stroke-width="2"/>
+          <polygon points="2,3 2,11 6,7" fill="#4EBF8F"/>
+        </svg>
+        数据响应方向
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <strong>芽计 YaPlan</strong> · 产品设计图表集 · 共6张 &nbsp;|&nbsp; 亲子家庭AI财务规划工具
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.diagram-panel');
+
+  function activateTab(tabNum) {
+    tabs.forEach(btn => {
+      const isActive = btn.dataset.tab === String(tabNum);
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive);
+      btn.setAttribute('tabindex', isActive ? '0' : '-1');
+    });
+    panels.forEach(panel => {
+      panel.classList.toggle('active', panel.id === 'tab-' + tabNum);
+    });
+  }
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+
+    btn.addEventListener('keydown', (e) => {
+      const currentIdx = Array.from(tabs).indexOf(e.target);
+      let nextIdx = -1;
+      if (e.key === 'ArrowRight') nextIdx = (currentIdx + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') nextIdx = (currentIdx - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') nextIdx = 0;
+      if (e.key === 'End') nextIdx = tabs.length - 1;
+      if (nextIdx >= 0) {
+        e.preventDefault();
+        tabs[nextIdx].focus();
+        activateTab(tabs[nextIdx].dataset.tab);
+      }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateTab(btn.dataset.tab);
+      }
+    });
+  });
+</script>
+</body>
+</html>
