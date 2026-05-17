@@ -43,30 +43,7 @@
     z-index: 10;
   }
 
-  /* Tab bar top */
-  .top-tabs {
-    display: flex;
-    background: #fff;
-    border-bottom: 1px solid #E8E4DC;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .top-tab {
-    flex: 1;
-    padding: 12px 4px 10px;
-    text-align: center;
-    font-size: 12px;
-    color: #999;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    font-weight: 500;
-  }
-  .top-tab.active {
-    color: #FF8C42;
-    border-bottom-color: #FF8C42;
-  }
+  /* 顶部Tab已移除，底部Nav为唯一全局导航 */
 
   /* Pages */
   .page { display: none; flex-direction: column; flex: 1; }
@@ -119,24 +96,46 @@
   .bottom-nav {
     position: sticky;
     bottom: 0;
-    background: #fff;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
     border-top: 1px solid #F0EDE8;
     display: flex;
-    padding: 8px 0 12px;
+    padding: 6px 0 14px;
     z-index: 100;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
   }
   .nav-item {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     cursor: pointer;
+    position: relative;
+    padding-top: 4px;
+    transition: transform 0.15s;
   }
-  .nav-icon { font-size: 22px; line-height: 1; }
-  .nav-label { font-size: 10px; color: #aaa; }
-  .nav-item.active .nav-label { color: #FF8C42; }
-  .nav-item.active .nav-icon { filter: none; }
+  .nav-item:active { transform: scale(0.9); }
+  .nav-icon {
+    font-size: 22px;
+    line-height: 1;
+    transition: transform 0.2s;
+  }
+  .nav-label { font-size: 10px; color: #bbb; font-weight: 500; transition: color 0.2s; }
+  .nav-item.active .nav-label { color: #FF8C42; font-weight: 600; }
+  .nav-item.active .nav-icon { transform: translateY(-1px); }
+  /* Active dot indicator */
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: #FF8C42;
+    border-radius: 0 0 3px 3px;
+  }
 
   /* ============ TAB 1: DASHBOARD ============ */
   .dash-header {
@@ -743,14 +742,7 @@
 <div class="phone-shell">
   <div class="notch"></div>
 
-  <!-- Top Tab Bar -->
-  <div class="top-tabs">
-    <div class="top-tab active" onclick="switchTab(0)">🏠 首页</div>
-    <div class="top-tab" onclick="switchTab(1)">🤖 AI助手</div>
-    <div class="top-tab" onclick="switchTab(2)">📊 支出</div>
-    <div class="top-tab" onclick="switchTab(3)">🎓 教育金</div>
-    <div class="top-tab" onclick="switchTab(4)">💰 财商</div>
-  </div>
+  <!-- 顶部Tab已移除，全局导航统一由底部Nav承担 -->
 
   <!-- ========== PAGE 1: DASHBOARD ========== -->
   <div class="page active" id="page-0">
@@ -877,11 +869,11 @@
 
     <!-- Bottom Nav -->
     <div class="bottom-nav">
-      <div class="nav-item active"><div class="nav-icon">🏠</div><div class="nav-label" style="color:#FF8C42">首页</div></div>
-      <div class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
-      <div class="nav-item"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
-      <div class="nav-item"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
-      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">我的</div></div>
+      <div class="nav-item active" onclick="navTo(0)"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+      <div class="nav-item" onclick="navTo(1)"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
+      <div class="nav-item" onclick="navTo(2)"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
+      <div class="nav-item" onclick="navTo(3)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
+      <div class="nav-item" onclick="navTo(4)"><div class="nav-icon">💰</div><div class="nav-label">财商</div></div>
     </div>
   </div>
 
@@ -997,6 +989,14 @@
         <input class="input-box" placeholder="输入您的问题…" readonly>
         <div class="send-btn">➤</div>
       </div>
+    </div>
+    <!-- Bottom Nav — AI 页 -->
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navTo(0)"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+      <div class="nav-item" onclick="navTo(1)"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
+      <div class="nav-item" onclick="navTo(2)"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
+      <div class="nav-item active" onclick="navTo(3)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
+      <div class="nav-item" onclick="navTo(4)"><div class="nav-icon">💰</div><div class="nav-label">财商</div></div>
     </div>
   </div>
 
@@ -1189,11 +1189,11 @@
     </div>
 
     <div class="bottom-nav">
-      <div class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
-      <div class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
-      <div class="nav-item active"><div class="nav-icon">💳</div><div class="nav-label" style="color:#FF8C42">账单</div></div>
-      <div class="nav-item"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
-      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">我的</div></div>
+      <div class="nav-item" onclick="navTo(0)"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+      <div class="nav-item" onclick="navTo(1)"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
+      <div class="nav-item active" onclick="navTo(2)"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
+      <div class="nav-item" onclick="navTo(3)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
+      <div class="nav-item" onclick="navTo(4)"><div class="nav-icon">💰</div><div class="nav-label">财商</div></div>
     </div>
   </div>
 
@@ -1202,6 +1202,14 @@
     <div class="page-content">
 
       <!-- Header -->
+      <!-- 规划页内部二级 Tab -->
+      <div style="display:flex;background:#fff;border-bottom:1px solid #F0EDE8;margin-bottom:0;">
+        <div id="subtab-edu" onclick="switchPlanTab('edu')" style="flex:1;padding:11px 0;text-align:center;font-size:13px;font-weight:600;color:#FF8C42;border-bottom:2px solid #FF8C42;cursor:pointer;">📈 教育金</div>
+        <div id="subtab-ins" onclick="switchPlanTab('ins')" style="flex:1;padding:11px 0;text-align:center;font-size:13px;font-weight:500;color:#aaa;border-bottom:2px solid transparent;cursor:pointer;">🛡️ 保险配置</div>
+      </div>
+
+      <!-- 教育金内容（默认显示） -->
+      <div id="plan-edu">
       <div class="plan-header">
         <div class="plan-title-area">
           <div class="plan-big-title">教育金规划</div>
@@ -1357,19 +1365,74 @@
       </div>
 
       <!-- CTA Button -->
-      <div class="start-btn" onclick="switchTab(1)">
+      <div class="start-btn" onclick="navTo(3)">
         开始执行定投计划
         <div class="start-btn-sub">点击与AI进一步规划 · 全程0佣金</div>
       </div>
 
+      </div><!-- end plan-edu -->
+
+      <!-- 保险配置内容（默认隐藏） -->
+      <div id="plan-ins" style="display:none;padding:16px 12px;">
+        <!-- 保障体检头部 -->
+        <div style="background:linear-gradient(135deg,#4A90D9,#1565C0);border-radius:14px;padding:16px;margin-bottom:12px;color:#fff;">
+          <div style="font-size:12px;opacity:.8;margin-bottom:4px;">家庭保障体检报告</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:8px;">林小鹿家 · 保障覆盖度</div>
+          <div style="display:flex;gap:12px;">
+            <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#FFD54F;">62%</div><div style="font-size:10px;opacity:.8;">整体覆盖度</div></div>
+            <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#EF9A9A;">2项</div><div style="font-size:10px;opacity:.8;">待补充</div></div>
+            <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#A5D6A7;">3项</div><div style="font-size:10px;opacity:.8;">已配置</div></div>
+          </div>
+        </div>
+        <!-- 优先级列表 -->
+        <div style="font-size:12px;font-weight:700;color:#333;margin-bottom:8px;">⚡ 保险配置优先级</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+          <div style="background:#fff;border-radius:12px;padding:12px;border-left:4px solid #EF5350;box-shadow:0 2px 6px rgba(0,0,0,.05);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:12px;font-weight:700;color:#333;">P1 · 父母重疾险</div><div style="font-size:10px;color:#888;margin-top:2px;">保额建议 ≥ ¥50万 · 当前 ¥0</div></div>
+              <div style="background:#FFEBEE;color:#EF5350;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;">⚠️ 未配置</div>
+            </div>
+            <div style="font-size:10px;color:#aaa;margin-top:6px;">💡「万一生大病需要休工两年，这笔钱保证家里还能正常运转」</div>
+          </div>
+          <div style="background:#fff;border-radius:12px;padding:12px;border-left:4px solid #FF8C42;box-shadow:0 2px 6px rgba(0,0,0,.05);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:12px;font-weight:700;color:#333;">P2 · 父母定期寿险</div><div style="font-size:10px;color:#888;margin-top:2px;">保额建议覆盖贷款+抚养费 · 待评估</div></div>
+              <div style="background:#FFF3E0;color:#FF8C42;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;">⚡ 建议补充</div>
+            </div>
+            <div style="font-size:10px;color:#aaa;margin-top:6px;">💡「你不在了，孩子还能念完大学」</div>
+          </div>
+          <div style="background:#fff;border-radius:12px;padding:12px;border-left:4px solid #4EBF8F;box-shadow:0 2px 6px rgba(0,0,0,.05);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:12px;font-weight:700;color:#333;">P3 · 儿童百万医疗险</div><div style="font-size:10px;color:#888;margin-top:2px;">年费约 ¥200-500 · 已配置 ✅</div></div>
+              <div style="background:#E8F5E9;color:#4EBF8F;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;">✅ 已配置</div>
+            </div>
+            <div style="font-size:10px;color:#aaa;margin-top:6px;">💡「几百块/年换几百万兜底，性价比最高」</div>
+          </div>
+          <div style="background:#fff;border-radius:12px;padding:12px;border-left:4px solid #9B59B6;box-shadow:0 2px 6px rgba(0,0,0,.05);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div><div style="font-size:12px;font-weight:700;color:#333;">P4 · 儿童重疾险</div><div style="font-size:10px;color:#888;margin-top:2px;">保额建议 ≥ ¥50万 · 已配置 ¥20万（偏低）</div></div>
+              <div style="background:#F3E5F5;color:#9B59B6;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;">⚠️ 保额不足</div>
+            </div>
+            <div style="font-size:10px;color:#aaa;margin-top:6px;">💡 当前保额20万低于建议值，大病平均治疗费用约30-50万</div>
+          </div>
+        </div>
+        <!-- 上传保单 -->
+        <div style="background:#F0F4FF;border-radius:12px;padding:12px;border:1px dashed #4A90D9;text-align:center;">
+          <div style="font-size:20px;margin-bottom:4px;">📄</div>
+          <div style="font-size:12px;font-weight:600;color:#4A90D9;margin-bottom:3px;">上传保险计划书</div>
+          <div style="font-size:10px;color:#888;">拍照 / 截图 → AI解读关键条款，告诉你买得值不值</div>
+          <div style="margin-top:10px;background:#4A90D9;color:#fff;font-size:12px;padding:8px;border-radius:8px;font-weight:600;">📸 拍照上传保单</div>
+        </div>
+      </div><!-- end plan-ins -->
+
     </div>
 
     <div class="bottom-nav">
-      <div class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
-      <div class="nav-item active"><div class="nav-icon">📋</div><div class="nav-label" style="color:#FF8C42">规划</div></div>
-      <div class="nav-item"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
-      <div class="nav-item"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
-      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">我的</div></div>
+      <div class="nav-item" onclick="navTo(0)"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+      <div class="nav-item active" onclick="navTo(1)"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
+      <div class="nav-item" onclick="navTo(2)"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
+      <div class="nav-item" onclick="navTo(3)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
+      <div class="nav-item" onclick="navTo(4)"><div class="nav-icon">💰</div><div class="nav-label">财商</div></div>
     </div>
   </div>
 
@@ -1542,26 +1605,41 @@
     </div>
 
     <div class="bottom-nav">
-      <div class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
-      <div class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
-      <div class="nav-item"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
-      <div class="nav-item"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
-      <div class="nav-item active"><div class="nav-icon" style="color:#FF8C42;">💰</div><div class="nav-label" style="color:#FF8C42;">财商</div></div>
+      <div class="nav-item" onclick="navTo(0)"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+      <div class="nav-item" onclick="navTo(1)"><div class="nav-icon">📋</div><div class="nav-label">规划</div></div>
+      <div class="nav-item" onclick="navTo(2)"><div class="nav-icon">💳</div><div class="nav-label">账单</div></div>
+      <div class="nav-item" onclick="navTo(3)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></div>
+      <div class="nav-item active" onclick="navTo(4)"><div class="nav-icon">💰</div><div class="nav-label">财商</div></div>
     </div>
   </div>
 
 </div>
 
 <script>
-  function switchTab(index) {
-    document.querySelectorAll('.top-tab').forEach((t, i) => {
-      t.classList.toggle('active', i === index);
-    });
+  /**
+   * 底部导航映射：
+   *   navIdx 0 (首页) → page-0
+   *   navIdx 1 (规划) → page-3 (教育金+保险)
+   *   navIdx 2 (账单) → page-2 (支出分析)
+   *   navIdx 3 (AI)   → page-1 (AI对话)
+   *   navIdx 4 (财商) → page-4
+   */
+  const NAV_MAP = [0, 3, 2, 1, 4];
+
+  function navTo(navIdx) {
+    const pageIdx = NAV_MAP[navIdx];
+    // 切换页面
     document.querySelectorAll('.page').forEach((p, i) => {
-      p.classList.toggle('active', i === index);
+      p.classList.toggle('active', i === pageIdx);
     });
-    // Scroll chat to bottom when switching to AI tab
-    if (index === 1) {
+    // 同步所有底部导航 active 状态
+    document.querySelectorAll('.bottom-nav').forEach(nav => {
+      nav.querySelectorAll('.nav-item').forEach((item, i) => {
+        item.classList.toggle('active', i === navIdx);
+      });
+    });
+    // AI 页自动滚到底
+    if (navIdx === 3) {
       setTimeout(() => {
         const msgs = document.querySelector('.chat-messages');
         if (msgs) msgs.scrollTop = msgs.scrollHeight;
@@ -1569,7 +1647,20 @@
     }
   }
 
-  // Auto-scroll chat on load
+  /** 规划页内部二级 Tab 切换（教育金 / 保险配置） */
+  function switchPlanTab(tab) {
+    const isEdu = tab === 'edu';
+    document.getElementById('plan-edu').style.display = isEdu ? '' : 'none';
+    document.getElementById('plan-ins').style.display = isEdu ? 'none' : '';
+    const eduTab = document.getElementById('subtab-edu');
+    const insTab = document.getElementById('subtab-ins');
+    eduTab.style.color = isEdu ? '#FF8C42' : '#aaa';
+    eduTab.style.borderBottom = isEdu ? '2px solid #FF8C42' : '2px solid transparent';
+    insTab.style.color = isEdu ? '#aaa' : '#4A90D9';
+    insTab.style.borderBottom = isEdu ? '2px solid transparent' : '2px solid #4A90D9';
+  }
+
+  // 初始化：自动滚动 AI 聊天
   window.addEventListener('load', () => {
     const msgs = document.querySelector('.chat-messages');
     if (msgs) msgs.scrollTop = msgs.scrollHeight;
