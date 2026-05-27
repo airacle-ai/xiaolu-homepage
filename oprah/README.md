@@ -35,7 +35,7 @@ npx wrangler pages dev dist
 
 ## Production TODO
 
-1. Configure real Supabase schema / RLS policies for `users` and `collisions`.
-2. Add auth / rate limiting around `/api/llm` before opening to broader traffic.
+1. [x] Configure real Supabase schema / RLS policies for `users` and `collisions`.
+2. [x] Add auth / rate limiting around `/api/llm` before opening to broader traffic.
 3. Consider using a stronger JSON model for final analysis/collision once cost/latency is acceptable.
 4. Rotate any API key that was shared in chat or logs.
