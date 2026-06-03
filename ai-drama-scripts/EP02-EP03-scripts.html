@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D1×D2 第2-3集完整脚本</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0a0a0f; color: #e8e8e8; min-height: 100vh; line-height: 1.6; }
+
+  .hero { background: linear-gradient(135deg, #0a0e27 0%, #2d0a3d 100%); padding: 64px 24px 48px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.1); color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 18px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; background: linear-gradient(135deg, #60a5fa 0%, #ff6bc2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: #888; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.8; }
+  .nav { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+  .nav a { color: #aaa; text-decoration: none; font-size: 12px; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; transition: all 0.2s; }
+  .nav a:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 56px 24px; }
+
+  .line-header { padding: 32px 28px; border-radius: 16px; margin-bottom: 28px; display: flex; align-items: center; gap: 20px; }
+  .line-header.d1 { background: linear-gradient(135deg, #0d2444, #1d4ed8); }
+  .line-header.d2 { background: linear-gradient(135deg, #4a1259, #be185d); }
+  .line-icon { font-size: 36px; }
+  .line-name { font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
+  .line-title { font-size: 22px; font-weight: 700; color: #fff; }
+
+  .ep-section { margin-bottom: 56px; }
+  .ep-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .ep-number { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #fff; flex-shrink: 0; }
+  .ep-number.d1 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+  .ep-number.d2 { background: linear-gradient(135deg, #ec4899, #be185d); }
+  .ep-info h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .ep-info .ep-sub { font-size: 12px; color: #777; }
+
+  .meta-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 16px 18px; background: #16161d; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; margin-bottom: 20px; }
+  .meta-item .ml { font-size: 10px; color: #555; letter-spacing: 2px; margin-bottom: 3px; }
+  .meta-item .mv { font-size: 12px; color: #ddd; }
+
+  .scene-block { background: #16161d; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+  .scene-tag { padding: 10px 18px; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: #fff; }
+  .scene-tag.d1 { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
+  .scene-tag.d2 { background: linear-gradient(135deg, #ec4899, #be185d); }
+  .scene-person { padding: 6px 18px; font-size: 11px; color: #888; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .scene-content { padding: 16px 18px; font-size: 13.5px; line-height: 2; color: #ccc; white-space: pre-line; }
+
+  .anchor { scroll-margin-top: 20px; }
+
+  footer { padding: 48px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); color: #444; font-size: 12px; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .meta-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">EP02 - EP03 · 完整脚本</div>
+  <h1>4集完整脚本</h1>
+  <p>D1物种观察局 EP02-03 ｜ D2调料恋爱岛 EP02-03</p>
+  <div class="nav">
+    <a href="#d1-ep02">D1·EP02 相亲角</a>
+    <a href="#d1-ep03">D1·EP03 健身房</a>
+    <a href="#d2-ep02">D2·EP02 第一次淘汰</a>
+    <a href="#d2-ep03">D2·EP03 花椒入岛</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- D1 LINE HEADER -->
+  <div class="line-header d1">
+    <div class="line-icon">🔬</div>
+    <div>
+      <div class="line-name">D1 · 伪纪录片</div>
+      <div class="line-title">物种观察局</div>
+    </div>
+  </div>
+
+  <!-- D1 EP02 -->
+  <div class="ep-section anchor" id="d1-ep02">
+    <div class="ep-header">
+      <div class="ep-number d1">02</div>
+      <div class="ep-info">
+        <h2>公园相亲角：一场由父母主导的集体求偶实验</h2>
+        <div class="ep-sub">EP02 · 物种观察局</div>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="ml">时长</div><div class="mv">约3.5分钟</div></div>
+      <div class="meta-item"><div class="ml">场景</div><div class="mv">周日上午·公园相亲角</div></div>
+      <div class="meta-item"><div class="ml">画面风格</div><div class="mv">长焦偷拍+俯瞰</div></div>
+      <div class="meta-item"><div class="ml">核心反差</div><div class="mv">代理求偶+学术语言</div></div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【片头·0-10秒】</div>
+      <div class="scene-person">航拍俯瞰 · 配乐缓入</div>
+      <div class="scene-content">【画面】无人机俯瞰，周日上午的城市公园。
+不同于工作日，今天的公园聚集着一种特殊的人群——
+他们手里都拿着一张纸。
+【配乐】大提琴庄重缓入。
+【旁白·低沉缓慢】
+"在中国的大城市，有一种独特的求偶现象。"
+"主角并非待求偶的青年，而是——他们的父母。"
+【字幕】「物种观察局 EP02」
+「公园相亲角：一场由父母主导的集体求偶实验」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景一·上午九点·展示物准备·10-50秒】</div>
+      <div class="scene-person">长焦特写 · 各家"简历"</div>
+      <div class="scene-content">【画面】公园林荫道，一排排花坛上铺着白纸或塑料板。
+父母们俯身书写，时不时检查别人的纸。
+【旁白】
+"九点整。相亲角进入预热期。"
+"父母们正在准备一种被称为'子女简历'的展示物。"
+【画面·特写白纸】
+「男 1992 身高180 北京户口 程序员 年薪40w 有房」
+「女 1995 硕士 教师 父母退休干部 家境殷实」
+【旁白】
+"研究人员注意到，这种展示物的内容，
+具有高度的标准化结构——"
+【字幕·学术注释】
+「必填项：年龄、身高、户口、收入、房产」
+「禁忌项：性格、爱好、长相、兴趣」
+【旁白】
+"在这套评估体系中，
+任何无法被量化的特质，
+都被认为是不重要的。"</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景二·十点·谈判过程·50-110秒】</div>
+      <div class="scene-person">两位母亲对峙 · 跟拍</div>
+      <div class="scene-content">【画面】两位母亲面对面，互相打量对方手中的纸条。
+A妈妈（试探）：你儿子身高180？体重多少？
+B妈妈（警惕）：155斤。你女儿……
+A妈妈（迅速）：105斤，硕士，国企。
+B妈妈：户口呢？
+A妈妈：北京。
+B妈妈：父母呢？
+A妈妈：都是退休教师。
+B妈妈（沉默两秒）：……我儿子年薪50万。
+【旁白·依然平静】
+"这是一种被研究人员命名为
+'代理谈判'的求偶行为。"
+"在整个谈判过程中，
+两位真正的当事人——并不在现场。"
+【画面·切到远处咖啡馆，两个年轻人正在低头玩手机】
+【旁白】"他们的儿子和女儿，
+此刻分别在城市的两端，
+对父母的谈判一无所知。"
+【字幕·括号小字】
+（首次见面成功率：12%）
+（达成婚姻的最终概率：3.7%）
+（父母仍坚持下周再来：100%）</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景三·中午·等级森严·110-170秒】</div>
+      <div class="scene-person">不同区域 · 俯瞰对比</div>
+      <div class="scene-content">【画面】镜头扫过公园不同区域。
+左侧：人群密集，热闹拥挤。
+右侧：稀稀拉拉，门可罗雀。
+【旁白】
+"经过长期观察，研究人员发现，
+公园相亲角内部存在明确的等级结构。"
+【字幕·像图表】
+「核心区·条件优越者：博士+海归+北京户口+车房」
+「次级区·标准合格者：硕士+北京户口+稳定工作」
+「边缘区·难以匹配者：本科+无房+外地户口」
+「灰色地带：男+三十五岁以上」
+【画面·一位父亲独自坐在边缘的长椅上，
+身边没有人停留】
+【旁白·语气依然没有波动】
+"这位父亲已经连续来此十一周。"
+"他儿子的所有条件，符合社会公认的'优秀青年'标准——"
+"除了一项。"
+【字幕·停顿·放大】
+「年龄：38岁」
+【旁白】
+"在这套体系中，
+他将很难再被纳入交易范围。"</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景四·下午·黄昏退场·170-220秒】</div>
+      <div class="scene-person">空镜+父母收摊</div>
+      <div class="scene-content">【画面】下午四点，太阳西斜。
+父母们陆续收起纸条，仔细折叠，放进随身带的小本子里。
+【旁白】
+"四点整。相亲角进入退场期。"
+"这些被精心准备的展示物，
+不会被丢弃——"
+"它们将被珍藏，下周日继续启用。"
+【画面·一位母亲把自己孩子的简历折好，
+慢慢放进一个磨损严重的笔记本里。
+本子里还夹着许多张其他母亲留下的纸条。】
+【旁白】
+"长期观察显示，
+平均每位父母在此活动持续时间为——"
+【字幕】
+「平均年限：3.4年」
+「最长记录：11年」
+【画面·父母们三三两两离开，
+有人手里多了几张纸条，
+有人空着手】
+【旁白·语气温和】
+"他们的目的，
+并非真的促成一次婚姻。"
+"对于他们而言——"</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【结尾·收束·220-240秒】</div>
+      <div class="scene-person">空镜·夕阳</div>
+      <div class="scene-content">【画面】公园空了，黄昏的光线柔和。
+长椅、花坛、夹着白纸的栏杆，恢复平静。
+【旁白·缓慢，带温度】
+"在这个被市场化定义的城市里，"
+"这是他们唯一能为孩子做的事情。"
+"哪怕孩子并不知情。"
+"哪怕从未谈成。"
+"哪怕——所有人都告诉他们：你们已经过时了。"
+【画面最后一帧·一张被风吹起的简历纸，
+缓缓飘向树丛】
+【旁白·最后一句】
+"他们依然，每个周日，准时到达。"
+【黑屏·字幕】
+「下集预告：《健身房的镜前展示行为：一种现代雄性求偶仪式》」</div>
+    </div>
+  </div>
+
+  <!-- D1 EP03 -->
+  <div class="ep-section anchor" id="d1-ep03">
+    <div class="ep-header">
+      <div class="ep-number d1">03</div>
+      <div class="ep-info">
+        <h2>健身房的镜前展示行为：一种现代雄性求偶仪式</h2>
+        <div class="ep-sub">EP03 · 物种观察局</div>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="ml">时长</div><div class="mv">约3分钟</div></div>
+      <div class="meta-item"><div class="ml">场景</div><div class="mv">傍晚·城市健身房</div></div>
+      <div class="meta-item"><div class="ml">画面风格</div><div class="mv">偷拍式中长焦</div></div>
+      <div class="meta-item"><div class="ml">核心反差</div><div class="mv">动物学描述肌肉男</div></div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【片头·0-8秒】</div>
+      <div class="scene-person">霓虹灯外景+室内俯瞰</div>
+      <div class="scene-content">【画面】夜晚的城市，一座24小时健身房，霓虹灯亮着。
+推镜进入：器械、镜子、跑步机、健硕的身影。
+【配乐】大提琴+轻微电子节拍。
+【旁白·低沉】
+"在城市的中心，
+存在一种被精心设计的特殊空间。"
+"这里聚集着大量发达的雄性个体。"
+"他们的行为，构成了现代都市最壮观的求偶仪式之一。"
+【字幕】「物种观察局 EP03」「健身房的镜前展示行为」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景一·进场仪式·8-50秒】</div>
+      <div class="scene-person">更衣室+大厅入口</div>
+      <div class="scene-content">【画面】更衣室，一位雄性个体（以下称"个体A"）正在仔细整理装备。
+紧身上衣，露出明显的肩膀线条。
+他在镜子前停留了4秒，调整了一下袖口。
+【旁白·平静】
+"个体A，27岁，进入栖息地的第十一分钟。"
+"在正式进入展示区前，他必须完成一系列预备仪式——"
+【字幕·学术列表】
+「装备检查：紧身上衣 ✓」
+「肌肉预热：手臂摆动 ✓」
+「镜前自检：4秒 ✓」
+【画面·个体A走出更衣室，
+进入大厅，立刻无意识地挺胸收腹】
+【旁白】
+"研究人员发现，
+雄性个体在踏入展示区的瞬间，
+体态会发生显著变化。"
+"这是一种本能反应。"
+【字幕·括号】（自我感觉胸围+2cm）</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景二·镜前展示·50-110秒】</div>
+      <div class="scene-person">器械区·镜子前·长焦</div>
+      <div class="scene-content">【画面】杠铃区，个体A拿起30kg哑铃，开始训练。
+他做了三个动作——
+然后停下来，转身面对镜子，
+盯着自己的肱二头肌看了八秒。
+【旁白】
+"训练每持续约二十秒，
+个体A就会主动停止动作，
+转身面对镜子。"
+"研究人员将这种行为称为——"
+【字幕·停顿·大字】
+「镜前自我确认」
+【旁白】
+"它的核心功能，
+并非检查动作是否规范，
+而是确认——"
+"自己今天看起来，
+是否比昨天更强壮。"
+【画面·镜头扫过健身房，五个不同雄性个体同时在看镜子】
+【旁白·依然平静】
+"在我们的观察期内，平均每位雄性个体，
+每分钟看镜子的次数为——"
+【字幕·学术统计】
+「平均：3.7次/分钟」
+「极端值：11次/分钟（拍照者）」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景三·雌性入场·关键时刻·110-170秒】</div>
+      <div class="scene-person">门口+反应特写</div>
+      <div class="scene-content">【画面】一位雌性个体走进健身房。
+镜头慢动作——五位正在训练的雄性个体，
+不约而同地停下动作。
+有的拿起更重的哑铃。
+有的开始大声呼气。
+有的迅速整理了一下头发。
+【旁白·语气依然完全平静】
+"十九点三十二分。
+栖息地内的雌性密度增加。"
+"研究人员观察到，
+所有正在训练的雄性个体，
+均做出了即时反应。"
+【字幕·像观察日志】
+「个体A：加重哑铃至40kg（实际能力上限：32kg）」
+「个体B：声音音量提升4倍」
+「个体C：训练动作幅度增大」
+「个体D：开始做不擅长的引体向上」
+「个体E：装作没看见，但更频繁地看镜子」
+【旁白】
+"在自然界，
+雄性向雌性展示力量、健康、繁殖能力——
+是一种延续了数百万年的本能。"
+"现代健身房的存在，
+为这种本能，
+提供了一个更精致的舞台。"
+【画面·个体A的哑铃晃了一下，他咬牙坚持完成那一组】
+【旁白·罕见的一丝温度】
+"他不会承认这一点。"
+"但他的身体，从不说谎。"</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【场景四·离场前自拍·结尾·170-200秒】</div>
+      <div class="scene-person">更衣室门口+镜子</div>
+      <div class="scene-content">【画面】个体A结束训练，走向更衣室。
+路过最大的那面镜子时，停下来。
+迅速抬起手机，自拍。
+角度仰拍，光线讲究。
+【旁白】
+"训练结束前的最后一步——"
+"自拍。"
+"这是整个仪式中最重要的环节。"
+【画面·个体A的手机屏幕，连拍二十张】
+【旁白】
+"研究人员长期观察后发现，
+雄性个体平均会在自拍后，
+花费三十九分钟筛选其中最满意的一张，
+进行二次修图。"
+【字幕·分阶段】
+「自拍：1分钟」
+「筛选：21分钟」
+「修图：18分钟」
+「文案：4分钟（最难）」
+【旁白】
+"最终被发到社交媒体的那张照片——"
+"将成为他下一周的，
+精神支柱。"</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d1">【结尾·190-210秒】</div>
+      <div class="scene-person">空镜+收束</div>
+      <div class="scene-content">【画面】凌晨，健身房灯光渐暗。
+镜子前空无一人。
+【旁白·缓慢】
+"夜深，雄性个体陆续离开。"
+"明天，他们将带着同样的本能，
+回到这里。"
+"不为了任何具体的人。"
+"只为了——继续证明，自己存在。"
+【黑屏·字幕】
+「下集预告：《菜市场食物链：一种被低估的城市权力结构》」</div>
+    </div>
+  </div>
+
+  <!-- D2 LINE HEADER -->
+  <div class="line-header d2" style="margin-top:64px">
+    <div class="line-icon">💕</div>
+    <div>
+      <div class="line-name">D2 · 伪综艺</div>
+      <div class="line-title">调料恋爱岛</div>
+    </div>
+  </div>
+
+  <!-- D2 EP02 -->
+  <div class="ep-section anchor" id="d2-ep02">
+    <div class="ep-header">
+      <div class="ep-number d2">02</div>
+      <div class="ep-info">
+        <h2>第一次淘汰：糖意外离开，醋崩溃</h2>
+        <div class="ep-sub">EP02 · 调料恋爱岛</div>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="ml">时长</div><div class="mv">约4分钟</div></div>
+      <div class="meta-item"><div class="ml">关键人物</div><div class="mv">糖、醋</div></div>
+      <div class="meta-item"><div class="ml">情绪节奏</div><div class="mv">轻松→冲击→爆发</div></div>
+      <div class="meta-item"><div class="ml">大反转</div><div class="mv">醋的真实心动对象</div></div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【片头·上集回顾·0-15秒】</div>
+      <div class="scene-person">综艺前情·快剪</div>
+      <div class="scene-content">【画面】上一集快剪混剪。
+【综艺BGM·激情节奏】
+【解说员】"上集回顾——六位调料进岛，醋全程吃醋7次，盐和辣椒在海边发生暧昧，今天，第一次淘汰即将开始……"
+【画面·六个人的特写定格】
+【字幕·大字】「第一次淘汰 即将开始」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景一·清晨的紧张·15-60秒】</div>
+      <div class="scene-person">早餐桌·气氛微妙</div>
+      <div class="scene-content">【画面】早餐桌，六位调料围坐，每个人面前一杯牛奶+面包。
+气氛诡异地安静。
+辣椒（强行打破沉默）：今天天气真好啊。
+盐：嗯。
+醋（盯着糖）：糖，你昨晚……跟谁聊到几点？
+糖（甜甜地）：什么？我没跟任何人聊天呀，我九点就睡了。
+醋（不依不饶）：那你早上眼睛怎么是红的？
+糖（无辜）：我对……过敏？
+醋（沉默地喝牛奶）：哦。
+【采访间·糖】「糖：我真的什么都没做……醋哥每天都这样问我，我有点累。」
+【采访间·醋】「醋：我不是不相信她。我只是——必须确认一下。」
+油（在旁边和稀泥）：哎哟，大家不要这么紧张嘛，今天是个特殊的日子！
+【弹幕飘过】「油总不愧是油总」「醋哥真的有病」「糖好可怜」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景二·心动投票时刻·60-130秒】</div>
+      <div class="scene-person">投票仪式·节奏紧张</div>
+      <div class="scene-content">【画面】客厅，六人围成一圈。中间放着一个透明投票箱。
+【解说员·严肃】"今天，是第一次淘汰日。每位调料选出今天让你心动的一位，零票者，将离开岛屿。"
+【画面·六人陆续投票】
+辣椒走向票箱，毫不犹豫地投了。
+盐犹豫了三秒，投了。
+糖甜甜地投了，对镜头笑：「我选了一个最特别的人哦！」
+醋（深呼吸）：我考虑了一晚上。
+油：我和谁都心动，但只能选一个，太难了——（最后还是投了）
+酱油（缓缓走向票箱）：（停顿）（投票）（转身离开）
+【画面·解说员开启票箱】
+【综艺BGM·紧张鼓点】
+解说员：第一票，投给——辣椒。
+辣椒（淡定）：意料之中。
+解说员：第二票，投给——盐。
+盐（意外）：啊？
+解说员：第三票，投给——油。
+油（笑得灿烂）：哎哟我也没想到——
+解说员：第四票，再次投给——辣椒。
+解说员：第五票，投给——盐。
+解说员：最后一票——
+【画面·所有人的特写，糖紧张地看着】
+解说员：投给……酱油。
+【全场沉默】
+酱油（毫无波澜）：哦。</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景三·零票揭晓·糖被淘汰·130-200秒】</div>
+      <div class="scene-person">糖的反应·醋的崩溃</div>
+      <div class="scene-content">【画面·全场静默】
+解说员：本场无人投票给——糖。
+糖（愣住）：……我？
+【画面·糖的脸由甜美的笑容逐渐凝固】
+糖（声音颤抖）：你们……一个都没选我？
+辣椒（低头）：……
+盐（不敢看她）：……
+油（左右逢源）：我也想选你的，但是……
+醋（一动不动，盯着地板）：……
+【采访间·糖】「糖：我以为大家都喜欢我，原来我是被讨厌的那个。」
+【画面·糖默默走向卧室，开始收拾行李】
+【慢镜头·她把每件衣服叠好，眼泪一滴一滴掉在行李箱上】
+【综艺BGM·切换为伤感钢琴】
+【画面·客厅，醋突然站起来，快步走向卧室】
+醋（敲门）：糖！开门！
+糖（开门，眼睛通红）：醋哥，怎么了？
+醋（深呼吸，沉默五秒）：你不能走。
+糖（愣）：什么？
+醋（终于爆发）：我没投票给你，是因为——
+【画面·特写醋的脸，他从口袋里掏出一张折叠的纸】
+醋：我从第一天就……喜欢你。但我以为你喜欢辣椒。
+（醋打开那张纸——上面写着"糖"。投票时他没投出去）
+醋：我太害怕了，怕你拒绝我。所以我连票都没敢投。
+【全场震惊·静默】
+糖（眼泪掉下来）：……所以你天天问我跟谁聊天，不是吃醋……
+醋（红着眼眶）：是想知道你心里有没有别人。</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景四·节目组规则反转·200-240秒】</div>
+      <div class="scene-person">解说员·节目组干预</div>
+      <div class="scene-content">【画面·解说员从客厅走入卧室】
+解说员（严肃）：根据节目特殊规则——
+【画面·全员屏息】
+解说员：如果一位调料在淘汰时刻获得至少一位调料的"未投出心动"，将免于淘汰。
+【画面·解说员看向醋】
+解说员：醋先生，你那张写着"糖"的票，是否愿意现在投出？
+醋（看着糖，缓缓走向票箱，把那张纸投进去）
+解说员（清了清嗓）：糖小姐，本场获得1票心动，免于淘汰。
+【综艺BGM·欢快上升】
+【画面·糖捂着脸哭，但是笑着哭】
+【弹幕飘过】「啊啊啊啊啊」「醋哥真男人」「我哭了」「这才是恋综」「编剧给我加鸡腿」
+【采访间·辣椒】「辣椒：行吧，醋哥这次……我服了。」
+【采访间·盐】「盐：……我居然有点羡慕醋。」
+【采访间·油】「油：我什么时候才能这么真诚一次。」
+【采访间·酱油】（沉默八秒）「酱油：哦。」
+【画面·全员回到客厅，糖和醋并肩坐着，气氛微妙】
+【解说员·激情综艺腔】"今天，第一次淘汰，无人离开。但岛上的关系，已经永远改变。"
+【片尾字幕】
+「下集看点：」
+「新成员·花椒入岛，自带'麻'气场」
+「辣椒终于松口告白盐」
+「酱油被发现晚上偷偷写日记」</div>
+    </div>
+  </div>
+
+  <!-- D2 EP03 -->
+  <div class="ep-section anchor" id="d2-ep03">
+    <div class="ep-header">
+      <div class="ep-number d2">03</div>
+      <div class="ep-info">
+        <h2>新成员花椒入岛：一种叫"麻"的全新人格</h2>
+        <div class="ep-sub">EP03 · 调料恋爱岛</div>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="ml">时长</div><div class="mv">约4分钟</div></div>
+      <div class="meta-item"><div class="ml">新角色</div><div class="mv">花椒（麻系御姐）</div></div>
+      <div class="meta-item"><div class="ml">核心冲突</div><div class="mv">花椒vs辣椒"麻辣之争"</div></div>
+      <div class="meta-item"><div class="ml">梗的密度</div><div class="mv">每30秒一个</div></div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【片头·上集回顾·0-15秒】</div>
+      <div class="scene-person">综艺前情</div>
+      <div class="scene-content">【画面】上集醋向糖告白的高光片段快剪。
+【解说员·激情】"上集回顾，醋的世纪告白惊天动地，糖留下！今天，一位神秘的新成员将正式入岛——"
+【画面·一个戴着墨镜的剪影，缓缓走进别墅大门】
+【字幕·大字】「新成员入岛」「她，是谁？」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景一·花椒登场·15-70秒】</div>
+      <div class="scene-person">震撼登场·全员反应</div>
+      <div class="scene-content">【画面】客厅，五人正在吃早餐（糖坐在醋旁边，气氛甜蜜）。
+门铃响。
+解说员（画外音）：六位调料，请注意，今天有新成员加入！
+【画面·门缓缓打开】
+一个深棕色身影，戴着墨镜，气场全开。
+花椒（低沉而酥麻的女声）：你们好，我叫花椒。
+【画面·五人同时呆住】
+辣椒（眯眼）：……你也是辣的？
+花椒（缓缓摘下墨镜）：我不辣。
+辣椒：那你是？
+花椒（一笑）：我，是麻的。
+【画面·辣椒嘴张大，没说出话】
+【采访间·花椒】「花椒：辣椒？呵。我的境界，不是热烈，是让所有人——感觉不到自己。」
+【字幕介绍·花椒登场卡】
+「花椒小姐 31岁 川渝出身 特长：让一切麻木」
+「人设：高冷御姐 段位：S级 」
+【综艺BGM·神秘鼓点】
+【弹幕飘过】「卧槽花椒姐！」「这咖位！」「辣椒妹妹要慌了」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景二·麻辣对决·71-150秒】</div>
+      <div class="scene-person">辣椒vs花椒·气场对峙</div>
+      <div class="scene-content">【画面·两人面对面坐在沙发上，其他人围观，鸦雀无声】
+辣椒（不服气）：你说你比我厉害？
+花椒（端起一杯水，慢慢喝）：我没说比你厉害。我只是……不一样。
+辣椒：怎么不一样？
+花椒：你让人冒汗。我让人发抖。
+辣椒（皱眉）：能让人发抖的，叫害怕，不叫厉害。
+花椒（淡淡地笑）：恋爱也是这样。你让人燃起来。我让人……上瘾。
+【画面·盐在旁边目瞪口呆】
+【采访间·盐】「盐：我感觉空气都麻了。」
+醋（突然警觉）：糖你过来。
+糖（不解）：怎么了？
+醋（拉住糖）：花椒姐姐——气场太强，我怕你被影响。
+【弹幕飘过】「醋哥才告白完就抢着保护糖」「这才是男人」「花椒姐姐真的不怀好意」
+【画面·花椒突然站起来，缓缓走向盐】
+花椒（俯身）：盐先生，我们好像还没认识。
+盐（紧张）：你……你好？
+花椒（看着盐的眼睛）：你的味道，很基础。
+盐（迷茫）：谢谢？
+花椒（缓缓离开）：基础的味道，才是最难替代的。
+【画面·辣椒站在旁边，第一次表情有些复杂】
+【采访间·辣椒】「辣椒：她为什么要找盐说话？她……是不是看上盐了？」
+【字幕·括号】（辣椒首次出现疑似吃醋反应）
+【弹幕飘过】「轮到辣椒吃醋了」「醋哥的接班人来了」「编剧大手笔」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景三·任务·制作麻辣火锅·150-210秒】</div>
+      <div class="scene-person">团队任务·关系展示</div>
+      <div class="scene-content">【解说员】"今天的任务是——制作一道地道的麻辣火锅！所有调料必须协作完成！"
+【画面·锅前，气氛微妙】
+辣椒（试图抢先）：我先放！没有我没味道！
+花椒（淡定）：你急什么？没有我，这就是普通辣锅。
+辣椒（咬牙）：好，那你先。
+花椒（轻轻一笑）：不急。让油哥先开个场。
+油（殷勤）：好嘞，我来——
+（油滑进锅里）
+花椒（这才缓缓走向锅边）：现在轮到我了。
+【画面·花椒落入锅中，整个画面变成慢镜头，麻味四散】
+【画面·辣椒、盐、糖、醋四人同时打了个寒颤】
+【采访间·辣椒】「辣椒：她的入场仪式都这么有戏。我有点服气。」
+【画面·辣椒接着跳进锅里，怒吼一声】
+辣椒（落锅）：让你们看看什么叫真正的辣！
+【画面·锅里翻江倒海，麻与辣激烈交融】
+【综艺解说员】"麻与辣的对决，正在我们眼前上演！"
+【弹幕飘过】「这锅成精了」「麻辣双姝」「真·色香味俱全」
+【画面·糖、盐、醋、酱油一起跳进锅里】
+酱油（落锅前回头）：终于轮到我了。
+（沉默地滴了一滴，转身）
+解说员：……酱油先生？
+酱油：我已经尽力了。</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【场景四·夜晚·关系重组·210-260秒】</div>
+      <div class="scene-person">海边对话·暗潮汹涌</div>
+      <div class="scene-content">【画面·深夜，花椒一个人坐在海边】
+盐慢慢走过来。
+盐（犹豫）：花椒姐？
+花椒（不回头）：嗯。
+盐：你为什么……今天对我说"基础味道"那句话？
+花椒（看着海）：因为，是真的。
+盐：什么意思？
+花椒（终于回头）：辣椒喜欢你。但她不知道为什么。
+盐：……
+花椒：因为你身上有一种东西，让人觉得——回家了。
+盐（震惊）：你怎么知道辣椒喜欢我？
+花椒（淡淡地）：我做了十年情感顾问。
+（一段沉默）
+花椒：但你要小心。
+盐：小心什么？
+花椒（站起来）：小心，自己也喜欢上她。
+【画面·花椒离开，盐独自坐在原地】
+【采访间·盐】「盐：花椒姐的话……我现在脑子是麻的。」
+【画面·别墅二楼窗户，辣椒看着海边的两人，表情罕见地复杂】
+【采访间·辣椒】「辣椒：我刚才差点要冲下去。我也不知道为什么。」
+【画面·客厅，醋和糖坐在一起，气氛甜蜜】
+醋：糖，你冷不冷？
+糖：不冷。醋哥，我们……要一直一直在一起好不好？
+醋（深情）：嗯。永远在一起。除非……
+糖：除非什么？
+醋（眼神突然警觉）：除非你跟别人聊天。
+糖（无奈）：……你又来了。
+【弹幕飘过】「醋哥不愧是醋哥」「狗改不了吃醋」</div>
+    </div>
+
+    <div class="scene-block">
+      <div class="scene-tag d2">【结尾·下集预告·260-280秒】</div>
+      <div class="scene-person">综艺收尾</div>
+      <div class="scene-content">【解说员·激情综艺腔】"花椒入岛，激起千层浪。盐的内心被打开，辣椒第一次出现动摇——"
+"下集，第二次淘汰即将到来，谁将面对零票危机？"
+【画面·六人最后定格特写】
+【片尾字幕】
+「下集看点：」
+「辣椒主动找盐谈心」
+「花椒和油的诡异结盟」
+「酱油的日记终于被发现：第一页写着'我也想被关注'」
+【片尾综艺BGM收束】
+【字幕】「《调料恋爱岛》每周一三五更新」</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>D1 物种观察局 EP02-03 ｜ D2 调料恋爱岛 EP02-03</div>
+  <div style="margin-top:6px;color:#333">下一步可选：30天冷启动运营计划 ｜ EP04-06 脚本 ｜ AI制作工具实操指南</div>
+</footer>
+
+</body>
+</html>

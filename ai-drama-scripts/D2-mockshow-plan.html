@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D2 伪综艺完整方案 · 拟人化恋爱宇宙</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0f0a14; color: #e8e8e8; min-height: 100vh; line-height: 1.6; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #2d0a3d 0%, #4a1259 50%, #6d1c5e 100%); padding: 80px 24px 60px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 70% 30%, rgba(255,107,194,0.15) 0%, transparent 50%); pointer-events: none; }
+  .hero-badge { display: inline-block; background: rgba(255,107,194,0.18); border: 1px solid rgba(255,107,194,0.5); color: #ff6bc2; padding: 8px 18px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 24px; position: relative; }
+  .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 16px; position: relative; background: linear-gradient(135deg, #fff 0%, #ffc4e8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .subtitle { color: #b8a0c4; font-size: 15px; max-width: 680px; margin: 0 auto 40px; position: relative; line-height: 1.8; }
+  .hero-stats { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; position: relative; }
+  .stat-num { font-size: 2rem; font-weight: 700; color: #ff6bc2; }
+  .stat-label { font-size: 11px; color: #765085; margin-top: 4px; letter-spacing: 2px; }
+
+  /* Container */
+  .container { max-width: 1100px; margin: 0 auto; padding: 56px 24px; }
+  .section-title { font-size: 12px; letter-spacing: 4px; color: #765085; text-transform: uppercase; margin-bottom: 20px; }
+  .section-h { font-size: 1.6rem; font-weight: 700; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+  /* Concept */
+  .concept-block { background: linear-gradient(135deg, #1a0f24, #261432); border: 1px solid rgba(255,107,194,0.15); border-radius: 16px; padding: 28px; margin-bottom: 36px; }
+  .concept-block h3 { font-size: 17px; margin-bottom: 12px; color: #ff6bc2; }
+  .concept-block p { color: #b8a0c4; font-size: 14px; line-height: 1.9; }
+  .concept-quote { border-left: 3px solid #ff6bc2; padding-left: 20px; margin: 20px 0; color: #ddd; font-style: italic; font-size: 14px; line-height: 2; }
+
+  /* Character cards */
+  .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 36px; }
+  .char-card { background: #1a0f24; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s; }
+  .char-card:hover { border-color: rgba(255,107,194,0.4); transform: translateY(-4px); }
+  .char-emoji { font-size: 36px; margin-bottom: 8px; }
+  .char-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .char-trait { font-size: 11px; color: #ff6bc2; margin-bottom: 8px; letter-spacing: 1px; }
+  .char-desc { font-size: 11px; color: #888; line-height: 1.6; }
+
+  /* SOP steps */
+  .sop-list { display: grid; gap: 12px; margin-bottom: 48px; }
+  .sop-step { background: #1a0f24; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 22px; display: flex; gap: 20px; transition: all 0.2s; }
+  .sop-step:hover { border-color: rgba(255,107,194,0.3); transform: translateX(4px); }
+  .sop-num { flex-shrink: 0; width: 38px; height: 38px; background: linear-gradient(135deg, #ec4899, #be185d); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 14px; }
+  .sop-content h4 { font-size: 15px; margin-bottom: 6px; }
+  .sop-content p { font-size: 13px; color: #b8a0c4; line-height: 1.7; }
+  .sop-content ul { margin-top: 8px; padding-left: 18px; }
+  .sop-content li { font-size: 13px; color: #b8a0c4; line-height: 1.8; }
+  .sop-content .tag { display: inline-block; background: rgba(255,107,194,0.15); color: #ff6bc2; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 6px; margin-top: 4px; }
+
+  /* Topic table */
+  .topic-table { width: 100%; border-collapse: collapse; background: #1a0f24; border-radius: 12px; overflow: hidden; margin-bottom: 48px; font-size: 13px; }
+  .topic-table th { background: #261432; padding: 14px 12px; text-align: left; font-weight: 600; color: #b8a0c4; font-size: 12px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .topic-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #ddd; }
+  .topic-table tr:hover { background: rgba(255,107,194,0.05); }
+  .topic-table tr:last-child td { border-bottom: none; }
+  .topic-table .topic-cat { font-size: 11px; color: #ff6bc2; background: rgba(255,107,194,0.1); padding: 3px 8px; border-radius: 4px; display: inline-block; }
+  .topic-table .rec-S { background: #ff4b4b; color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .topic-table .rec-Ap { background: #ff9900; color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .topic-table .rec-A { background: #ffd700; color: #000; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .topic-table .rec-B { background: #888; color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+
+  /* Script */
+  .script-meta { background: #1a0f24; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .meta-item .meta-label { font-size: 11px; color: #765085; letter-spacing: 2px; margin-bottom: 4px; }
+  .meta-item .meta-val { font-size: 13px; color: #ddd; }
+
+  .scene-block { background: #1a0f24; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .scene-tag { padding: 12px 20px; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: #fff; background: linear-gradient(135deg, #ec4899, #be185d); }
+  .scene-person { padding: 8px 20px; font-size: 12px; color: #b8a0c4; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .scene-content { padding: 18px 20px; font-size: 14px; line-height: 2; color: #ddd; white-space: pre-line; }
+
+  /* Tools */
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 48px; }
+  .tool-card { background: #1a0f24; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px; }
+  .tool-card h4 { font-size: 13px; color: #ff6bc2; margin-bottom: 8px; letter-spacing: 1px; }
+  .tool-card .tool-name { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .tool-card p { font-size: 12px; color: #b8a0c4; line-height: 1.7; }
+
+  /* Footer */
+  footer { padding: 60px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); color: #765085; font-size: 12px; }
+
+  @media (max-width: 720px) {
+    .hero h1 { font-size: 1.6rem; }
+    .hero-stats { gap: 24px; }
+    .topic-table { font-size: 11px; }
+    .topic-table th, .topic-table td { padding: 10px 6px; }
+    .script-meta { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">D2 · 伪综艺完整方案</div>
+  <h1>拟人化恋爱宇宙</h1>
+  <p class="subtitle">把熟悉的综艺节目形式，套在意想不到的主角身上。<br>调料谈恋爱、家电相亲、蔬菜破案——每一种组合，都是一个全新IP。</p>
+  <div class="hero-stats">
+    <div><div class="stat-num">16</div><div class="stat-label">综艺矩阵</div></div>
+    <div><div class="stat-num">8</div><div class="stat-label">SOP步骤</div></div>
+    <div><div class="stat-num">7</div><div class="stat-label">综艺原型</div></div>
+    <div><div class="stat-num">3集</div><div class="stat-label">每周更新</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心创意 -->
+  <div class="section-title">核心创意</div>
+  <h2 class="section-h">熟悉的形式 × 意外的主角</h2>
+  <div class="concept-block">
+    <h3>为什么这是天然的爆款公式</h3>
+    <p>观众对综艺节目的形式已经无比熟悉——爱情岛、明星大侦探、奔跑吧、非诚勿扰……这些形式自带"如何观看"的预期。我们要做的，是把这些形式里的"人"换成意想不到的角色，瞬间制造认知反差。</p>
+    <div class="concept-quote">
+      "中文里，'醋'本来就是嫉妒的意思。<br>
+      所以在《调料恋爱岛》里，醋这个角色——不需要任何解释。<br>
+      观众一秒就懂："醋哥又吃醋了"。"
+    </div>
+    <p><strong style="color:#ff6bc2">三个差异化优势：</strong></p>
+    <ul style="color:#b8a0c4;padding-left:20px;margin-top:8px;line-height:2">
+      <li>已被验证的水果拟人是1.0，我们做的是带"中文文化梗"的2.0</li>
+      <li>综艺形式是"现成框架"，节省剧本设计成本</li>
+      <li>角色一旦立住，可以做长线IP，反复出新内容</li>
+    </ul>
+  </div>
+
+  <!-- 调料角色介绍 -->
+  <div class="section-title">主打IP · 角色档案</div>
+  <h2 class="section-h">《调料恋爱岛》六位主角</h2>
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-emoji">🌶️</div>
+      <div class="char-name">辣椒</div>
+      <div class="char-trait">暴躁御姐</div>
+      <div class="char-desc">28岁 · 自由职业<br>爱好：点燃一切<br>口头禅：你皮痒？</div>
+    </div>
+    <div class="char-card">
+      <div class="char-emoji">🧂</div>
+      <div class="char-name">盐</div>
+      <div class="char-trait">稳重老实</div>
+      <div class="char-desc">32岁 · 基础工种<br>座右铭：我不可缺少<br>但没有人在乎</div>
+    </div>
+    <div class="char-card">
+      <div class="char-emoji">🍬</div>
+      <div class="char-name">糖</div>
+      <div class="char-trait">甜美恋爱脑</div>
+      <div class="char-desc">25岁 · 甜品行业<br>特长：让生活更甜<br>缺点：容易被骗</div>
+    </div>
+    <div class="char-card">
+      <div class="char-emoji">🫙</div>
+      <div class="char-name">醋</div>
+      <div class="char-trait">天生吃醋</div>
+      <div class="char-desc">30岁 · 发酵行业<br>看谁都像情敌<br>每集吃醋十次起</div>
+    </div>
+    <div class="char-card">
+      <div class="char-emoji">🫚</div>
+      <div class="char-name">油</div>
+      <div class="char-trait">圆滑两面派</div>
+      <div class="char-desc">35岁 · 润滑领域<br>和谁都能融合<br>从不站队</div>
+    </div>
+    <div class="char-card">
+      <div class="char-emoji">🥢</div>
+      <div class="char-name">酱油</div>
+      <div class="char-trait">打酱油的</div>
+      <div class="char-desc">？岁 · 来打酱油<br>每集出场一句话<br>观众最爱的角色</div>
+    </div>
+  </div>
+
+  <!-- SOP -->
+  <div class="section-title">制作 SOP</div>
+  <h2 class="section-h">8步标准制作流程</h2>
+  <div class="sop-list">
+
+    <div class="sop-step">
+      <div class="sop-num">01</div>
+      <div class="sop-content">
+        <h4>综艺选型 · 选用户最熟悉的形式</h4>
+        <p>不要选小众综艺。越熟悉越好——观众越熟悉的形式，反差感越强。</p>
+        <ul>
+          <li>恋综类：爱情岛/非诚勿扰/我家那闺女（最易爆）</li>
+          <li>竞技类：奔跑吧/极限挑战/创造营</li>
+          <li>推理类：明星大侦探/密室大逃脱</li>
+          <li>音乐类：我是歌手/中国好声音/跨界歌王</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">02</div>
+      <div class="sop-content">
+        <h4>拟人主角设计 · 选有"中文梗"的物品</h4>
+        <p>主角的选择决定了内容上限。优先选那些天然带中文文化梗的物品。</p>
+        <ul style="margin-top:8px">
+          <li><strong>醋</strong> = 吃醋（嫉妒）</li>
+          <li><strong>当归</strong> = 应当归来（爱情归宿）</li>
+          <li><strong>酱油</strong> = 打酱油（无关紧要）</li>
+          <li><strong>菠菜</strong> = 谐音"博彩"（赌徒人设）</li>
+          <li><strong>苦瓜</strong> = 苦命人设</li>
+          <li><strong>火锅料</strong> = 自带"群聚"属性</li>
+        </ul>
+        <p style="margin-top:10px;color:#777;font-size:12px">铁律：每个角色的核心人格必须3秒内能让观众get。</p>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">03</div>
+      <div class="sop-content">
+        <h4>角色档案表 · 五维度定型</h4>
+        <p>每个角色必须有完整档案，确保跨集人设不崩。</p>
+        <ul style="margin-top:8px">
+          <li><strong>外貌</strong>：固定颜色、固定服装、固定发型</li>
+          <li><strong>性格</strong>：一个核心标签（吃醋/暴躁/甜美…）</li>
+          <li><strong>职业</strong>：与本体属性挂钩（醋→发酵行业）</li>
+          <li><strong>口头禅</strong>：每集必出现的标志句</li>
+          <li><strong>关系网</strong>：谁是cp、谁是死敌</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">04</div>
+      <div class="sop-content">
+        <h4>角色一致性 · 三种方案</h4>
+        <p>这是D2方向最大的技术挑战。三种方案按预算选：</p>
+        <ul style="margin-top:8px">
+          <li><strong>低预算</strong>：MJ生成固定参考图，每集用Cref保持一致</li>
+          <li><strong>中预算</strong>：训练LoRA模型，每个角色一套</li>
+          <li><strong>高预算</strong>：ComfyUI+IPAdapter+FaceID，最稳定</li>
+        </ul>
+        <p style="margin-top:10px">建议第一阶段用方案一，账号起量后再升级。</p>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">05</div>
+      <div class="sop-content">
+        <h4>单集结构模板 · 五段式</h4>
+        <p>所有综艺单集都用同一个结构，观众形成习惯。</p>
+        <ul style="margin-top:8px">
+          <li><strong>开场</strong>（0-15s）：解说员综艺腔开场+角色介绍</li>
+          <li><strong>任务</strong>（15-60s）：节目组给的"今日任务"</li>
+          <li><strong>冲突</strong>（60-120s）：角色之间擦出火花or互怼</li>
+          <li><strong>采访间</strong>（120-180s）：角色对镜头独白吐槽（笑点核心）</li>
+          <li><strong>钩子</strong>（180-220s）：今日没解决+下集预告</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">06</div>
+      <div class="sop-content">
+        <h4>综艺包装 · 四件套必备</h4>
+        <p>没有这四件套，"伪综艺"就不像综艺。</p>
+        <ul style="margin-top:8px">
+          <li><strong>解说员旁白</strong>：综艺腔，激情但克制</li>
+          <li><strong>角色人设字幕</strong>：每个角色第一次出场必带</li>
+          <li><strong>采访间独白</strong>：角色对镜头说话，背景模糊</li>
+          <li><strong>弹幕式吐槽</strong>：观众视角的字幕飘过，强化笑点</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">07</div>
+      <div class="sop-content">
+        <h4>AI画面生成 · 角色+布景</h4>
+        <p>两条线分开生成，最后合成。</p>
+        <ul style="margin-top:8px">
+          <li>角色：MJ生成立绘+SD细化+保存LoRA</li>
+          <li>布景：可灵/即梦生成综艺场景（沙发、采访间、户外）</li>
+          <li>合成：剪映绿幕抠图叠加</li>
+          <li>关键词：综艺感、明亮色调、轻松氛围、reality show style</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">08</div>
+      <div class="sop-content">
+        <h4>更新节奏 · 短集吊胃口</h4>
+        <p>不要做长集，单集45-90秒最佳，每周3集，吊住观众持续看完一季。</p>
+        <ul style="margin-top:8px">
+          <li>每周一/三/五更新，固定时间</li>
+          <li>一季10-12集为一个完整故事线</li>
+          <li>每集结尾必留钩子</li>
+          <li>评论区运营："你支持醋还是糖"等投票互动</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 综艺矩阵 -->
+  <div class="section-title">综艺节目矩阵</div>
+  <h2 class="section-h">16个伪综艺选题（含评分）</h2>
+  <table class="topic-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>综艺原型</th>
+        <th>节目名</th>
+        <th>核心钩子</th>
+        <th>视频适配</th>
+        <th>推荐</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>01</td><td><span class="topic-cat">爱情岛</span></td><td>调料恋爱岛</td><td>醋=吃醋设定，盐=被忽视的老实人</td><td>★★★★★</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>02</td><td><span class="topic-cat">明星大侦探</span></td><td>谁动了我的西红柿</td><td>蔬菜悬疑剧，每集破一个厨房谜案</td><td>★★★★☆</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>03</td><td><span class="topic-cat">创造营</span></td><td>创造萌物营</td><td>猫咪/水獭/柯基偶像选秀</td><td>★★★★★</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>04</td><td><span class="topic-cat">古装恋综</span></td><td>当归记</td><td>当归vs白芍vs人参三角恋（中药材专场）</td><td>★★★★★</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>05</td><td><span class="topic-cat">非诚勿扰</span></td><td>家电相亲会</td><td>洗碗机嫌弃油烟机"太油腻"</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>06</td><td><span class="topic-cat">奔跑吧</span></td><td>奔跑吧文具</td><td>订书机带队，便利贴永远掉队</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>07</td><td><span class="topic-cat">恋综</span></td><td>水果非诚勿扰</td><td>苹果相亲屡屡受挫，遇到变心的芒果</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>08</td><td><span class="topic-cat">婚后纪实</span></td><td>调料婚后实录</td><td>盐和酱油结婚后的鸡毛蒜皮日常</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>09</td><td><span class="topic-cat">好声音</span></td><td>中国好味道</td><td>麻婆豆腐vs红烧肉争"最下饭"</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>10</td><td><span class="topic-cat">我家那闺女</span></td><td>我家那调料</td><td>辣椒妈妈担心女儿晚婚</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>11</td><td><span class="topic-cat">国民老公</span></td><td>国民早餐</td><td>包子vs豆浆争夺"最佳CP"</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>12</td><td><span class="topic-cat">跨界歌王</span></td><td>方言跨界歌王</td><td>四川话rap，粤语唱粤剧</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>13</td><td><span class="topic-cat">密室大逃脱</span></td><td>文具密室</td><td>橡皮被擦没了，铅笔追凶</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>14</td><td><span class="topic-cat">极限挑战</span></td><td>极限厨房</td><td>锅碗瓢盆完成极限任务</td><td>★★★☆☆</td><td><span class="rec-B">B</span></td></tr>
+      <tr><td>15</td><td><span class="topic-cat">练习生</span></td><td>玩具练习生</td><td>玩偶娃娃选秀，毛绒玩具大乱斗</td><td>★★★☆☆</td><td><span class="rec-B">B</span></td></tr>
+      <tr><td>16</td><td><span class="topic-cat">演员的诞生</span></td><td>表情包演员的诞生</td><td>微笑表情包vs哭笑表情包飙戏</td><td>★★☆☆☆</td><td><span class="rec-B">B</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 工具推荐 -->
+  <div class="section-title">推荐工具栈</div>
+  <h2 class="section-h">从0到发布需要的全部工具</h2>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <h4>角色生成</h4>
+      <div class="tool-name">Midjourney</div>
+      <p>第一步生成角色固定参考图。用cref保持跨集一致性。绝对关键。</p>
+    </div>
+    <div class="tool-card">
+      <h4>角色精修</h4>
+      <div class="tool-name">Stable Diffusion + LoRA</div>
+      <p>账号起量后训练LoRA模型，每个角色一套，确保100%一致。</p>
+    </div>
+    <div class="tool-card">
+      <h4>动态视频</h4>
+      <div class="tool-name">可灵 / 即梦</div>
+      <p>角色图生视频，表情、动作、互动。可灵的人物运动最自然。</p>
+    </div>
+    <div class="tool-card">
+      <h4>解说配音</h4>
+      <div class="tool-name">剪映AI · 综艺男声</div>
+      <p>选"综艺男声"或"主持人"，活泼有节奏感。模仿乘风破浪/创造营解说。</p>
+    </div>
+    <div class="tool-card">
+      <h4>角色配音</h4>
+      <div class="tool-name">ChatTTS · 火山引擎</div>
+      <p>每个角色配不同音色：辣椒=御姐音，糖=甜美音，醋=阴阳怪气音。</p>
+    </div>
+    <div class="tool-card">
+      <h4>综艺包装</h4>
+      <div class="tool-name">剪映 · 综艺花字模板</div>
+      <p>采购综艺花字字幕包，弹幕效果，采访间转场。这是综艺感的核心。</p>
+    </div>
+  </div>
+
+  <!-- 第一集脚本 -->
+  <div class="section-title">第一集完整脚本</div>
+  <h2 class="section-h">EP01 · 调料恋爱岛 · 初次见面</h2>
+
+  <div class="script-meta">
+    <div class="meta-item"><div class="meta-label">时长</div><div class="meta-val">约4分钟</div></div>
+    <div class="meta-item"><div class="meta-label">综艺原型</div><div class="meta-val">爱情岛/恋综</div></div>
+    <div class="meta-item"><div class="meta-label">主角</div><div class="meta-val">6位调料</div></div>
+    <div class="meta-item"><div class="meta-label">核心梗</div><div class="meta-val">醋每集吃醋十次起</div></div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【片头·0-12秒】</div>
+    <div class="scene-person">综艺片头 · 解说员开场</div>
+    <div class="scene-content">【画面】海边别墅，夕阳，椰子树。字幕从下方飘入，综艺感十足。
+【综艺BGM·轻快欢乐】
+【解说员旁白·综艺腔】"欢迎收看《调料恋爱岛》！六位来自厨房的单身调料，将在这座岛屿上，寻找属于自己的真爱。"
+【画面·六位角色逐一特写】
+【字幕·依次出现】
+「辣椒小姐 28岁 自由职业 爱好：点燃一切」
+「盐先生 32岁 基础工种 座右铭：我不可缺少」
+「糖女士 25岁 甜品行业 特长：让生活更甜」
+「醋先生 30岁 发酵行业 性格：敏感、多疑、易酸」
+「油总 35岁 润滑领域 特长：和谁都能融合」
+「酱油 ？岁 打酱油 无」</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景一·初次见面·12-60秒】</div>
+    <div class="scene-person">客厅相识 · 采访间穿插</div>
+    <div class="scene-content">【画面】别墅客厅，六人围坐，相互打量。
+【解说员】"进岛第一天，六位调料正式相遇。谁将擦出火花？谁将提前出局？"
+【画面·辣椒大步走向盐】
+辣椒（热情、嗓门大）：你好！我是辣椒！
+盐（实诚）：你好，我是盐。
+辣椒（上下打量）：哇，你看起来好……平淡。
+盐（尴尬笑）：谢谢。
+【采访间·盐对着镜头，表情无奈】
+「盐：我其实不平淡的，少了我所有菜都没味道。但好像没有人在乎这个。」
+【画面·醋走向糖，眼神戒备】
+醋：你叫什么？
+糖（甜甜地）：我是糖呀！
+醋（皱眉）：你是不是认识辣椒？
+糖：？？我们刚来不是第一次见面吗？
+醋：……我只是随便问问。
+【采访间·醋】"我没有在吃醋。我只是有点敏感。正常的敏感。所有人都会这样的对吧？"
+【字幕·括号】（本集醋先生吃醋次数：目前3次）</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景二·第一个任务·共同做红烧肉·60-120秒】</div>
+    <div class="scene-person">厨房协作 · 笑点密集</div>
+    <div class="scene-content">【解说员】"为了帮助调料们快速了解彼此，节目组设置了第一个考验——六人合作，完成一道菜。"
+【字幕·大字】「任务：红烧肉」
+油（滑溜地）：我先来，我先来，我和谁都能配合！
+（油迅速滑进锅里）
+盐（认真）：接下来是我——
+辣椒（抢话）：等等先放我！没有我不够香！
+（辣椒没等盐说完，直接跳进锅里，锅里一阵爆炸声）
+盐（站在旁边，无奈）：……好吧。
+糖（甜甜地跳进去）：加点甜会更好吃哦！
+醋（看着糖跳进去，眉头一皱）：你和辣椒……关系好吗？
+糖：我们刚认识……
+醋：那你为什么比我先进锅？
+糖：因为……顺序就是这样的？
+醋（闭上眼睛）：我不吃醋。
+【字幕·弹幕飘过】「醋你已经吃了」「不是吧醋哥」「哈哈哈哈哈哈」
+【画面·锅边，酱油站着，一动不动】
+解说员：酱油先生，轮到你了！
+酱油（回头，平静）：哦。（缓缓走过去，往锅里滴了一滴，转身离开）
+解说员：就……这样？
+酱油：我来打酱油的。
+【采访间·酱油】（五秒沉默，起身离开）</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景三·第一次心动·120-180秒】</div>
+    <div class="scene-person">海边夕阳 · 情绪转折</div>
+    <div class="scene-content">【解说员·语气煽情起来】"节目第一天的傍晚，心动，悄然发生——"
+【画面·夕阳下，盐一个人坐在海边】
+辣椒走过来，在盐旁边坐下。
+辣椒（少见地安静）：你不进去玩吗？
+盐：不了，我就喜欢在外面待着。
+辣椒：为什么？
+盐：里面太闹了。我不太擅长……表现自己。
+【辣椒看了他一眼，第一次没有立刻开口】
+辣椒：……其实我也挺累的。每次都要表现得很热烈，其实有时候我只想安静一下。
+盐（有点意外地看着她）：那你就安静一下。
+【两个人并排坐着，没有说话。海浪声。夕阳。】
+【采访间·辣椒，难得地轻声】「盐……比我想象的有意思一点。就一点点。」
+【采访间·盐，同样轻声】「辣椒其实……不是没有内心的。我感觉到了一点。」
+【画面·另一个角落，醋趴在窗台上，死死地盯着海边的盐和辣椒】
+醋（喃喃自语）：他们在聊什么？为什么要并排坐？海边那么大，为什么要坐那么近？
+【字幕】本集醋先生吃醋次数：7次</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景四·结尾·淘汰预告·180-230秒】</div>
+    <div class="scene-person">客厅集合 · 钩子收束</div>
+    <div class="scene-content">【解说员·语气突然严肃】"进岛第一天结束。根据节目规则，明天将有一位调料因获得零票心动而——离开岛屿。"
+【画面·六人在客厅，表情各异】
+解说员：请问各位，今天最让你心动的是谁？
+辣椒（迅速）：不说。
+盐（想了很久）：……还没想好。
+糖（甜甜地）：大家都很好！
+醋（立刻）：你不能选所有人，规则是只能选一个，你和谁的关系更近？你今天是不是和辣椒说过两次话？
+糖：……我们是邻居……
+油（左右逢源）：我觉得大家都很不错，都很有特点，我和谁都能融合——
+所有人同时看向酱油。
+解说员：酱油先生，你呢？
+酱油（回头）：我？
+解说员：对，你今天心动过吗？
+酱油（沉默三秒）：（起身，走进卧室，关门）
+【全场沉默】
+【字幕·弹幕飘过】「就酱油哈哈哈哈」「酱油是整个节目最清醒的人」
+【黑屏前·解说员】"明天，谁会离开？答案，就在《调料恋爱岛》第二集。"
+【片尾字幕】
+「下集看点：」
+「醋怀疑节目组偏袒辣椒」
+「盐第一次主动找辣椒说话」
+「酱油：（无话可说）」</div>
+  </div>
+
+  <!-- 季度规划 -->
+  <div class="section-title">第一季完整规划</div>
+  <h2 class="section-h">10集故事线</h2>
+  <table class="topic-table">
+    <thead>
+      <tr><th>EP</th><th>集名</th><th>核心剧情</th><th>关键人物</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>01</td><td>初次见面</td><td>六人进岛，第一次任务红烧肉</td><td>全员登场</td></tr>
+      <tr><td>02</td><td>第一次淘汰</td><td>糖意外被淘汰，醋崩溃</td><td>糖、醋</td></tr>
+      <tr><td>03</td><td>新成员·花椒入岛</td><td>麻人设登场，制造混乱</td><td>花椒</td></tr>
+      <tr><td>04</td><td>盐与辣椒的暧昧升级</td><td>合作任务，关系明朗</td><td>盐、辣椒</td></tr>
+      <tr><td>05</td><td>醋的崩溃日</td><td>醋发现盐喜欢辣椒</td><td>醋</td></tr>
+      <tr><td>06</td><td>油的两面派被揭穿</td><td>油同时和三个人暧昧</td><td>油</td></tr>
+      <tr><td>07</td><td>酱油居然有故事</td><td>酱油背景大揭秘</td><td>酱油</td></tr>
+      <tr><td>08</td><td>团队任务·火锅之夜</td><td>所有人合作完成大菜</td><td>全员</td></tr>
+      <tr><td>09</td><td>意外淘汰·谁离开</td><td>反转淘汰名单</td><td>意外人选</td></tr>
+      <tr><td>10</td><td>大结局·终极CP</td><td>真爱揭晓，二季预告</td><td>最终CP</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<footer>
+  <div>D2 · 伪综艺完整方案 · 调料恋爱岛</div>
+  <div style="margin-top:6px;color:#444">配套D1方案：《伪纪录片 · 物种观察局》</div>
+</footer>
+
+</body>
+</html>

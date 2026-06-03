@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI短剧选题与脚本库</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; line-height: 1.6; }
+
+  .hero { padding: 72px 24px 56px; text-align: center; background: linear-gradient(135deg, #0d1117 0%, #1a1d2e 50%, #2d0a3d 100%); border-bottom: 1px solid #30363d; }
+  .hero-badge { display: inline-block; background: rgba(200,169,110,0.12); border: 1px solid rgba(200,169,110,0.3); color: #c8a96e; padding: 6px 16px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 20px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 14px; background: linear-gradient(135deg, #fff 0%, #c8a96e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: #8b949e; font-size: 14px; max-width: 680px; margin: 0 auto; line-height: 1.9; }
+  .home-link { display: inline-block; margin-top: 24px; color: #8b949e; font-size: 13px; text-decoration: none; padding: 8px 18px; border: 1px solid #30363d; border-radius: 20px; transition: all 0.2s; }
+  .home-link:hover { color: #fff; border-color: #c8a96e; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+
+  .section { margin-bottom: 48px; }
+  .section-h { font-size: 13px; color: #8b949e; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #30363d; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; transition: all 0.2s; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 12px; }
+  .card:hover { transform: translateY(-3px); border-color: #c8a96e; box-shadow: 0 8px 28px rgba(0,0,0,0.4); }
+  .card-icon { font-size: 28px; }
+  .card-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .card-desc { font-size: 12.5px; color: #8b949e; line-height: 1.8; flex: 1; }
+  .card-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .meta-tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: rgba(200,169,110,0.1); color: #c8a96e; border: 1px solid rgba(200,169,110,0.2); }
+  .meta-tag.doc { background: rgba(96,165,250,0.1); color: #60a5fa; border-color: rgba(96,165,250,0.2); }
+  .meta-tag.show { background: rgba(236,72,153,0.1); color: #ff6bc2; border-color: rgba(236,72,153,0.2); }
+  .meta-tag.excel { background: rgba(74,222,128,0.1); color: #4ade80; border-color: rgba(74,222,128,0.2); }
+
+  footer { padding: 32px 24px; text-align: center; color: #444; font-size: 12px; border-top: 1px solid #30363d; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">AI 短剧选题与脚本库</div>
+  <h1>AI Drama Scripts</h1>
+  <p>伪纪录片 × 伪综艺 完整策划方案<br>含58个选题母表、6集完整脚本、市场分析报告</p>
+  <a href="../" class="home-link">← 返回小鹿主页</a>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2 class="section-h">完整策划方案</h2>
+    <div class="cards">
+
+      <a href="D1-mockumentary-plan.html" class="card">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">物种观察局 · 伪纪录片完整方案</div>
+        <div class="card-desc">用BBC严肃纪录片腔调观察打工人/广场舞/相亲角等日常群体。含8步制作SOP、16个选题矩阵、EP01完整脚本（广场舞大妈领地争夺战）。</div>
+        <div class="card-meta">
+          <span class="meta-tag doc">伪纪录片</span>
+          <span class="meta-tag">SOP</span>
+          <span class="meta-tag">EP01</span>
+        </div>
+      </a>
+
+      <a href="D2-mockshow-plan.html" class="card">
+        <div class="card-icon">💕</div>
+        <div class="card-title">调料恋爱岛 · 伪综艺完整方案</div>
+        <div class="card-desc">把熟悉的恋综形式套在调料拟人角色上。含6位主角档案、8步制作SOP、16个综艺矩阵、EP01完整脚本（初次见面+第一次任务）。</div>
+        <div class="card-meta">
+          <span class="meta-tag show">伪综艺</span>
+          <span class="meta-tag">SOP</span>
+          <span class="meta-tag">EP01</span>
+        </div>
+      </a>
+
+      <a href="EP02-EP03-scripts.html" class="card">
+        <div class="card-icon">📖</div>
+        <div class="card-title">EP02-EP03 完整脚本合集</div>
+        <div class="card-desc">物种观察局：公园相亲角 + 健身房镜前展示。<br>调料恋爱岛：第一次淘汰·醋告白 + 花椒入岛。共4集完整脚本，含场景/台词/字幕/钩子。</div>
+        <div class="card-meta">
+          <span class="meta-tag doc">伪纪录片</span>
+          <span class="meta-tag show">伪综艺</span>
+          <span class="meta-tag">4集脚本</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-h">选题母表 · 58 个</h2>
+    <div class="cards">
+
+      <a href="master-topic-table.html" class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">选题完整母表 v2（含新调研10个）</div>
+        <div class="card-desc">58个完整选题 = 原16个 + 新调研10个 + 伪纪录片16个 + 伪综艺16个。每个选题含来源分组、选题原因、故事梗概，可按分组筛选。</div>
+        <div class="card-meta">
+          <span class="meta-tag">58选题</span>
+          <span class="meta-tag">可筛选</span>
+        </div>
+      </a>
+
+      <a href="master-topic-table.xlsx" class="card" download>
+        <div class="card-icon">📁</div>
+        <div class="card-title">下载 · 选题母表 Excel</div>
+        <div class="card-desc">58个选题完整Excel版本，6列结构对齐飞书表格。新增选题用黄色高亮标注，可直接合并粘贴。</div>
+        <div class="card-meta">
+          <span class="meta-tag excel">XLSX</span>
+          <span class="meta-tag">36KB</span>
+        </div>
+      </a>
+
+      <a href="original-topic-table.xlsx" class="card" download>
+        <div class="card-icon">🎬</div>
+        <div class="card-title">下载 · S级题材完整脚本Excel</div>
+        <div class="card-desc">原16个选题增强版+6个S级题材完整第一集脚本（AI小商户/哑绣娘/修车工/宠物殡葬/养老院/预知暴雨），9个工作表。</div>
+        <div class="card-meta">
+          <span class="meta-tag excel">XLSX</span>
+          <span class="meta-tag">48KB</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-h">市场分析与可行性</h2>
+    <div class="cards">
+
+      <a href="market-analysis.html" class="card">
+        <div class="card-icon">📈</div>
+        <div class="card-title">伪综艺 × 伪纪录片 · 市场分析报告</div>
+        <div class="card-desc">7个章节：执行摘要 / 市场情况 / 可行性 / 前景判断 / 内容规律 / 风险分析 / 决策建议。含《水果爱情岛》330万粉案例数据，5种典型团队的最佳路径建议。</div>
+        <div class="card-meta">
+          <span class="meta-tag">市场报告</span>
+          <span class="meta-tag">7章节</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>AI 短剧选题与脚本库 · 小鹿</div>
+  <div style="margin-top:6px;color:#333">xiaolu.airacle.tech / ai-drama-scripts</div>
+</footer>
+
+</body>
+</html>

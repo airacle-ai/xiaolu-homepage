@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI短剧选题完整母表 v2 · 新增10个调研选题</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0a0a0f; color: #e8e8e8; line-height: 1.6; }
+
+  .hero { background: linear-gradient(135deg, #0a0e27 0%, #2d0a3d 100%); padding: 60px 24px 48px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .hero-badge { display: inline-block; background: rgba(255,215,0,0.2); color: #ffd700; padding: 6px 16px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 18px; border: 1px solid rgba(255,215,0,0.4); }
+  .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; background: linear-gradient(135deg, #ffd700 0%, #ff6bc2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: #888; font-size: 14px; max-width: 720px; margin: 0 auto; }
+
+  .actions { margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,0.4); }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 16px; }
+
+  .filter { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter button { background: rgba(255,255,255,0.06); color: #aaa; border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .filter button:hover { color: #fff; }
+  .filter button.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+  .filter button.new-filter { background: rgba(255,215,0,0.15); color: #ffd700; border-color: rgba(255,215,0,0.4); }
+  .filter button.new-filter.active { background: #d97706; color: #fff; border-color: #d97706; }
+
+  .stats { display: flex; gap: 16px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat { background: #16161d; padding: 14px 22px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); text-align: center; min-width: 90px; }
+  .stat-num { font-size: 20px; font-weight: 700; color: #60a5fa; }
+  .stat.highlight { border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.05); }
+  .stat.highlight .stat-num { color: #ffd700; }
+  .stat-label { font-size: 11px; color: #666; margin-top: 4px; letter-spacing: 1px; }
+
+  table { width: 100%; border-collapse: collapse; background: #16161d; border-radius: 10px; overflow: hidden; font-size: 13px; }
+  thead th { background: #1F4E79; color: #fff; padding: 14px 10px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: 1px; }
+  tbody td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; color: #ccc; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tbody tr.row-new { background: rgba(255,215,0,0.04); }
+  tbody tr.row-new:hover { background: rgba(255,215,0,0.08); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.no { width: 55px; text-align: center; color: #888; font-weight: 600; }
+  td.group { width: 105px; }
+  td.sub { width: 130px; color: #aaa; font-size: 12px; }
+  td.title { width: 270px; line-height: 1.7; color: #fff; }
+  td.why { width: 26%; color: #aaa; line-height: 1.9; font-size: 12.5px; }
+  td.story { line-height: 2; color: #ddd; font-size: 12.5px; }
+
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .badge.hot    { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+  .badge.future { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+  .badge.trend  { background: rgba(251,146,60,0.15); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
+  .badge.doc    { background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+  .badge.show   { background: rgba(236,72,153,0.15); color: #ff6bc2; border: 1px solid rgba(236,72,153,0.3); }
+
+  .new-badge { display: inline-block; background: #ffd700; color: #000; padding: 1px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; margin-left: 2px; letter-spacing: 0; }
+
+  .row-hot    { border-left: 3px solid #fbbf24; }
+  .row-future { border-left: 3px solid #4ade80; }
+  .row-trend  { border-left: 3px solid #fb923c; }
+  .row-doc    { border-left: 3px solid #60a5fa; }
+  .row-show   { border-left: 3px solid #ff6bc2; }
+  .row-new    { border-left: 4px solid #ffd700 !important; }
+
+  /* 调研依据说明 */
+  .insight-block { background: #16161d; border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+  .insight-block h3 { font-size: 16px; color: #ffd700; margin-bottom: 16px; }
+  .insight-block ul { padding-left: 22px; color: #aaa; font-size: 13px; line-height: 2; }
+  .insight-block li strong { color: #fff; }
+  .insight-block li code { background: rgba(255,215,0,0.1); color: #ffd700; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+  footer { padding: 32px 24px; text-align: center; color: #444; font-size: 12px; }
+
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 1.4rem; }
+    table { font-size: 11px; }
+    td.title { width: 180px; }
+    td.why, td.story { font-size: 11.5px; }
+    thead th, tbody td { padding: 10px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">v2 · 新增10个调研选题</div>
+  <h1>AI短剧选题完整母表 v2</h1>
+  <p>58个完整选题 = 原16个 + <strong style="color:#ffd700">新调研10个（黄色高亮）</strong> + 伪纪录片16个 + 伪综艺16个</p>
+  <div class="actions">
+    <button class="btn" id="dlBtn">⬇ 下载完整母表 v2</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 调研说明 -->
+  <div class="insight-block">
+    <h3>📌 10个新增选题的调研依据</h3>
+    <ul>
+      <li><strong>末世+反差行业</strong>（婚纱店避难所）— 对应2026最大AI漫剧爆款品类，<code>《末日寒潮》《我在末世当老板》</code>为标杆</li>
+      <li><strong>神话改编新视角</strong>（嫦娥追婚）— 对应<code>《斩仙台下》（10亿+）《西游错把玉帝当亲爹》（35小时破亿）</code>等爆款公式</li>
+      <li><strong>东北地域剧</strong>（打更人剪纸）— 红果"东北剧场"重点扶持赛道，参考<code>《东北90之沈阳女王》</code></li>
+      <li><strong>直播带货维权</strong>（黑心主播下架）— 2026全民热点 + 监管趋严 + 维权爽点</li>
+      <li><strong>整理收纳师</strong>— 2026最热新兴职业之一，符合"被低估的手艺人翻身"公式</li>
+      <li><strong>非遗盘扣</strong>— 国潮+婚嫁双热点，海外汉服热推动传播力</li>
+      <li><strong>国潮汉服走米兰</strong>— 文化输出+艺人逆袭，触达海内外华人</li>
+      <li><strong>县城返乡逆袭</strong>— 北漂叙事+下沉市场，红果主受众群体</li>
+      <li><strong>寻亲抱错</strong>— 经典爆款套路+家族秘密双线推进</li>
+      <li><strong>假装失忆复仇</strong>— 短剧金牌配方+毁容回归张力</li>
+    </ul>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">58</div><div class="stat-label">总选题</div></div>
+    <div class="stat highlight"><div class="stat-num">10</div><div class="stat-label">本次新增</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">爆款题材</div></div>
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">未来题材方向</div></div>
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">热点结合题材</div></div>
+    <div class="stat"><div class="stat-num">32</div><div class="stat-label">伪纪录片+伪综艺</div></div>
+  </div>
+
+  <div class="filter">
+    <button class="active" data-filter="all">全部 58</button>
+    <button class="new-filter" data-filter="new">🆕 仅看新增 10</button>
+    <button data-filter="hot">爆款题材</button>
+    <button data-filter="future">未来题材方向</button>
+    <button data-filter="trend">热点结合题材</button>
+    <button data-filter="doc">伪纪录片</button>
+    <button data-filter="show">伪综艺</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>来源分组</th>
+        <th>一一对应项</th>
+        <th>具体题材/剧名</th>
+        <th>选题原因：符合的爆款核心特征</th>
+        <th>故事梗概</th>
+      </tr>
+    </thead>
+    <tbody id="topicTable">
+    <tr class="row-hot" data-group="hot" data-new="false">
+      <td class="no">1 </td>
+      <td class="group"><span class="badge hot">爆款题材</span></td>
+      <td class="sub">甜宠救赎</td>
+      <td class="title"><strong>《哑绣娘嫁给病弱少东家后，全府听见她的心声》</strong></td>
+      <td class="why">对应参考里的“开局憋屈、主角有隐藏价值、被坚定选择、快速反转”。女主前期被当成哑巴和累赘，隐藏价值是刺绣天赋与心声预警；男主坚定偏爱，几集内完成第一次护妻打脸。</td>
+      <td class="story">苏棠从小被继母压着当绣娘，因为不能说话被送去冲喜，嫁给病弱少东家沈砚白。众人都等她守寡，却不知道她能通过刺绣预见灾祸。她第一次出手救下沈家商队，沈砚白也听懂了她沉默背后的善意，从此在家族争斗里一次次护她、信她。最终苏棠从弃女变成沈家新掌事，完成被轻视到被坚定选择的救赎。</td>
+    </tr>
+    
+    <tr class="row-hot" data-group="hot" data-new="false">
+      <td class="no">2 </td>
+      <td class="group"><span class="badge hot">爆款题材</span></td>
+      <td class="sub">现实职业逆袭</td>
+      <td class="title"><strong>《离开堂哥工地后，我成了装修队长》</strong></td>
+      <td class="why">符合“亲戚压榨、熟人背刺、真实职业、技术流细节、靠手艺翻身、客户口碑反杀”。装修是大众熟悉的高痛点场景，水电、防水、贴砖、报价猫腻都容易引发代入。主角不是突然暴富，而是靠多年手艺和诚信，把被轻视的苦活做成自己的事业。</td>
+      <td class="story">陈立跟着堂哥干装修五年，脏活累活全是他做，结账时却被堂哥以“学徒”“返工”“材料损耗”为由克扣工资，还把一户漏水烂尾的责任推到他身上。陈立被迫离开后，带着两个工友单干，从老小区小单做起，坚持水电横平竖直、防水闭水试验、瓷砖空鼓检测、报价透明。一次堂哥偷工减料导致业主家卫生间渗水，陈立出手补救，靠专业和良心赢回客户。后来他接下整栋旧楼翻新工程，堂哥的队伍被业主退场，才发现当初被他看不起的陈立，早就是队里真正懂技术、能扛事的人。</td>
+    </tr>
+    
+    <tr class="row-hot" data-group="hot" data-new="false">
+      <td class="no">3 </td>
+      <td class="group"><span class="badge hot">爆款题材</span></td>
+      <td class="sub">贵人继承</td>
+      <td class="title"><strong>《奶奶留给我的钥匙，打开了整条老街》</strong></td>
+      <td class="why">对应“善有善报、普通人命运翻盘、财富来源合理、强钩子标题”。钥匙是悬念钩子，财富来自多年照顾老人和老街产权历史，既夸张又有因果链。</td>
+      <td class="story">外卖员林晚照顾孤寡奶奶七年，奶奶临终只留下一把写着“17号”的旧钥匙。亲戚嘲笑她白忙一场，她却发现钥匙能打开老街17号旧仓库，里面藏着奶奶年轻时收下的地契、老物件和一批待确认产权的铺面。林晚没有立刻暴富，而是靠跑档案、找证人、做老街改造计划一步步守住资产。最终她把破败老街做成文创街区，也让贪婪亲戚自食恶果。</td>
+    </tr>
+    
+    <tr class="row-hot" data-group="hot" data-new="false">
+      <td class="no">4 </td>
+      <td class="group"><span class="badge hot">爆款题材</span></td>
+      <td class="sub">中老年复仇</td>
+      <td class="title"><strong>《退休女厂长归来，替外孙女讨回公道》</strong></td>
+      <td class="why">对应“开篇受辱、长辈出山、家族尊严、智谋复仇”。主角不是单纯身份碾压，而是用管理经验、人脉调查、公开审判完成爽点兑现。</td>
+      <td class="story">退休女厂长周桂兰在乡下养老，突然得知外孙女在实习工厂被顶包、被污蔑偷东西。所有人都以为她只是普通老太太，周桂兰却曾经管理过万人大厂。她先暗中查账、调监控、找老员工，再一步步引出厂里管理层的利益链。最终她在全员大会上公开证据，替外孙女洗清冤屈，也把老厂从腐败亲戚手里夺回来。</td>
+    </tr>
+    
+    <tr class="row-hot row-new" data-group="hot" data-new="true">
+      <td class="no">5 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge hot">爆款题材</span></td>
+      <td class="sub">寻亲反转/抱错命运</td>
+      <td class="title"><strong>《被打骂二十年才知道，我才是被抱错的双胞胎》</strong></td>
+      <td class="why">对应'开篇受辱、隐藏身份、强反差、亲情伦理'。寻亲题材自带情绪爆点，'被抱错'是经典爆款套路；亲情+家族秘密双线推进，触达广泛家庭观众，转发率极高。</td>
+      <td class="story">林晓从小就觉得自己跟家人格格不入——爸妈偏爱'亲生'哥哥，逼她辍学打工供哥哥上大学。20年的隐忍，直到一次手术输血才暴露真相：她不是这家的女儿。真正的亲生父母是当地豪门，二十年前医院抱错了孩子。亲生父母找上门接她回家，养父母却死不松口——因为她已是这家的'经济支柱'。林晓没有立刻原谅亲生父母遗忘她二十年，也没有放过养父母对自己的剥削，而是用豪门小姐的身份，重新设计了一场关于'亲情真相'的公开审判。</td>
+    </tr>
+    
+    <tr class="row-hot row-new" data-group="hot" data-new="true">
+      <td class="no">6 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge hot">爆款题材</span></td>
+      <td class="sub">假装失忆·复仇回归</td>
+      <td class="title"><strong>《被毁容那夜，我假装失忆住进了前夫家》</strong></td>
+      <td class="why">对应'经典爆款套路、强反转、观察者视角、复仇爽点'。假装失忆是短剧金牌配方，毁容+回归更添张力；以失忆者视角揭开前夫一家的真面目，每集小反转。</td>
+      <td class="story">商场高管苏念在一场策划好的'意外'中被毁容，醒来发现丈夫江临川早已和闺蜜搬到一起，理由是'她活不过半年'。她没有死，反而靠整形手术换了一张新面孔。一年后，她以'失忆失业的可怜女子'身份找到江家应聘保姆，被前夫一家好心收留。前夫没有认出她，却被这位'失忆陌生女人'打动；婆婆闺蜜每天在她面前细数原配的'罪行'，殊不知每一句都被这位真正的原配记在心里。苏念以局外人视角，亲手把这个家拆给所有人看。</td>
+    </tr>
+    
+    <tr class="row-future" data-group="future" data-new="false">
+      <td class="no">7 </td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">古代职业</td>
+      <td class="title"><strong>《小仵作被退婚后，靠验尸破了侯府灭门案》</strong></td>
+      <td class="why">对应“特殊职业新鲜感、主角隐藏专业能力、反转快、爽点可视化”。仵作身份低微但技能强，开局退婚受辱，随后用专业细节快速打脸。</td>
+      <td class="story">女主宋知微出身仵作世家，被未婚夫嫌晦气当众退婚。当天侯府发生灭门案，所有证据都指向她父亲。宋知微冒险验尸，凭伤口方向、毒发时间和雨夜脚印推翻官府定论。她一边洗清家族冤屈，一边卷入权贵暗斗，最终从被轻贱的小仵作，成为京城人人敬畏的女断案师。</td>
+    </tr>
+    
+    <tr class="row-future" data-group="future" data-new="false">
+      <td class="no">8 </td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">新兴职业</td>
+      <td class="title"><strong>《被裁员后，我做宠物殡葬让全城排队》</strong></td>
+      <td class="why">对应参考中点名的“宠物殡葬”潜力，命中“现实职业逆袭、接地气赚钱、温情爽点、被尊重”。新兴行业有话题性，也能做情绪价值。</td>
+      <td class="story">35岁运营林乔被公司裁员，丈夫和婆家都嫌她没用。她偶然帮邻居送别去世的老狗，发现很多人需要一场体面的宠物告别。林乔从小工作室做起，设计告别仪式、纪念相册、骨灰饰品，还帮老人找回与宠物相伴的情感出口。前公司嘲笑她晦气，她却靠口碑做到全城预约排队，最终把冷门小生意做成温暖品牌。</td>
+    </tr>
+    
+    <tr class="row-future" data-group="future" data-new="false">
+      <td class="no">9 </td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">下沉职业</td>
+      <td class="title"><strong>《被全村笑穷后，我靠废品回收开出循环工厂》</strong></td>
+      <td class="why">对应“下沉职业、真实场景、赚钱翻身、亲戚看不起后打脸”。废品回收具备强反差，能通过分类、渠道、再加工做技术流细节。</td>
+      <td class="story">农村青年赵磊大学没毕业回村收废品，被亲戚嘲笑没出息。没人知道他研究过再生资源供应链，能从旧家电、废铜、纸箱里算出利润。赵磊先解决村里垃圾堆积，再联合快递站和小区做回收点，最后建起小型分拣加工厂。曾经嫌他脏的亲戚，看着他带全村分红，只能低头求他带着一起干。</td>
+    </tr>
+    
+    <tr class="row-future" data-group="future" data-new="false">
+      <td class="no">10 </td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">技术职业</td>
+      <td class="title"><strong>《修车工被豪门羞辱后，三分钟听出千万豪车致命故障》</strong></td>
+      <td class="why">对应“主角有隐藏价值、技术流细节、强反差人设、爽点可视化”。修车工身份低，但靠听声辨故障、机械判断完成高频打脸。</td>
+      <td class="story">修车工阿城陪女友参加豪门宴，被当成低等人赶去停车场。宴会上，一辆限量豪车突然失控，所有专家都判断不出问题。阿城只听发动机三分钟，就指出涡轮、刹车油路和改装线路的隐患，救下车主一命。豪门车队请他做总技师，前女友和羞辱他的人才发现，他曾是国际拉力赛最年轻的机械工程师。</td>
+    </tr>
+    
+    <tr class="row-future" data-group="future" data-new="false">
+      <td class="no">11 </td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">特殊人设的非典型大女主</td>
+      <td class="title"><strong>《五十岁保姆离婚后，成了三个老板的幕后军师》</strong></td>
+      <td class="why">对应“非典型大女主、能力反转、被低估后被尊重”。主角不是年轻爽文女主，而是中年女性靠经验、情商和商业判断翻身。</td>
+      <td class="story">50岁保姆许梅被丈夫嫌弃、被雇主家亲戚看不起。她多年在富人家庭做事，早已看透人情、账目和生意门道。一次意外，她帮雇主识破合伙人做假账，从此被请去处理家族企业危机。许梅没有开挂，而是靠细心、判断力和人脉，把三个濒临失败的小生意盘活。最后她离婚创业，成为真正掌握自己人生的中年女老板。</td>
+    </tr>
+    
+    <tr class="row-future" data-group="future" data-new="false">
+      <td class="no">12 </td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">融入现实逻辑的金手指</td>
+      <td class="title"><strong>《我能预知暴雨，但翻身全靠种好这一亩田》</strong></td>
+      <td class="why">对应“金手指只给机会、真正翻盘靠判断”。有预知天气的爽点，但核心仍是农业技术、供应链和家庭协作，避免无脑开挂。</td>
+      <td class="story">农科毕业生陆青回村后被亲戚嘲笑读书没用，却突然拥有提前三天梦见极端天气的能力。她没有靠能力买彩票，而是用预警调整播种、排水、温室和销售节奏。第一场暴雨后，全村庄稼受损，只有她家的试验田保住产量。陆青随后带村民做订单农业和冷链配送，在一次次天灾里靠专业判断逆袭成县里的新农人代表。</td>
+    </tr>
+    
+    <tr class="row-future row-new" data-group="future" data-new="true">
+      <td class="no">13 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">新兴职业·整理收纳师</td>
+      <td class="title"><strong>《被婆婆赶出家门那天，我成了全城第一收纳师》</strong></td>
+      <td class="why">对应'现实新职业、技艺反转、女性向爽点'。整理收纳师是2026年最热新兴职业之一，符合'被低估的手艺人翻身'公式；婆媳冲突+蓝海技艺，强代入。</td>
+      <td class="story">全职太太陈姝十年来把家里收拾得井井有条，婆婆却嫌她'在家闲着不挣钱、还乱扔东西'，一句话把她赶出了门。陈姝靠着一手专业整理收纳技能，跟着邻居免费整理一个杂乱无章的家——结果照片发上小红书爆了。客户排队预约，她从单户整理做到企业办公室托管，第一年收入超过前夫年薪十倍。当年的婆婆找上门求她'把儿子家也整理一下'，陈姝笑着报价：8888元每平米。婆婆当场要走，又被陈姝喊住：那是邻居家的。</td>
+    </tr>
+    
+    <tr class="row-future row-new" data-group="future" data-new="true">
+      <td class="no">14 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">非遗手艺·盘扣</td>
+      <td class="title"><strong>《被退婚当日，我用奶奶的盘扣手艺让全国新娘排队》</strong></td>
+      <td class="why">对应'非遗国潮、退婚反转、技艺打脸'。国潮+非遗+婚嫁三重热点；以传统技艺翻身契合'被低估的手艺人'爆款公式，海外汉服热也推动传播。</td>
+      <td class="story">苏栀本是富商订婚对象，订婚当天因家境破败被退婚，未婚夫家公开宣布她'配不上'。她回到外婆留下的旧裁缝铺，决定重新拾起家族三代的盘扣手艺。从给邻居改嫁衣开始，到为汉服博主定制珠串盘扣，再到给国际明星设计婚礼旗袍——她用一双手让全国新娘排队等她的预约。前未婚夫家的婚礼当日，新娘穿的旗袍盘扣，正是苏栀亲手做的最新款；新娘转头看着前未婚夫说：'设计师太红，我等了她半年。'</td>
+    </tr>
+    
+    <tr class="row-future row-new" data-group="future" data-new="true">
+      <td class="no">15 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">末世题材·反差行业</td>
+      <td class="title"><strong>《丧尸围城第一天，我把婚纱店改成了末世第一避难所》</strong></td>
+      <td class="why">对应'AI漫剧末世爆款、反差行业、女性大女主、视觉冲击'。末世题材是2026年AI漫剧最热品类（《末日寒潮》《我在末世当老板》为标杆），'婚纱店+丧尸'反差强烈，画面感震撼，适合AI制作。</td>
+      <td class="story">婚纱店老板娘林安发现末世来临时正在调整最后一件嫁衣。城市瞬间陷入混乱，她没有逃，而是用婚纱店的玻璃幕墙、备用发电机、库存的真丝亚麻面料和金属支架，把店面改造成全市第一个能挡住丧尸的避难所。最先来求助的，是当初退掉她婚纱订单、说她'不懂物资管理'的前供应商。林安立下规矩：进避难所先交可换物资，否则免谈。她用婚纱面料缝出帐篷、用裙撑做防御工事、用婚戒回收做物物交换的硬通货——一个被嘲笑'不懂生存'的婚纱店主，成了末世商业秩序的开创者。</td>
+    </tr>
+    
+    <tr class="row-future row-new" data-group="future" data-new="true">
+      <td class="no">16 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge future">未来题材方向</span></td>
+      <td class="sub">神话改编·新视角</td>
+      <td class="title"><strong>《嫦娥追婚那夜，我才发现自己是吴刚的私生女》</strong></td>
+      <td class="why">对应'AI漫剧神话爆款、IP认知度、反差幽默、Z世代审美'。神话改编是AI漫剧最大爆款品类（《斩仙台下》《西游错把玉帝当亲爹》），对经典人物做'私生女''追婚'等现代化改编自带话题。</td>
+      <td class="story">凡间普通女孩月禾从小就觉得自己对桂花树有种莫名的亲近感。直到某天月圆夜，一个金光闪闪的女人从天而降——是嫦娥。嫦娥说：'你爹欠我一个交代。'原来吴刚伐桂三百年，是因为当年在凡间留下了月禾的母亲，而嫦娥一直被瞒在鼓里。月禾还没消化'自己是月宫私生女'这件事，吴刚也现身了，并被神界要求三日内'娶了嫦娥还旧情'。月禾不愿父亲做这种政治婚姻，独自上月宫和嫦娥谈判——用一场凡间打工人的逻辑（'分居二十年还有什么感情可言'），在月宫掀起了天上人间最荒诞的家庭和解。</td>
+    </tr>
+    
+    <tr class="row-trend" data-group="trend" data-new="false">
+      <td class="no">17 </td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">高考</td>
+      <td class="title"><strong>《高考前夜，寒门妈妈撕开顶替录取的骗局》</strong></td>
+      <td class="why">对应“高压迫、家人受辱、长辈出山、快速反转”。高考自带全民情绪，寒门、顶替、母亲复仇都具备强代入。</td>
+      <td class="story">单亲妈妈秦兰摆摊供女儿读书，女儿高考成绩优异却突然被告知志愿异常。亲戚劝她认命，学校也推脱责任。秦兰曾是档案室临时工，熟悉流程漏洞，她一边安抚女儿，一边查登录记录、快递单和签字笔迹。最终她揭开富商家庭顶替名额的骗局，让女儿拿回录取通知书，也让所有看不起她的人闭嘴。</td>
+    </tr>
+    
+    <tr class="row-trend" data-group="trend" data-new="false">
+      <td class="no">18 </td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">毕业季</td>
+      <td class="title"><strong>《实习生背锅被辞退后，反手救回上市项目》</strong></td>
+      <td class="why">对应“职场被坑、主角隐藏能力、前几集小爽点、反派近关系”。毕业季代入强，适合做职场打脸。</td>
+      <td class="story">应届生姜宁刚入职就被主管安排背锅，项目出问题后被全组推出来辞退。她没有公开吵闹，而是保留了需求记录、代码提交和客户沟通证据。三天后公司上市关键项目崩盘，只有姜宁知道真正的漏洞在哪里。她回公司救场，也当众揭穿主管抢功甩锅的链条，从廉价实习生成长为核心项目负责人。</td>
+    </tr>
+    
+    <tr class="row-trend" data-group="trend" data-new="false">
+      <td class="no">19 </td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">世界杯/奥运</td>
+      <td class="title"><strong>《退役陪练被羞辱后，带草根球队踢进全国赛》</strong></td>
+      <td class="why">对应“体育天才回归、草根逆袭、爽点可视化”。比赛天然适合短剧节奏，每一场都能提供阶段性打脸。</td>
+      <td class="story">前国青陪练韩野因伤退役，在县城球场当管理员，被昔日队友嘲笑只配捡球。几个被校队淘汰的孩子求他训练，韩野用最土的场地、最狠的基础训练带他们参赛。第一场他们被豪门青训队看不起，却靠体能、配合和战术反杀。韩野也在带队过程中走出伤病阴影，最终带草根球队冲进全国赛。</td>
+    </tr>
+    
+    <tr class="row-trend" data-group="trend" data-new="false">
+      <td class="no">20 </td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">暑期旅游</td>
+      <td class="title"><strong>《被网红差评毁掉后，我把破民宿做成全网预约王》</strong></td>
+      <td class="why">对应“暑期文旅、开店经营、被抹黑后靠品质逆袭”。有真实经营细节，也有差评反转和排队预约的可视化爽点。</td>
+      <td class="story">山区姑娘阿禾继承父亲留下的破民宿，刚开业就被网红恶意差评，说她家脏乱差。游客退订、亲戚逼她低价卖房。阿禾没有卖惨，而是重新设计亲子采摘、山泉早餐、非遗手作和夜游路线，还公开直播整改过程。第一批真实游客替她发声，暑期订单爆满，曾经想低价收购民宿的人反过来求合作。</td>
+    </tr>
+    
+    <tr class="row-trend" data-group="trend" data-new="false">
+      <td class="no">21 </td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">AI热潮</td>
+      <td class="title"><strong>《被裁员后，我用AI帮小商户多赚了三倍》</strong></td>
+      <td class="why">对应“普通人用AI创业、现实职业逆袭、能力反转”。AI不是万能系统，而是工具；爽点来自主角把工具落到获客、选品、客服和短视频运营。</td>
+      <td class="story">广告优化师周屿被大厂裁员，回到老家被亲戚说成失败者。他发现本地小商户不会做线上生意，于是用AI帮早餐店写菜单文案、帮服装店做选品预测、帮农户剪短视频卖水果。第一家小店营业额翻三倍后，全城商户排队找他。前公司想请他回去，他却成立本地AI运营服务社，带普通人一起赚钱。</td>
+    </tr>
+    
+    <tr class="row-trend" data-group="trend" data-new="false">
+      <td class="no">22 </td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">银发经济</td>
+      <td class="title"><strong>《养老院护工被冤枉后，带老人们开了第二人生公司》</strong></td>
+      <td class="why">对应“银发经济、中老年创业、亲情与尊严、弱者反击”。既有养老院风云，也有老人群像和温情爽点。</td>
+      <td class="story">护工唐小满在养老院尽心照顾老人，却被院长亲戚冤枉偷钱赶走。几位老人知道真相，拿出各自隐藏的技能：退休会计、老裁缝、前厨师、老教师，和唐小满一起开办“第二人生服务社”。他们从老人餐、陪诊、旧衣改造做到社区服务品牌。院长想封杀他们，却被老人们联手曝光黑账，唐小满也从低微护工变成银发创业团队的负责人。</td>
+    </tr>
+    
+    <tr class="row-trend row-new" data-group="trend" data-new="true">
+      <td class="no">23 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">国潮·汉服文化</td>
+      <td class="title"><strong>《被骂'过气艺人'那天，我穿汉服登上了米兰时装周》</strong></td>
+      <td class="why">对应'国潮自信、艺人逆袭、海外传播、文化输出'。汉服已成现象级文化，加上艺人逆袭+米兰时装周双重爆点，触达海内外华人群体，海外平台传播力极强。</td>
+      <td class="story">二线女演员江月接连三年没戏拍，被娱乐圈媒体集体唱衰'过气'。她干脆息影回老家学汉服设计——爷爷是国家级汉服非遗传承人。一年后，她带着自己设计的'敦煌主题'汉服走上米兰时装周T台，由她亲自压轴。视频在海外社交平台爆火，外网评论'这才是真正的Chinese Fashion'。前经纪公司想跟她重新签约，江月笑着说：'我现在的客户是国际奢侈品牌，他们也想签我。'国潮+艺人逆袭，让她从被嫌弃的'过气艺人'变成中国文化输出的代表性人物。</td>
+    </tr>
+    
+    <tr class="row-trend row-new" data-group="trend" data-new="true">
+      <td class="no">24 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">直播带货·维权打脸</td>
+      <td class="title"><strong>《被坑掉500万那天，我让全网黑心主播一夜下架》</strong></td>
+      <td class="why">对应'直播乱象热点、全民关注、维权爽点、行业自反'。直播带货乱象是全民痛点；主播打脸主播，行业自反，强爽点+话题度，平台监管趋严背景下题材合规。</td>
+      <td class="story">王莉莉是普通宝妈，看了某千万粉丝主播的'投资讲座'，把家里500万拿出来跟着投资了一款保健品，结果发现是三无产品+消费陷阱。她没有撕骂直播间求退款，而是默默自学了三个月直播带货+法律维权，注册了自己的账号。她从揭穿一家小直播间的'全网最低价'骗局开始，每天直播揭一个黑心主播，配上证据链和法律条文。账号一周涨粉500万，半年后她联合受害者集体诉讼，全网黑心主播一夜被平台下架。当初坑她的主播跪在她直播间求和解，她平静地说：'你坑过的500万家庭都在线上看。'</td>
+    </tr>
+    
+    <tr class="row-trend row-new" data-group="trend" data-new="true">
+      <td class="no">25 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">县城返乡创业</td>
+      <td class="title"><strong>《北漂十年回老家那天，全县城等着看我笑话》</strong></td>
+      <td class="why">对应'下沉市场返乡热、北漂叙事、县城逆袭、城乡碰撞'。北漂失败回乡是普遍社会现象；'看笑话VS逆袭'双重叙事，触达三四线城市观众，红果平台主要受众群体。</td>
+      <td class="story">北漂十年的程序员陈一鸣被裁员后回到县城老家，全家族都在等着看他笑话——尤其是从小压着他的表哥（开了三家茶馆的'成功人士'）。陈一鸣没有反驳，而是用大厂的数据分析能力，发现县城没有任何一家像样的'自习室+咖啡店'组合。他用最后的存款盘下一个废弃文化馆，做出当地第一家年轻人聚集地。一年后，县城所有想读书、考公、做副业的年轻人都成了他的会员；表哥的茶馆因没年轻人来开始亏损。表哥找上门求合作，陈一鸣回了一句：'你当初说县城不需要程序员。'</td>
+    </tr>
+    
+    <tr class="row-trend row-new" data-group="trend" data-new="true">
+      <td class="no">26 <span class="new-badge">🆕 新增</span></td>
+      <td class="group"><span class="badge trend">热点结合题材</span></td>
+      <td class="sub">地域剧·东北文化IP</td>
+      <td class="title"><strong>《东北小镇打更人，凭一手剪纸救活了整条文化街》</strong></td>
+      <td class="why">对应'红果东北剧场爆款、地域文化、非遗IP、下沉市场'。地域特色题材是2026年红果重点扶持方向，东北剧场已成爆款品类（《东北90之沈阳女王》参考），非遗+短视频双引擎。</td>
+      <td class="story">老张是东北小镇上最后一个打更人，年过六十还在敲梆子。镇上文化街连续亏损被开发商收购，所有老店要被拆。老张默默打开自家阁楼，里面是他做了五十年的剪纸——一面墙的'东北民俗百图'。他做了一件事：把每张剪纸的故事录成短视频，发到抖音。十天涨粉两百万，无数人涌入小镇看打更人，看剪纸，吃东北菜。开发商想收购老张的剪纸版权被拒，最后镇政府把文化街改名为'老张文化街'，请他当街长。老张敲着梆子说：'老祖宗传下来的东西，谁也别想丢了。'</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">27 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">职场观察</td>
+      <td class="title"><strong>《周一清晨：一种名为'打工人'的物种，开始了它一年中最漫长的迁徙》</strong></td>
+      <td class="why">符合'集体共鸣、日常但荒诞、情绪宣泄、低成本制作'。每个打工人都经历过的周一焦虑，配BBC严肃旁白，反差产生极强笑点。共情转发率极高，工位群天然传播。</td>
+      <td class="story">纪录片镜头从城市俯瞰开始，聚焦一只名为'打工人'的普通个体。从清晨6:58第一个闹钟响起、连续按掉三次（学界称为'再睡五分钟'），到地铁迁徙过程中进入的'通勤麻木'状态，再到公司门前0.4秒的'微笑切换'仪式，最后到工位前盯着老板凌晨11:43发的消息进行复杂的回复时机计算。镜头平静观察，旁白严肃定义每一种行为，量化出荒诞数据，最终在夕阳下用一句温柔的'明知山有虎，偏向周一行'收尾。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">28 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">职场观察</td>
+      <td class="title"><strong>《会议室的伪装术：一项关于群体层级话语权竞争的田野调查》</strong></td>
+      <td class="why">符合'高频共鸣、强反差、笑点密集'。会议是所有打工人共同的痛点，把'假装记笔记''应和点头''逃离会议室'用学术语言重新定义，引发集体爆笑。</td>
+      <td class="story">镜头进入一场普通的周一例会。研究人员观察到这是打工人种群中最神秘的集体仪式之一——表面交流信息，实际78.4%内容可用邮件代替。镜头扫过每个人：有人对着本子'认真记录'（实际在画圈），有人'点头'（眼神已飘向宇宙），有人喝水（让嘴有事干）。当老板第三次重复同一观点时，没有一只打工人敢率先提出离开——这种现象被学界命名为'会议惯性'，俗称'不知道自己在干嘛，但离开好像更尴尬'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">29 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">职场观察</td>
+      <td class="title"><strong>《午休：一场十二分钟内必须完成的自我救赎》</strong></td>
+      <td class="why">符合'高代入、时效性强、情绪释放'。中午抢微波炉、找空闲座位、厕所冥想是全民共鸣场景，时长短易于切片传播。</td>
+      <td class="story">镜头记录从12:00午休铃响开始的120分钟。打工人冲向食堂，进行一场叫做'抢座位'的领地标记行为。吃饭平均耗时8分钟（咀嚼次数下降40%）。剩余112分钟被分配为：刷手机40分钟、装睡30分钟、厕所冥想15分钟、和同事说话5分钟、真正闭眼休息12分钟。研究人员发现，午休的本质并非休息，而是'对上午自己工作意义的二次确认'，以及'对下午自己即将经历的痛苦的提前哀悼'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">30 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">城市生态</td>
+      <td class="title"><strong>《广场舞大妈领地争夺战：一项关于都市顶级物种的田野调查》</strong></td>
+      <td class="why">符合'话题性强、辨识度高、跨年龄共鸣'。广场舞大妈是公众熟知的群体，用动物行为学解释她们的领地争夺，自带话题。</td>
+      <td class="story">傍晚5点的城市公园，王大妈率先抵达，将500W音响放在广场中央完成领地标记。5点20分，李大妈率队从北门进入，两支队伍展开'无声的领土谈判'——表面寒暄，实际评估对方设备参数。5点半两群同时开舞，《最炫民族风》与《DJ版荷塘月色》并行。一位老大爷误入核心区域，引发本季最激烈的领地冲突，王大妈11秒内完成驱逐，无肢体冲突，无言语升级——这就是顶级物种的效率。退场后社交时长往往超过跳舞本身。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">31 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">城市生态</td>
+      <td class="title"><strong>《公园相亲角：一场由父母主导的集体求偶实验》</strong></td>
+      <td class="why">符合'社会观察、辈际话题、强反差'。代理求偶现象本身就具备戏剧性，父母在场子女缺席的设定极具讽刺感。</td>
+      <td class="story">周日上午的公园相亲角，父母们俯身在花坛上书写'子女简历'——身高/年龄/户口/收入/房产是必填项，性格爱好长相是禁忌项。镜头记录两位母亲的'代理谈判'：互相打量纸条，快速交换条件，全程当事人不在场。研究人员发现相亲角内部存在森严等级（核心区/次级区/边缘区/灰色地带），一位38岁儿子的父亲连续11周没有匹配成功，但他仍每周到场。平均年限3.4年，最长记录11年——他们的目的并非真促成婚姻，而是'在这个市场化的城市里，为孩子做点什么'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">32 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">季节性迁徙</td>
+      <td class="title"><strong>《春运：地球史上规模最大的集体迁徙》</strong></td>
+      <td class="why">符合'年度话题、全民参与、视觉震撼、季节性流量'。春运是中国独有的现象级事件，用候鸟学解释能引爆话题。</td>
+      <td class="story">镜头从太空俯瞰春运期间的中国地图，亿万条线路从一线城市发散向中西部。研究人员用候鸟迁徙图谱对比春运路线——惊人吻合。镜头深入：一只打工人提前40天蹲守抢票，使用12306的精准时刻'10:00:01'。北京西站，研究人员观察到'集群打包行为'——每只打工人平均带回家2.3件礼物，其中65%是给父母的保健品。返程时携带物增加140%，主要为父母强塞的家乡特产。这一现象被命名为'反向迁徙补偿行为'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">33 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">季节性现象</td>
+      <td class="title"><strong>《双十一：一种被精心设计的集体非理性消费行为研究》</strong></td>
+      <td class="why">符合'年度热点、全民共鸣、行为经济学跨界'。双十一凑满减是每年最魔幻的群体行为，学术解构有传播力。</td>
+      <td class="story">镜头记录11月10日深夜23:30的住宅楼，灯火通明。打工人手持计算器，反复演算'满300减50'的最优组合。研究人员发现，平均一名消费者为了凑满减，会购买2.4件并不需要的商品，总价超出'值得购买价'47%。最神秘的是'购物车深度'——平均消费者在双十一前购物车有82件商品，最终下单12件，但下单后立刻删除其中3件，删除后又恢复其中1件。这一现象学界称为'消费决策反复横跳综合征'。次日早上，快递如潮水涌来，70%的消费者在拆包时露出'后悔但已经付钱'的标志性表情。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">34 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">季节性现象</td>
+      <td class="title"><strong>《考研图书馆占座：一种领地标记行为高度发达的人类亚种》</strong></td>
+      <td class="why">符合'代入感强、年轻化、季节性话题'。每年考研季都有占座新闻，用动物领地行为解读能引发共鸣。</td>
+      <td class="story">9月开学的大学图书馆，凌晨5:30，第一只考研党出现在门口。研究人员发现，他们用书本、水杯、外套等物品进行多点位标记，平均一只考研党可同时占领3.2个座位。中午吃饭时间，被占座位无人入座的成功率为87%——这是一种基于'群体默契'的领地保护机制。一旦有人挑战领地（坐到被占位置），将引发学界称为'图书馆战争'的冲突。最有趣的是'24小时占座族'——他们将整套被褥搬入图书馆，用睡眠维持领地。研究人员追踪三个月后发现：占座最久的，未必考得最好，但确实最累。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">35 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">商业生态</td>
+      <td class="title"><strong>《菜市场食物链：一种被低估的城市权力结构》</strong></td>
+      <td class="why">符合'生活化、画面感强、跨年龄共鸣'。菜市场是城市最具烟火气的空间，用食物链解释摊位地位极具创意。</td>
+      <td class="story">凌晨4点的城市批发市场，老张推着小车进入。他在这里干了22年，地位等同于这片生态的'顶级掠食者'。研究人员观察发现，菜市场内部存在严格的等级结构：A级摊位（市场入口、视野开阔）、B级摊位（中段位置）、C级摊位（角落、靠厕所）。摊位继承遵循'师徒制'，新来者必须从C级开始打拼。最有趣的现象是'砍价仪式'：买菜大妈与老张的对话节奏，每一句话都有固定脚本，双方都心知肚明最终成交价。这种仪式不只是交易，更是一种'每天都要进行的社交确认'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">36 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">商业生态</td>
+      <td class="title"><strong>《外卖小哥的迁徙路线图：城市夜空中最精密的导航网络》</strong></td>
+      <td class="why">符合'时效性、社会关注度高、视觉冲击力强'。外卖骑手是城市新群体，俯瞰路线图本身就是震撼画面。</td>
+      <td class="story">镜头从城市夜空俯瞰，红黄蓝色光点在街道上流动——那是外卖骑手的实时位置。研究人员通过算法追踪发现，资深骑手脑中存在一张比导航更精准的'隐形地图'：哪个十字路口的红灯最长、哪个小区门禁最难、哪栋楼电梯最慢、哪家餐厅出餐最快。这些数据从未被记录在任何系统里，但被一位又一位骑手用脚步丈量出来。研究人员还发现'雨天迁徙加速现象'——下雨天订单暴增，但配送速度反而提升22%——'因为站着不动会更冷'。最后镜头停在凌晨2点，最后一只骑手送完单，停在路边吃了一份冷掉的盒饭。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">37 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">亚文化</td>
+      <td class="title"><strong>《健身房的镜前展示行为：一种现代雄性求偶仪式》</strong></td>
+      <td class="why">符合'反差极强、性别话题、年轻人共鸣'。把健身房肌肉男的镜前自拍用动物求偶学解读，笑点密集。</td>
+      <td class="story">夜晚的健身房，镜头观察雄性个体A：进入栖息地后4秒镜前自检、装备调整、踏入展示区瞬间挺胸收腹（胸围自我感觉+2cm）。训练每20秒就主动停止动作，转身面对镜子8秒——研究人员命名为'镜前自我确认'。平均每分钟看镜子3.7次，极端值11次（拍照者）。19:32一位雌性个体进入，五位雄性个体即时反应：加重哑铃（实际能力上限被突破）、声音音量提升4倍、动作幅度增大、做不擅长的引体向上。最后离场前必须完成自拍仪式——1分钟拍摄、21分钟筛选、18分钟修图、4分钟想文案（最难）。这张照片将成为他下一周的精神支柱。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">38 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">商业生态</td>
+      <td class="title"><strong>《奶茶店为何总开在转角：种群繁殖学视角下的商业扩张策略》</strong></td>
+      <td class="why">符合'生活化、好奇心驱动、年轻人话题'。'为什么转角都是奶茶店'这种'细思恐极'类话题天然有传播力。</td>
+      <td class="story">研究人员追踪一座城市三年的奶茶店分布数据，发现一个惊人规律：85%的奶茶店开在转角。原因复杂——人流必经、视野最佳、租金次优。但更深层的是'品牌种群战'：当一家奶茶店在转角扎根，竞品会在3-5个月内开在斜对角形成'双子格局'，半年后该路口将出现第三家。研究人员通过GIS模型预测，按这个速度，一个500米的步行街最终会容纳11-13家奶茶店，达到'饱和密度'后开始内卷大战。死亡曲线显示：第14家奶茶店进入将引发首家闭店——这一过程被命名为'转角生态平衡机制'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">39 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">城市生态</td>
+      <td class="title"><strong>《网红打卡地的兴衰：一项关于物种入侵与生态崩溃的研究》</strong></td>
+      <td class="why">符合'年轻化、话题性、社会观察'。网红地从爆火到衰败的过程极具戏剧性，吐槽点密集。</td>
+      <td class="story">研究人员记录了一家普通咖啡馆的爆红与衰亡。第一阶段：素人摄影师发现，发布在小红书。第二阶段：500条同款打卡照涌入，店家发现客流暴增2000%。第三阶段：店内座位被'打卡党'长期占据，每张桌只点一杯咖啡却拍照2小时。第四阶段：真正想喝咖啡的人开始抱怨，老顾客流失。第五阶段：负面评价开始增多——'拍照好看但难喝''全是网红'。第六阶段：流量退潮，店家无法回到原本节奏。第七阶段：闭店。整个周期：8.4个月。研究人员命名为'网红地物种入侵综合征'，已观察到127个样本，无一例外。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">40 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">季节性现象</td>
+      <td class="title"><strong>《高考考场外家长群行为：一种焦虑型集体心理学样本》</strong></td>
+      <td class="why">符合'年度高频热点、家庭话题、跨代共鸣'。高考家长群是全民关注现象，用心理学解读有深度。</td>
+      <td class="story">6月7日上午8:30，全国2万个高考考场外，集结着4000万家长。研究人员现场观察：90%的母亲穿红色（'旗开得胜'图腾行为）、85%的父亲在抽烟（焦虑型应激反应）。考试期间，家长群分为三派：'守门派'死守考场门口；'徘徊派'每5分钟绕考场一圈；'冷静派'在车里假装看手机但实际盯着考场。研究人员发现一种独特现象——'家长聊天网络'：考前互不相识的家长，会在2小时内形成紧密信息互助群体，互相分享考点、孩子专业方向、复读机构联系方式。考试结束铃响后5秒内，所有家长同时启动'扑出动作'，研究人员命名为'高考迁徙的逆向集群冲刺'。</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">41 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">城市生态</td>
+      <td class="title"><strong>《网约车司机的隐形领地：一种基于群体智慧的分布式信息网络》</strong></td>
+      <td class="why">符合'生活化、灰色幽默、群体共鸣'。网约车司机的小群体智慧是普通人不了解的世界。</td>
+      <td class="story">研究人员深入一家网约车司机群体3个月，发现他们脑中存在一张'隐形领地图'：哪个商场出口傍晚单多、哪个机场航站楼接客效率高、哪条路口在3点档堵车避开、哪些小区夜间订单概率高。这些信息通过司机们的微信群口口相传，形成分布式情报网。研究人员还发现'司机潮汐迁徙'：每天9:30 CBD周边司机突增，14:00大学城周边司机突增，22:00夜店区附近司机突增。最有趣的发现是——所有资深司机都能凭借接单时间和起点，准确预测乘客职业。研究人员让一位司机闭眼接10单，准确率达84%。'这不是技术，'这位司机说，'这是这条街每天教给我的事。'</td>
+    </tr>
+    
+    <tr class="row-doc" data-group="doc" data-new="false">
+      <td class="no">42 </td>
+      <td class="group"><span class="badge doc">伪纪录片</span></td>
+      <td class="sub">亚文化</td>
+      <td class="title"><strong>《漫展现场的求偶仪式：一种用cosplay完成的雄性展示与雌性筛选》</strong></td>
+      <td class="why">符合'年轻化亚文化、视觉冲击、社群话题'。漫展现场用学术语言解读，自带圈层传播力。</td>
+      <td class="story">上海漫展现场，研究人员观察到一种独特的求偶仪式。雄性个体精心准备cosplay服装（学界称'雄性羽毛展示'），雌性个体围观、合影、给予评价（'雌性筛选行为'）。统计显示：穿盔甲类角色的合影率比普通服装高320%。但更复杂的是雌性也cosplay——这是一种'反向求偶'行为，吸引同好雄性接近。漫展的'求合影文化'本质是一种社交仪式，每次合影平均建立23秒的'仪式性接触'，相当于现代生活中难以建立的陌生人交流契机。研究人员追踪一对在漫展认识的coser，6个月后发现他们仍保持联系——但身份从'求偶对象'变成了'同好朋友'。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">43 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">恋综·爱情岛</td>
+      <td class="title"><strong>《调料恋爱岛》</strong></td>
+      <td class="why">符合'万物拟人、中文文化梗、强人设、连续剧潜力'。'醋=吃醋'天然带梗，盐糖油辣酱油六位角色各有标签，可做长线IP。</td>
+      <td class="story">六位单身调料登上爱情岛寻找真爱——暴躁御姐辣椒、稳重老实盐、甜美糖、天生吃醋的醋、圆滑两面派油、永远只说'哦'的酱油。第一集六人合作做红烧肉，辣椒抢风头被醋怀疑'和糖关系不一般'，盐和辣椒在海边夕阳下擦出意外火花。醋每集吃醋7次起步，酱油每集只说一句话却成为观众最爱角色。每集围绕'任务-冲突-采访间独白-淘汰预告'结构展开，节目组规则反转、人物关系重组，调料宇宙逐步成型。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">44 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">推理·明星大侦探</td>
+      <td class="title"><strong>《谁动了我的西红柿：蔬菜悬疑大侦探》</strong></td>
+      <td class="why">符合'熟悉综艺形式、新颖主角、悬疑节奏、家庭场景'。蔬菜拟人办悬疑案，每集破一个'厨房谜案'。</td>
+      <td class="story">西红柿小姐一觉醒来，发现自己被'切了一刀'——这是一起'故意伤害案'。冰箱里六位嫌疑人：刀子嘴豆腐心的洋葱、冷面老黄瓜、神经质的辣椒、人精胡萝卜、神秘的茄子、看似无辜的土豆。蔬菜版'明星大侦探'每集破一个厨房谜案：《消失的蒜瓣》《冰箱里的纸条》《被冻僵的鱼》。每位蔬菜都有可疑动机和不在场证明，最终在大法官生姜的引导下揭开真相。融合了拟人喜剧+本格推理，单集45分钟（B站版）/3集合并（抖音版），适合做季播。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">45 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">选秀·创造营</td>
+      <td class="title"><strong>《创造萌物营：小动物偶像选秀》</strong></td>
+      <td class="why">符合'萌物经济、选秀模板、跨年龄受众'。把'创造营'套在猫咪水獭柯基身上，治愈感+娱乐感双倍。</td>
+      <td class="story">100只小动物来到'萌物创造营'，争夺出道11只的名额。导师团：'萌主'熊猫、'颜值担当'水獭、'实力派'柯基、'神秘组长'狐狸。第一期选手自我介绍：'我是猫咪小橘，今年3岁，爱好抓老鼠和被人撸。我的梦想是——成为人类家里的霸主。'每期任务：唱跳（猫咪走台步、狗狗摇尾舞）、表演（撒娇/打滚/瞪眼）、综艺感（突袭主人、抢镜头）。每集结尾投票淘汰，配合粉丝应援文化。'萌物'天然自带'被宠'属性，给予观众多巴胺，是最易吸粉的综艺形式之一。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">46 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">古装·恋综</td>
+      <td class="title"><strong>《当归记：本草恋爱大型连续剧》</strong></td>
+      <td class="why">符合'中药文化梗、古装审美、女性向'。'当归=应当归来'谐音爱情归宿，差异化极强。</td>
+      <td class="story">古风背景下的中药材恋爱综艺。男主'当归'——名字注定他要在每集结尾'归来'。女主'白芍'——清冷美人，主'柔'；情敌'人参'——名贵世家公子；女配'红枣'——甜美富家女；反派'砒霜'——表面温柔实际毒辣。每集围绕一道药方：当归白芍配合治疗女主'气血不足'，引发情愫；人参出场扰乱本草秩序，与当归争夺白芍；'四物汤'集合时所有CP同框，张力拉满。融合中药文化科普+古装恋综+谐音梗，目标受众女性向，可联名中医药品牌做长线变现。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">47 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">相亲·非诚勿扰</td>
+      <td class="title"><strong>《家电相亲会：厨房电器的相亲日记》</strong></td>
+      <td class="why">符合'生活化、家庭话题、装修人共鸣'。家电拟人天然有'夫妻''互补'设定，相亲节目形式极成熟。</td>
+      <td class="story">20位单身家电齐聚相亲现场，主持人煤气灶。男嘉宾：高冷型冰箱、阳光型微波炉、技术宅洗衣机、文艺型咖啡机。女嘉宾：仙气十足的空气炸锅、稳重的电饭煲、神经大条的吸尘器。第一组CP：油烟机vs洗碗机。油烟机：'我每天为你吸走油烟，你居然嫌我太油腻？'洗碗机：'你那么大噪音我受不了。'矛盾爆发。第二组：冰箱vs微波炉。冰箱：'我永远是冷的。'微波炉：'我可以让你瞬间温暖。'但冰箱说：'你温暖不过3分钟。'融合家电属性梗+相亲节目套路+生活观察喜剧。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">48 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">竞技·奔跑吧</td>
+      <td class="title"><strong>《奔跑吧文具：办公桌大乱斗》</strong></td>
+      <td class="why">符合'童年回忆、办公场景、竞技综艺套路'。文具人格化对应打工人/学生身份，跨年龄共鸣。</td>
+      <td class="story">六位文具组成奔跑团：队长订书机（最沉稳，被替代焦虑）、便利贴（永远在掉队但被需要）、马克笔（颜色鲜艳爱抢风头）、橡皮（专门擦掉别人错误的背锅侠）、红笔（高高在上的领导）、回形针（多功能但常被忽视）。任务：每集闯关一个办公室场景。第一关'抽屉迷宫'——找回失踪的笔帽；第二关'打印机大战'——卡纸如何破解；第三关'撕名牌'——文具版生死战。融合童年文具记忆+办公室打工人共鸣+成熟综艺套路。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">49 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">相亲·恋综</td>
+      <td class="title"><strong>《水果非诚勿扰：果园相亲会》</strong></td>
+      <td class="why">符合'已被验证的水果赛道、相亲综艺成熟模板、家庭话题'。借势水果拟人热潮做差异化升级版本。</td>
+      <td class="story">果园大型相亲会。20位单身水果上场：稳重派苹果、激情派芒果、神秘派榴莲、冷美人葡萄、阳光型橙子。男嘉宾苹果首登场，自我介绍'我营养丰富、性格稳定、不容易腐烂。'24盏灯瞬间亮起20盏。情感反转：榴莲登场，刚出现一半灯灭——但留下的几盏灯都是真爱党。剧情冲突：苹果在台下发现自己暗恋3年的草莓也来了，但草莓和芒果走得很近。每位水果都有一个'果园身世'，每集都有强情感反转，可做长线季播。借鉴《水果爱情岛》模板但做了'相亲'差异化。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">50 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">婚后纪实</td>
+      <td class="title"><strong>《调料婚后实录：盐与酱油的鸡毛蒜皮日常》</strong></td>
+      <td class="why">符合'结婚后真实生活、夫妻话题、生活喜剧、深度共鸣'。从恋综岛延伸到婚后生活，是调料IP的纵深开发。</td>
+      <td class="story">《调料恋爱岛》的衍生纪实秀。盐和酱油结婚一年后的真实生活——日常吵架的根源居然是'谁更适合放进菜里'。盐的妈妈来访总嫌弃酱油'颜色太深没气质'，酱油爸觉得盐'太朴素配不上儿子'。两人合开调味品小店遇到资金困境，外面来了诱惑：辣椒姐前来挖角，提议盐参与'重口味连锁加盟'；醋老板想投资酱油的'有机酱油'项目。婚姻里的现实困境+调料梗融合，触达已婚观众。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">51 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">音乐·好声音</td>
+      <td class="title"><strong>《中国好味道：菜品们的歌唱比赛》</strong></td>
+      <td class="why">符合'美食+音乐双维度、家庭共鸣'。菜品拟人选秀，麻婆豆腐vs红烧肉等经典对决自带话题。</td>
+      <td class="story">舞台上一道道菜品轮番登场演唱。麻婆豆腐唱川剧Rap：'麻起来你别躲！'红烧肉低沉嗓音诠释经典老歌：'我用什么把你留住......'对决之夜：东北乱炖vs广东老火汤，南方派与北方派的史诗对话。导师团：身价最高的鲍鱼老师、平民代表青菜老师、暗黑系豆腐脑老师（咸甜之争代表）、跨界料理寿司老师。每集观众投票决定哪道菜进入'下饭排行榜'。融合菜品文化+地域梗+音乐综艺套路，餐饮品牌植入空间巨大。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">52 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">家庭观察</td>
+      <td class="title"><strong>《我家那调料：调味料的代际焦虑》</strong></td>
+      <td class="why">符合'家庭话题、代际差异、中年观众共鸣'。把'我家那闺女'套在调料上，妈妈担心辣椒晚婚是绝佳设定。</td>
+      <td class="story">辣椒妈妈坐在演播厅嘉宾席：'我女儿辣椒30了还不结婚，整天和那些调料瞎玩。'演播室主持人尴尬：'呃，妈妈这个......'摄像机切到辣椒家中现实画面：辣椒一个人加班到深夜（'又在和厨师较劲'），周末和朋友吃火锅（'又是聚会'），相亲对象都被她吓跑（'你这么辣谁受得了'）。每集嘉宾不同的调料妈妈轮番吐槽自己的孩子：盐妈嫌儿子'太老实'、糖妈嫌女儿'被人吃豆腐'。融合家庭代际焦虑+生活喜剧+中年观众痛点。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">53 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">恋综·CP</td>
+      <td class="title"><strong>《国民早餐：豆浆和油条的爱情故事》</strong></td>
+      <td class="why">符合'国民CP、生活化、跨年龄共鸣'。豆浆油条本就是大众心中的'天作之合'，做成恋综极易传播。</td>
+      <td class="story">早餐宇宙里的官配CP——豆浆和油条。但今天，他们要面对挑战。新角色'三明治'登场，自称'国际化时尚早餐'，对豆浆穷追不舍。包子姐姐被网友爆料'第三者'传闻，与油条疑似亲密。茶叶蛋老爷子作为长辈，每次出场都要劝小辈：'再好的早餐，也敌不过你妈妈做的那一碗。'每集围绕一种早餐组合的故事：粥配油条、煎饼配豆浆、馒头配咸菜。从CP故事到地域早餐文化（北方派vs南方派），节目可向全国早餐文化纪录片演变。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">54 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">音乐·跨界</td>
+      <td class="title"><strong>《方言跨界歌王：四川话rap粤语唱粤剧》</strong></td>
+      <td class="why">符合'方言文化梗、地域共鸣、音乐综艺成熟模板'。方言拟人挑战不同曲风，地域文化自带话题。</td>
+      <td class="story">舞台上各方言登场：四川话穿着辣味街头风，挑战韩国rap，台下川渝观众尖叫；粤语穿着传统戏服反向挑战K-Pop；东北话喊麦《卡农》；上海话用沪语吟唱莎士比亚十四行诗。导师评审：身着旗袍的普通话老师、上海老克勒老师、广州茶餐厅老板老师、东北二人转老师。每集围绕一种方言文化PK，激发地域归属感和讨论。融合语言文化+音乐综艺，传播力跨地域，海外华人群体也会狂转。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">55 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">推理·密室</td>
+      <td class="title"><strong>《文具密室：橡皮失踪案大逃脱》</strong></td>
+      <td class="why">符合'童年回忆、推理元素、紧张感'。文具版密室大逃脱，把童年文具盒变成悬疑舞台。</td>
+      <td class="story">深夜的铅笔盒里，所有文具发现：橡皮失踪了。最后一次见到他是昨天数学课上，他擦了一道题之后就再也没出现。文具们组成调查小队：组长订书机、机敏的圆规、心思缜密的尺子、热血的红笔、谨慎的便利贴。线索一：橡皮的最后一抹痕迹指向卷笔刀方向。线索二：曲别针看见'一只手'伸进笔盒。终极反转：橡皮被一位'丢三落四'的小学生不小心带回家，落在沙发缝里。每集围绕一个文具盒奇案，融合童年回忆+悬疑推理。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">56 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">竞技·极限挑战</td>
+      <td class="title"><strong>《极限厨房：锅碗瓢盆的生存挑战》</strong></td>
+      <td class="why">符合'家庭场景、动作综艺、生活化'。厨具拟人完成极限任务，画面感强。</td>
+      <td class="story">厨房里六位主角接到极限挑战：在24小时内完成一桌满汉全席。队员包括：硬汉派炒锅、技术流高压锅、文艺派砂锅、新锐派电饭煲、老古董煎锅、迷茫的实习生平底锅。任务一：抢夺有限的食材资源。任务二：协调炉灶时间档期。任务三：应对突发情况（停电、洗碗机罢工）。各种锅之间的'地位等级'和'功能边界'是核心笑点：'炖肉是我的专长！''你那个高压锅就是个新人！'融合家庭厨房日常+综艺竞技。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">57 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">选秀·练习生</td>
+      <td class="title"><strong>《玩具练习生：毛绒玩具偶像出道战》</strong></td>
+      <td class="why">符合'童年回忆、Z世代怀旧、萌系IP'。从泰迪熊到芭比娃娃，玩具偶像选秀切中怀旧情绪。</td>
+      <td class="story">100位玩具来到练习生训练营，争夺最终11位出道资格。选手类型：传统派的泰迪熊（'我有100年历史'）、时尚的芭比娃娃（'我是颜值组的天花板'）、神秘的拼图（每集出场都缺一块）、活泼的乐高（拼装战术）、文艺的兔子玩偶。导师：玩具总动员的胡迪牛仔老师、变形金刚擎天柱老师、Hello Kitty老师。每期任务：表演（'被孩子抛弃后如何重新被爱'催泪戏）、唱跳（每位玩具的特色舞蹈）、采访（揭秘'被压在床底下'的黑暗往事）。融合怀旧情绪+选秀套路。</td>
+    </tr>
+    
+    <tr class="row-show" data-group="show" data-new="false">
+      <td class="no">58 </td>
+      <td class="group"><span class="badge show">伪综艺</span></td>
+      <td class="sub">演员·表情包</td>
+      <td class="title"><strong>《表情包演员的诞生：emoji大赛》</strong></td>
+      <td class="why">符合'网络文化、年轻人语言、互动性强'。每天都在用的表情包变成演员，自带传播力。</td>
+      <td class="story">微信、QQ、小红书等表情包平台联合举办'最佳表情包演员'选拔。选手：哭笑表情包'我太难了'、阴阳怪气'你说的对'、卑微小狗'求求你'、霸总不屑'呵'、捂脸表情'尴尬'。导师团：身经百战的'doge'、表情包黄金一代'金馆长'、Z世代代表'熊猫头'。每集挑战：演技对决（哭笑表情挑战悲剧、不屑表情挑战温情）、即兴反应（突如其来的话题谁能用最合适表情回应）、组合赛（多个表情包共同演一场戏）。融合网络文化+演员综艺套路，年轻人传播。</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<footer>
+  <div>AI短剧选题完整母表 v2 · 58个选题</div>
+  <div style="margin-top:6px;color:#333">10个新增选题基于2026红果/抖音/AI漫剧最新爆款数据调研</div>
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll('.filter button');
+  const rows = document.querySelectorAll('#topicTable tr');
+  buttons.forEach(b => b.addEventListener('click', () => {
+    buttons.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    const f = b.dataset.filter;
+    rows.forEach(r => {
+      if (f === 'all') r.style.display = '';
+      else if (f === 'new') r.style.display = r.dataset.new === 'true' ? '' : 'none';
+      else r.style.display = r.dataset.group === f ? '' : 'none';
+    });
+  }));
+
+  const b64 = "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";
+  document.getElementById('dlBtn').addEventListener('click', () => {
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const blob = new Blob([arr], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '选题完整母表_v2.xlsx';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>
+
+</body>
+</html>

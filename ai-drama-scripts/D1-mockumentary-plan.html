@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D1 伪纪录片完整方案 · 物种观察局</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0a0a0f; color: #e8e8e8; min-height: 100vh; line-height: 1.6; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 60%, #0d2444 100%); padding: 80px 24px 60px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 30% 50%, rgba(96,165,250,0.1) 0%, transparent 50%); pointer-events: none; }
+  .hero-badge { display: inline-block; background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.4); color: #60a5fa; padding: 8px 18px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 24px; position: relative; }
+  .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 16px; position: relative; background: linear-gradient(135deg, #fff 0%, #a0c4ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .subtitle { color: #888; font-size: 15px; max-width: 680px; margin: 0 auto 40px; position: relative; line-height: 1.8; }
+  .hero-stats { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; position: relative; }
+  .stat-num { font-size: 2rem; font-weight: 700; color: #60a5fa; }
+  .stat-label { font-size: 11px; color: #666; margin-top: 4px; letter-spacing: 2px; }
+
+  /* Container */
+  .container { max-width: 1100px; margin: 0 auto; padding: 56px 24px; }
+  .section-title { font-size: 12px; letter-spacing: 4px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+  .section-h { font-size: 1.6rem; font-weight: 700; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+  /* Concept */
+  .concept-block { background: linear-gradient(135deg, #16161d, #1a1d2e); border: 1px solid rgba(96,165,250,0.15); border-radius: 16px; padding: 28px; margin-bottom: 36px; }
+  .concept-block h3 { font-size: 17px; margin-bottom: 12px; color: #60a5fa; }
+  .concept-block p { color: #aaa; font-size: 14px; line-height: 1.9; }
+  .concept-quote { border-left: 3px solid #60a5fa; padding-left: 20px; margin: 20px 0; color: #ccc; font-style: italic; font-size: 14px; line-height: 2; }
+
+  /* SOP steps */
+  .sop-list { display: grid; gap: 12px; margin-bottom: 48px; }
+  .sop-step { background: #16161d; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 22px; display: flex; gap: 20px; transition: all 0.2s; }
+  .sop-step:hover { border-color: rgba(96,165,250,0.3); transform: translateX(4px); }
+  .sop-num { flex-shrink: 0; width: 38px; height: 38px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 14px; }
+  .sop-content h4 { font-size: 15px; margin-bottom: 6px; }
+  .sop-content p { font-size: 13px; color: #888; line-height: 1.7; }
+  .sop-content ul { margin-top: 8px; padding-left: 18px; }
+  .sop-content li { font-size: 13px; color: #888; line-height: 1.8; }
+  .sop-content .tag { display: inline-block; background: rgba(96,165,250,0.15); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 6px; margin-top: 4px; }
+
+  /* Topic table */
+  .topic-table { width: 100%; border-collapse: collapse; background: #16161d; border-radius: 12px; overflow: hidden; margin-bottom: 48px; font-size: 13px; }
+  .topic-table th { background: #1a1d2e; padding: 14px 12px; text-align: left; font-weight: 600; color: #aaa; font-size: 12px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .topic-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #ccc; }
+  .topic-table tr:hover { background: rgba(96,165,250,0.05); }
+  .topic-table tr:last-child td { border-bottom: none; }
+  .topic-table .topic-cat { font-size: 11px; color: #60a5fa; background: rgba(96,165,250,0.1); padding: 3px 8px; border-radius: 4px; display: inline-block; }
+  .topic-table .rec-S { background: #ff4b4b; color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .topic-table .rec-Ap { background: #ff9900; color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .topic-table .rec-A { background: #ffd700; color: #000; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .topic-table .rec-B { background: #888; color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+
+  /* Script */
+  .script-meta { background: #16161d; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .meta-item .meta-label { font-size: 11px; color: #555; letter-spacing: 2px; margin-bottom: 4px; }
+  .meta-item .meta-val { font-size: 13px; color: #ddd; }
+
+  .scene-block { background: #16161d; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .scene-tag { padding: 12px 20px; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: #fff; background: linear-gradient(135deg, #1d4ed8, #2563eb); }
+  .scene-person { padding: 8px 20px; font-size: 12px; color: #888; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .scene-content { padding: 18px 20px; font-size: 14px; line-height: 2; color: #ccc; white-space: pre-line; }
+
+  /* Tools section */
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 48px; }
+  .tool-card { background: #16161d; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px; }
+  .tool-card h4 { font-size: 13px; color: #60a5fa; margin-bottom: 8px; letter-spacing: 1px; }
+  .tool-card .tool-name { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .tool-card p { font-size: 12px; color: #888; line-height: 1.7; }
+
+  /* Footer */
+  footer { padding: 60px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); color: #444; font-size: 12px; }
+
+  @media (max-width: 720px) {
+    .hero h1 { font-size: 1.6rem; }
+    .hero-stats { gap: 24px; }
+    .topic-table { font-size: 11px; }
+    .topic-table th, .topic-table td { padding: 10px 6px; }
+    .script-meta { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">D1 · 伪纪录片完整方案</div>
+  <h1>物种观察局</h1>
+  <p class="subtitle">用BBC自然纪录片的严肃腔调，观察这个星球上最熟悉又最荒诞的群体。<br>我们用学术的态度，记录每一个本应被严肃研究的日常。</p>
+  <div class="hero-stats">
+    <div><div class="stat-num">16</div><div class="stat-label">系列选题</div></div>
+    <div><div class="stat-num">8</div><div class="stat-label">SOP步骤</div></div>
+    <div><div class="stat-num">5</div><div class="stat-label">内容大类</div></div>
+    <div><div class="stat-num">90s</div><div class="stat-label">标准单集时长</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心创意 -->
+  <div class="section-title">核心创意</div>
+  <h2 class="section-h">为什么这个方向能赢</h2>
+  <div class="concept-block">
+    <h3>反差产生笑点，共鸣产生传播</h3>
+    <p>用极度严肃的学术语言，描述极度日常的荒诞行为。观众在"哈哈哈这说的太准了"的笑声之后，会本能地把视频转发给同类人——形成天然的UGC扩散链。</p>
+    <div class="concept-quote">
+      "清晨七点五十二分，这只打工人感知到了第一个威胁信号。<br>
+      它选择了忽视——这是一种古老的自我保护机制，<br>
+      学界将其称为'再睡五分钟'。"
+    </div>
+    <p><strong style="color:#60a5fa">这个方向的稀缺性：</strong>目前国内几乎没有专业账号在做。AI视频90%在做万物拟人、特效炫技、二次元转化，伪纪录片是一片肉眼可见的蓝海。</p>
+  </div>
+
+  <!-- SOP -->
+  <div class="section-title">制作 SOP</div>
+  <h2 class="section-h">8步标准制作流程</h2>
+  <div class="sop-list">
+
+    <div class="sop-step">
+      <div class="sop-num">01</div>
+      <div class="sop-content">
+        <h4>选题筛选 · 3个硬标准</h4>
+        <p>不是所有日常都能做纪录片。选题必须同时满足以下三点：</p>
+        <ul>
+          <li><strong>群体性</strong>——是一群人/一种行为，不是个例</li>
+          <li><strong>可观察性</strong>——有明显的、可识别的、重复出现的行为模式</li>
+          <li><strong>日常但荒诞</strong>——这些人觉得理所当然，但旁观者会觉得"卧槽这也太奇怪了"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">02</div>
+      <div class="sop-content">
+        <h4>观察清单 · 列出5-10个典型行为</h4>
+        <p>选定群体后，先做"行为博物学"——列出他们最具辨识度的5-10个行为。</p>
+        <p style="margin-top:10px;color:#aaa">示例（广场舞大妈）：占领领地 / 音响军备竞赛 / 队形变换 / 衣着色彩 / 退场社交 / 对入侵者驱逐 / 跨群对峙 / 季节性迁徙……</p>
+        <p style="margin-top:10px">从这个清单里，挑出最有戏剧性的3-4个，作为单集骨架。</p>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">03</div>
+      <div class="sop-content">
+        <h4>学术化翻译 · 核心翻译表</h4>
+        <p>把日常行为翻译成学术/生物学/社会学语言，是制造笑点的核心技巧。</p>
+        <ul style="margin-top:8px">
+          <li>抢座位 → <strong>领地标记行为</strong></li>
+          <li>朋友圈炫耀 → <strong>种群内地位展示</strong></li>
+          <li>相亲 → <strong>代理求偶仪式</strong></li>
+          <li>抢红包 → <strong>资源获取本能</strong></li>
+          <li>地铁通勤 → <strong>季节性集群迁徙</strong></li>
+          <li>开会发言 → <strong>群体层级中的话语权竞争</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">04</div>
+      <div class="sop-content">
+        <h4>旁白脚本 · 节奏四段式</h4>
+        <p>每集旁白严格按这个节奏来：</p>
+        <ul>
+          <li><strong>观察</strong>（描述行为）→ "下午五点整，王大妈推车走向广场中央"</li>
+          <li><strong>定义</strong>（学术化）→ "这是一次典型的领地预占行为"</li>
+          <li><strong>量化</strong>（伪数据）→ "研究人员监测了三百场会议后发现，78.4%的内容..."</li>
+          <li><strong>升华</strong>（一句意味深长的结尾）→ "明知山有虎，偏向周一行"</li>
+        </ul>
+        <p style="margin-top:10px;color:#777;font-size:12px">铁律：旁白永远零情绪波动。越严肃越好笑。</p>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">05</div>
+      <div class="sop-content">
+        <h4>AI画面生成 · 真实纪录片质感</h4>
+        <p>这是关键技术点。画面必须像真的纪录片，不能AI味太重。</p>
+        <ul style="margin-top:8px">
+          <li>工具：<span class="tag">可灵</span><span class="tag">即梦</span><span class="tag">Runway Gen-4</span></li>
+          <li>风格关键词：documentary, cinematic, cold tone, observational, telephoto</li>
+          <li>视角：航拍俯瞰 + 长焦跟拍 + 偷拍式特写（这三种组合就够了）</li>
+          <li>调色：略偏冷蓝，对比度降低，加一点纪录片颗粒感</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">06</div>
+      <div class="sop-content">
+        <h4>配音录制 · 选择"纪录片男声/女声"</h4>
+        <p>配音是这个赛道的灵魂。选错了人，整集就废了。</p>
+        <ul style="margin-top:8px">
+          <li>剪映"AI配音"里选"纪录片男声"或"老年男声"</li>
+          <li>更高级用ElevenLabs，找一个低沉沉稳的英式男声+中文译配</li>
+          <li>语速调慢15-20%，每句话之间留0.5秒停顿</li>
+          <li>关键转折处可以停顿1秒，制造悬念</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">07</div>
+      <div class="sop-content">
+        <h4>字幕设计 · 三层字幕系统</h4>
+        <p>字幕不只是听不清的辅助，是放大笑点的工具。</p>
+        <ul style="margin-top:8px">
+          <li><strong>主字幕</strong>：白色小字，跟旁白同步</li>
+          <li><strong>学术注释</strong>：括号小字，"（平均时长：47分钟）"</li>
+          <li><strong>关键词大字</strong>：黑底白字，单独成屏，"会议惯性"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-step">
+      <div class="sop-num">08</div>
+      <div class="sop-content">
+        <h4>发布优化 · 标题与前3秒</h4>
+        <p>标题必须用"学术报告"的语气写。前3秒必须有钩子。</p>
+        <ul style="margin-top:8px">
+          <li>标题模板：《[群体名]：一项关于[XX行为]的田野调查》</li>
+          <li>前3秒钩子：航拍俯瞰 + 配乐 + 一句反差极强的旁白</li>
+          <li>封面：仿BBC纪录片样式，加上"物种观察局"水印</li>
+          <li>话题：#物种观察局 #严肃地观察一些不严肃的事</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 选题清单 -->
+  <div class="section-title">系列选题矩阵</div>
+  <h2 class="section-h">16个核心选题（含评分）</h2>
+  <table class="topic-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>分组</th>
+        <th>选题</th>
+        <th>核心钩子</th>
+        <th>视频适配</th>
+        <th>推荐</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>01</td><td><span class="topic-cat">职场</span></td><td>周一清晨的迁徙</td><td>挤地铁→查老板消息→进公司前换脸</td><td>★★★★★</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>02</td><td><span class="topic-cat">职场</span></td><td>会议室的伪装术</td><td>假装记笔记的手部行为研究</td><td>★★★★★</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>03</td><td><span class="topic-cat">职场</span></td><td>午休：12分钟的自我救赎</td><td>抢微波炉、趴桌睡觉、厕所冥想</td><td>★★★★☆</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>04</td><td><span class="topic-cat">城市生态</span></td><td>广场舞大妈领地争夺</td><td>音响功率决定地位等级</td><td>★★★★☆</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>05</td><td><span class="topic-cat">城市生态</span></td><td>公园相亲角：代理求偶仪式</td><td>父母比孩子着急，简历比真人重要</td><td>★★★★☆</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>06</td><td><span class="topic-cat">迁徙</span></td><td>春运：地球最大规模迁徙</td><td>用候鸟学解释春运路线</td><td>★★★★★</td><td><span class="rec-S">S</span></td></tr>
+      <tr><td>07</td><td><span class="topic-cat">季节性</span></td><td>双十一凑满减期间的人类</td><td>行为经济学解释非理性消费</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>08</td><td><span class="topic-cat">季节性</span></td><td>考研图书馆占座研究</td><td>领地标记行为高度发达的亚种</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>09</td><td><span class="topic-cat">商业生态</span></td><td>菜市场的食物链与权力结构</td><td>老摊主=顶级掠食者</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>10</td><td><span class="topic-cat">商业生态</span></td><td>外卖小哥的迁徙路线图</td><td>高峰期的最优路径=候鸟飞行轨迹</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>11</td><td><span class="topic-cat">亚文化</span></td><td>健身房的雄性展示行为</td><td>镜子前肌肉展示=求偶仪式</td><td>★★★★☆</td><td><span class="rec-Ap">A+</span></td></tr>
+      <tr><td>12</td><td><span class="topic-cat">商业生态</span></td><td>奶茶店为何总在转角</td><td>用种群繁殖学解释扩张策略</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>13</td><td><span class="topic-cat">城市生态</span></td><td>网红打卡地的兴衰</td><td>物种入侵→繁荣→衰败</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>14</td><td><span class="topic-cat">季节性</span></td><td>高考考场外家长群行为</td><td>焦虑型集体心理学样本</td><td>★★★★☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>15</td><td><span class="topic-cat">城市生态</span></td><td>网约车司机的隐形领地</td><td>哪里能接到大单的群体智慧</td><td>★★★☆☆</td><td><span class="rec-A">A</span></td></tr>
+      <tr><td>16</td><td><span class="topic-cat">亚文化</span></td><td>漫展现场的求偶仪式</td><td>cosplay=雄性展示+雌性筛选</td><td>★★★☆☆</td><td><span class="rec-B">B</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 工具推荐 -->
+  <div class="section-title">推荐工具栈</div>
+  <h2 class="section-h">从0到发布需要的全部工具</h2>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <h4>画面生成</h4>
+      <div class="tool-name">可灵 / 即梦</div>
+      <p>生成办公室、地铁、广场等真实场景。可灵适合人物运动，即梦在审美和镜头语言上更胜一筹。</p>
+    </div>
+    <div class="tool-card">
+      <h4>电影感画面</h4>
+      <div class="tool-name">Runway Gen-4</div>
+      <p>用于俯瞰镜头和电影级特写。海外工具，画面质感最接近真实纪录片。</p>
+    </div>
+    <div class="tool-card">
+      <h4>旁白配音</h4>
+      <div class="tool-name">剪映AI · ElevenLabs</div>
+      <p>剪映"纪录片男声"足够；要英式严肃感选ElevenLabs，找Brian或Charlie。</p>
+    </div>
+    <div class="tool-card">
+      <h4>背景音乐</h4>
+      <div class="tool-name">Suno AI</div>
+      <p>关键词：nature documentary, BBC, cello, calm, observational. 几秒生成可用BGM。</p>
+    </div>
+    <div class="tool-card">
+      <h4>字幕剪辑</h4>
+      <div class="tool-name">剪映专业版</div>
+      <p>字幕样式预设保存为模板，每集复用，建立账号视觉统一性。</p>
+    </div>
+    <div class="tool-card">
+      <h4>封面设计</h4>
+      <div class="tool-name">Midjourney + Photoshop</div>
+      <p>仿BBC Earth风格构图，统一字体水印，封面是账号识别度的关键。</p>
+    </div>
+  </div>
+
+  <!-- 第一集脚本 -->
+  <div class="section-title">第一集完整脚本</div>
+  <h2 class="section-h">EP01 · 广场舞大妈领地争夺战</h2>
+
+  <div class="script-meta">
+    <div class="meta-item"><div class="meta-label">时长</div><div class="meta-val">约3.5分钟</div></div>
+    <div class="meta-item"><div class="meta-label">旁白风格</div><div class="meta-val">BBC严肃纪录片</div></div>
+    <div class="meta-item"><div class="meta-label">画面风格</div><div class="meta-val">航拍+地面跟拍，傍晚暖橙调</div></div>
+    <div class="meta-item"><div class="meta-label">配乐</div><div class="meta-val">大提琴+长笛，沉稳</div></div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【片头·0-8秒】</div>
+    <div class="scene-person">航拍俯瞰 · 配乐缓入</div>
+    <div class="scene-content">【画面】黑屏淡入。地球俯瞰镜头，慢慢聚焦亚洲城市，定位到公园广场。
+【配乐】大提琴庄严缓入，BBC纪录片标准开场曲风。
+【旁白·低沉缓慢】
+"这里，是中国城市生态系统中，竞争最为激烈的栖息地之一。"
+"每当太阳西沉，这片广场将迎来一场跨越千年的古老仪式。"
+【字幕】「物种观察局 · 第一集」「广场舞大妈：一项田野调查」</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景一·下午五点·领地预占·8-50秒】</div>
+    <div class="scene-person">王大妈视角 · 跟拍</div>
+    <div class="scene-content">【画面】下午五点整，广场还空着。一位大妈推着小车走向广场正中央，停下，环顾四周，缓缓放下音响。
+【旁白】
+"五点整。在其他物种尚未抵达之前，王大妈率先完成了领地标记。"
+"在广场舞群落中，音响的摆放位置，决定了这只大妈在种群中的绝对地位。"
+【字幕·学术感字体】
+「核心区域：正中央」
+「次级区域：靠近喷泉」
+「边缘区域：停车场附近」
+【旁白】
+"王大妈今天选择了核心区域。这意味着，她将拥有最大的活动半径，和最响的音量覆盖范围。"</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景二·五点二十·其他种群抵达·50-100秒】</div>
+    <div class="scene-person">两支队伍 · 对峙构图</div>
+    <div class="scene-content">【画面】另一群大妈从公园北门涌入，领头者李大妈，同样推着音响。两支队伍遥遥相望。
+【旁白·依然平静】
+"五点二十分。来自北门的种群，开始进入广场。"
+"领队者李大妈，在本地区拥有十七年的舞龄，被研究人员列为'高阶个体'。"
+【画面·两支队伍互相打量，没有说话】
+【旁白】"双方陷入了短暂的对峙。在广场舞群落的行为准则中，这种沉默——被称为：「无声的领土谈判」"
+【画面】王大妈走向李大妈，笑着打招呼，目光不断扫向对方的音响型号。
+【旁白】"表面上，它们在进行社交行为。实际上，双方正在快速评估对方的设备参数，以确定最终的势力划分。"
+【字幕·括号小字】（王大妈：500W）（李大妈：450W）（结果：王大妈胜）</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景三·五点半·入侵事件·100-160秒】</div>
+    <div class="scene-person">驱逐冲突 · 慢镜头</div>
+    <div class="scene-content">【画面】两支队伍各就各位，音乐同时响起。左边《最炫民族风》，右边《DJ版荷塘月色》。
+【旁白】"五点三十分，两支种群同时进入活跃期。然而，此刻爆发了一场本季度最为激烈的领地冲突——"
+【画面】一位步履蹒跚的老大爷，推着轮椅，误入了王大妈种群的核心区域。舞队被迫分开。
+【旁白·语气依然毫无波动】
+"一只迷失方向的老年雄性，闯入了核心领地。"
+"这在广场舞生态中，是最高级别的领地挑衅。"
+【画面】王大妈快步走向老大爷，表情严肃地指向旁边的小路。老大爷茫然点头，缓缓绕道而行。
+【旁白】"王大妈迅速完成了驱逐。整个过程，耗时十一秒。无需肢体冲突。无需言语升级。"
+【字幕·慢慢出现】「这，就是顶级物种的效率。」</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【场景四·黄昏·退场仪式·160-200秒】</div>
+    <div class="scene-person">大妈群聊 · 长焦特写</div>
+    <div class="scene-content">【画面】天色渐暗，路灯亮起。大妈们的舞步依然整齐，但陆续开始收队。
+【旁白】"随着光线减弱，广场舞种群进入退场程序。收音响、收水杯、互相分享今晚的战况——"
+【画面】几位大妈聚在一起小声说话，时不时看向李大妈那边，掩嘴轻笑。
+【旁白】"研究人员长期观察后发现，退场后的社交时间，往往比跳舞本身持续更长。"
+【字幕】
+「平均跳舞时长：47分钟」
+「平均退场后聊天时长：1小时23分钟」</div>
+  </div>
+
+  <div class="scene-block">
+    <div class="scene-tag">【结尾·片尾·200-220秒】</div>
+    <div class="scene-person">空镜 · 收束</div>
+    <div class="scene-content">【画面】广场重归平静，地面上留着队形踩出的痕迹。路灯下，空旷的广场。
+【旁白·轻柔，带一点温度】
+"夜幕降临，广场归于寂静。"
+"它们将在明天的同一时刻，准时回到这里。"
+"风雨无阻，日复一日。"
+"对于这个种群而言，这片广场，不仅是领地——"
+（停顿）
+"也是她们在漫长岁月里，最忠实的舞台。"
+【黑屏·字幕】
+「下集预告：《公园相亲角：一场由父母主导的集体求偶实验》」</div>
+  </div>
+
+</div>
+
+<footer>
+  <div>D1 · 伪纪录片完整方案 · 物种观察局</div>
+  <div style="margin-top:6px;color:#333">配套D2方案：《伪综艺 · 拟人化恋爱宇宙》</div>
+</footer>
+
+</body>
+</html>
