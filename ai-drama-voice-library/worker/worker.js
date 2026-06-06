@@ -204,7 +204,8 @@ export default {
         return jsonResponse({ error: "Invalid JSON body" }, { status: 400 }, env, request);
       }
 
-      const { text, voice, speed, backend } = body || {};
+      // 默认走 doubao 后端（音色复刻 S_xxx 必用）
+      const { text, voice, speed, backend = "doubao" } = body || {};
 
       // Validation
       if (!text || typeof text !== "string") {
@@ -228,10 +229,17 @@ export default {
 
       try {
         let upstream;
-        if (backend === "doubao") {
-          upstream = await synthesizeDoubao({ text, voice, speed, env });
-        } else {
+        if (backend === "ark") {
           upstream = await synthesizeArk({ text, voice, speed, env });
+        } else {
+          // doubao（默认）—— 必须配置 APP_ID
+          if (!env.VOLC_TTS_APP_ID) {
+            return jsonResponse(
+              { error: "Server misconfigured: missing VOLC_TTS_APP_ID secret (S_xxx voices require doubao backend with APP_ID)" },
+              { status: 500 }, env, request
+            );
+          }
+          upstream = await synthesizeDoubao({ text, voice, speed, env });
         }
 
         // Stream-back audio

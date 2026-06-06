@@ -46,13 +46,21 @@ cd python/
 pip install -r requirements.txt
 ```
 
-### 2. 配置 API Key
+### 2. 配置 API Key + APP_ID
 
 ```bash
 cd ..
 cp .env.example .env
-# 编辑 .env 填入 VOLC_TTS_API_KEY
+# 编辑 .env，填入两个必填字段：
+#   VOLC_TTS_API_KEY   = 豆包语音合成的 access_token
+#   VOLC_TTS_APP_ID    = 豆包语音合成的应用 ID
 ```
+
+> **⚠️ 重要**：本项目的 `S_xxx` 音色是"音色复刻"生成的，必须用豆包原生 API
+> （`cluster=volcano_icl`），所以 **APP_ID 是必填的**。
+>
+> 在 [火山引擎控制台 · 应用管理](https://console.volcengine.com/speech/app) 找到你的应用，
+> 复制 App ID 和 Access Token 即可。
 
 ### 3. 调用
 
@@ -93,16 +101,12 @@ python python/tts_client.py --list
 
 脚本支持两种火山 API：
 
-| 后端 | 命令参数 | 说明 |
-|------|---------|------|
-| **火山方舟（推荐）** | `--backend ark`（默认） | 只需 API Key，兼容 OpenAI 格式 |
-| **豆包原生 API** | `--backend doubao` | 支持 emotion / pitch 等精细参数，额外需要 APP_ID |
+| 后端 | 命令参数 | 适用场景 |
+|------|---------|---------|
+| **豆包原生 API**（默认） | `--backend doubao` | `S_xxx` 音色复刻必须用此接口，需要 API Key + APP_ID |
+| **火山方舟（OpenAI 兼容）** | `--backend ark` | 适合**官方内置音色**（如 `BV001_streaming`），不支持 `S_xxx` 复刻音色 |
 
-例如使用 doubao 原生 API（更精细的情绪控制）：
-
-```bash
-python python/tts_client.py --character 钱氏 --backend doubao
-```
+> 默认使用 `doubao`，本项目 7 个角色全部是音色复刻，必须用 doubao 后端。
 
 ---
 

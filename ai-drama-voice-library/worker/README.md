@@ -28,15 +28,14 @@ wrangler login
 
 ```bash
 cd ai-drama-voice-library/worker
-wrangler secret put VOLC_TTS_API_KEY
-# 粘贴你的真实 key 后回车
+wrangler secret put VOLC_TTS_API_KEY    # 豆包语音合成 access_token
+wrangler secret put VOLC_TTS_APP_ID      # 豆包语音合成 应用ID（必填）
 ```
 
-如需使用豆包原生 API（支持精细参数），额外配置：
-
-```bash
-wrangler secret put VOLC_TTS_APP_ID
-```
+> **⚠️ 重要**：本项目的 `S_xxx` 音色是"音色复刻"生成的，必须用豆包原生 API
+> （`cluster=volcano_icl`），所以 **两个 Secret 都是必填的**。
+>
+> 在 [火山引擎控制台 · 应用管理](https://console.volcengine.com/speech/app) 获取。
 
 ### 3. 部署
 

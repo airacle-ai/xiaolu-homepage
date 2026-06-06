@@ -119,17 +119,20 @@ def synthesize_doubao(text: str, voice_id: str, output_path: Path,
                       speed_ratio: float = 1.0,
                       pitch_ratio: float = 1.0,
                       volume_ratio: float = 1.0,
-                      emotion: Optional[str] = None) -> Path:
+                      emotion: Optional[str] = None,
+                      cluster: str = "volcano_icl") -> Path:
     """
-    豆包原生 API（支持 emotion / pitch_ratio 等精细参数）
+    豆包原生 API（音色复刻 S_xxx 类型必须用此接口）
     Authorization: Bearer;<API_KEY>   注意分号分隔
+    cluster: volcano_icl（音色复刻ICL1.0） / volcano_tts（标准）
     """
     if not API_KEY:
         raise RuntimeError("缺少 VOLC_TTS_API_KEY 环境变量")
     if not APP_ID:
         raise RuntimeError(
-            "豆包原生 API 需要 APP_ID。请在 .env 设置 VOLC_TTS_APP_ID，"
-            "或使用 ark 方式：python tts_client.py --backend ark ..."
+            "豆包原生 API 需要 APP_ID。\n"
+            "请到 https://console.volcengine.com/speech/app 找到你的「应用ID」，\n"
+            "然后在 .env 里加 VOLC_TTS_APP_ID=xxxxxx"
         )
 
     headers = {
@@ -147,7 +150,7 @@ def synthesize_doubao(text: str, voice_id: str, output_path: Path,
         audio_config["emotion"] = emotion
 
     payload = {
-        "app": {"appid": APP_ID, "token": API_KEY, "cluster": "volcano_icl"},
+        "app": {"appid": APP_ID, "token": API_KEY, "cluster": cluster},
         "user": {"uid": "ai-drama-voice-lib"},
         "audio": audio_config,
         "request": {
@@ -177,8 +180,11 @@ def synthesize_doubao(text: str, voice_id: str, output_path: Path,
 # ---------------------------------------------------------------------------
 
 def synthesize_character(character_or_id: str, text: Optional[str] = None,
-                         backend: str = "ark") -> Path:
-    """根据 character 名/voice_id 自动选择参数并合成"""
+                         backend: str = "doubao") -> Path:
+    """根据 character 名/voice_id 自动选择参数并合成
+
+    backend 默认 doubao —— S_xxx 音色复刻必须用此接口
+    """
     voice = find_voice(character_or_id)
     if not voice:
         raise ValueError(f"未找到角色或音色: {character_or_id}")
@@ -203,7 +209,7 @@ def synthesize_character(character_or_id: str, text: Optional[str] = None,
         )
 
 
-def batch_generate_samples(backend: str = "ark") -> None:
+def batch_generate_samples(backend: str = "doubao") -> None:
     """为所有角色生成样例台词音频"""
     voices = load_voices()
     print(f"开始批量生成 {len(voices)} 个角色样例 (backend={backend})...\n")
@@ -233,8 +239,8 @@ def main() -> None:
     parser.add_argument("--voice", "-v", help="音色 ID（如：S_zBsEEuK42）")
     parser.add_argument("--text", "-t", help="要合成的文本；不传则用样例台词")
     parser.add_argument("--out", "-o", help="输出文件路径；不传则用默认路径")
-    parser.add_argument("--backend", choices=["ark", "doubao"], default="ark",
-                        help="使用的后端：ark=方舟兼容OpenAI接口（推荐），doubao=原生API")
+    parser.add_argument("--backend", choices=["ark", "doubao"], default="doubao",
+                        help="使用的后端：doubao=豆包原生API（默认，S_xxx音色复刻必用），ark=方舟兼容OpenAI接口")
     parser.add_argument("--batch", action="store_true",
                         help="批量为所有角色生成样例")
     parser.add_argument("--list", action="store_true",
