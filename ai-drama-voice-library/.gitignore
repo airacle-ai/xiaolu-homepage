@@ -1,0 +1,15 @@
+# 环境变量（绝不提交）
+.env
+.env.local
+
+# 生成的音频样例
+samples/*.mp3
+samples/*.wav
+!samples/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/

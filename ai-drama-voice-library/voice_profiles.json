@@ -1,0 +1,193 @@
+{
+  "metadata": {
+    "name": "AI 短剧音色库",
+    "version": "1.0",
+    "date": "2026-06-06",
+    "provider": "火山引擎 · 豆包语音合成大模型",
+    "description": "三部AI短剧的角色配音映射表，可直接用于豆包TTS API调用"
+  },
+  "voices": [
+    {
+      "id": "S_zBsEEuK42",
+      "drama": "哑绣娘嫁给病弱少东家",
+      "character": "苏棠",
+      "role": "女主·哑女绣娘",
+      "age": "18-20",
+      "gender": "F",
+      "tags": ["古风", "少女", "气声", "心声独白"],
+      "description": "外表柔弱内心坚韧的哑女，仅心声独白使用配音",
+      "voice_profile": {
+        "tone": "清亮少女音，中高频偏多",
+        "pitch_hz": "220-330",
+        "emotion": "隐忍中带温度",
+        "speed": 0.85,
+        "style": "气声 / whisper",
+        "recommended_pitch_offset": 2
+      },
+      "sample_text": "他不是病，是被你们缝住了魂。",
+      "tts_params": {
+        "voice_type": "S_zBsEEuK42",
+        "speed_ratio": 0.9,
+        "pitch_ratio": 1.05,
+        "volume_ratio": 0.95,
+        "emotion": "sad"
+      }
+    },
+    {
+      "id": "S_yBsEEuK42",
+      "drama": "哑绣娘嫁给病弱少东家",
+      "character": "沈砚白",
+      "role": "男主·病弱少东家",
+      "age": "23-25",
+      "gender": "M",
+      "tags": ["古风", "病弱", "书生", "克制"],
+      "description": "世家公子，肺疾缠身但风骨未折",
+      "voice_profile": {
+        "tone": "中低频清润男声，自带气息颗粒感",
+        "pitch_hz": "110-180",
+        "emotion": "克制锐利",
+        "speed": 0.9,
+        "style": "breathy + 偶尔咳嗽",
+        "recommended_pitch_offset": -1
+      },
+      "sample_text": "她……救了我。",
+      "tts_params": {
+        "voice_type": "S_yBsEEuK42",
+        "speed_ratio": 0.92,
+        "pitch_ratio": 0.95,
+        "volume_ratio": 0.9,
+        "emotion": "neutral"
+      }
+    },
+    {
+      "id": "S_xBsEEuK42",
+      "drama": "哑绣娘嫁给病弱少东家",
+      "character": "钱氏",
+      "role": "女反派·继母",
+      "age": "40-45",
+      "gender": "F",
+      "tags": ["古风", "刻薄", "反派", "鼻音"],
+      "description": "势利刻薄，对苏棠多年压榨",
+      "voice_profile": {
+        "tone": "中音偏尖，鼻腔共鸣强",
+        "pitch_hz": "200-280",
+        "emotion": "阴阳怪气、咬牙切齿",
+        "speed": 1.15,
+        "style": "nasal + condescending",
+        "recommended_pitch_offset": 3
+      },
+      "sample_text": "哭什么哭，这是你的福气！",
+      "tts_params": {
+        "voice_type": "S_xBsEEuK42",
+        "speed_ratio": 1.1,
+        "pitch_ratio": 1.1,
+        "volume_ratio": 1.0,
+        "emotion": "angry"
+      }
+    },
+    {
+      "id": "S_wBsEEuK42",
+      "drama": "哑绣娘嫁给病弱少东家",
+      "character": "沈福",
+      "role": "大管家",
+      "age": "50-55",
+      "gender": "M",
+      "tags": ["古风", "老仆", "稳重", "忠诚"],
+      "description": "沈家老仆，忠诚谨慎，常急切传话",
+      "voice_profile": {
+        "tone": "中低音浑厚男声，略带沙哑",
+        "pitch_hz": "90-140",
+        "emotion": "谨慎敬重",
+        "speed": 1.0,
+        "style": "serious + low",
+        "recommended_pitch_offset": -2
+      },
+      "sample_text": "少爷！昨夜的茶……在猫身上试了……",
+      "tts_params": {
+        "voice_type": "S_wBsEEuK42",
+        "speed_ratio": 1.05,
+        "pitch_ratio": 0.92,
+        "volume_ratio": 1.0,
+        "emotion": "neutral"
+      }
+    },
+    {
+      "id": "S_vBsEEuK42",
+      "drama": "奶奶留给我的钥匙，打开了整条老街",
+      "character": "林晚",
+      "role": "女主·外卖员",
+      "age": "24-27",
+      "gender": "F",
+      "tags": ["现代", "温柔", "坚韧", "邻家"],
+      "description": "照顾孤寡奶奶7年，善良务实",
+      "voice_profile": {
+        "tone": "中音清亮女声，略带疲惫呼吸感",
+        "pitch_hz": "200-260",
+        "emotion": "温柔但不柔弱",
+        "speed": 0.95,
+        "style": "gentle + slightly tired",
+        "recommended_pitch_offset": 1
+      },
+      "sample_text": "奶奶，这把钥匙……是不是你早就给我准备好的？",
+      "tts_params": {
+        "voice_type": "S_vBsEEuK42",
+        "speed_ratio": 0.95,
+        "pitch_ratio": 1.02,
+        "volume_ratio": 1.0,
+        "emotion": "happy"
+      }
+    },
+    {
+      "id": "S_vxrEEuK42",
+      "drama": "奶奶留给我的钥匙，打开了整条老街",
+      "character": "奶奶",
+      "role": "已故·回忆独白",
+      "age": "70-80",
+      "gender": "F",
+      "tags": ["现代", "老年", "慈祥", "颤音"],
+      "description": "慈祥温暖，话不多但句句重，常以回忆/留言形式出现",
+      "voice_profile": {
+        "tone": "老年女声，沙而不哑，声带略颤",
+        "pitch_hz": "160-200",
+        "emotion": "温暖洞察",
+        "speed": 0.75,
+        "style": "aged + tender + tremor",
+        "recommended_pitch_offset": -2
+      },
+      "sample_text": "晚晚……奶奶……欠老街一句谢谢。",
+      "tts_params": {
+        "voice_type": "S_vxrEEuK42",
+        "speed_ratio": 0.78,
+        "pitch_ratio": 0.92,
+        "volume_ratio": 0.9,
+        "emotion": "neutral"
+      }
+    },
+    {
+      "id": "S_uxrEEuK42",
+      "drama": "奶奶留给我的钥匙，打开了整条老街",
+      "character": "大舅妈",
+      "role": "反派·贪婪亲戚",
+      "age": "50",
+      "gender": "F",
+      "tags": ["现代", "市井", "尖利", "反派"],
+      "description": "市井泼辣，奶奶去世后突然热情，盯着遗产",
+      "voice_profile": {
+        "tone": "中高音女声，尖利共鸣浅",
+        "pitch_hz": "230-300",
+        "emotion": "假关心→质疑→破口大骂",
+        "speed": 1.2,
+        "style": "nasal + shrill",
+        "recommended_pitch_offset": 4
+      },
+      "sample_text": "哎哟，晚晚，你奶奶就留这一把钥匙？你不会私吞了什么吧？",
+      "tts_params": {
+        "voice_type": "S_uxrEEuK42",
+        "speed_ratio": 1.15,
+        "pitch_ratio": 1.12,
+        "volume_ratio": 1.0,
+        "emotion": "angry"
+      }
+    }
+  ]
+}
