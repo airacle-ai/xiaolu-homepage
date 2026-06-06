@@ -28,6 +28,7 @@
 
 const ARK_TTS_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/audio/speech";
 const DOUBAO_TTS_ENDPOINT = "https://openspeech.bytedance.com/api/v1/tts";
+const DOUBAO_V3_UNI_ENDPOINT = "https://openspeech.bytedance.com/api/v3/tts/unidirectional";
 
 // 内嵌音色白名单 —— 防止 Worker 被滥用调用任意 voice
 const ALLOWED_VOICES = new Set([
@@ -154,6 +155,49 @@ async function synthesizeDoubao({ text, voice, speed, env }) {
 }
 
 // ----------------------------------------------------------------------------
+//  Backend: V3 unidirectional (现代接口·推荐)
+// ----------------------------------------------------------------------------
+
+async function synthesizeV3({ text, voice, speed, env }) {
+  if (!env.VOLC_TTS_APP_ID) {
+    throw new Error("V3 接口需要 VOLC_TTS_APP_ID secret (X-Api-App-Key)");
+  }
+  const resourceId = env.VOLC_TTS_RESOURCE_ID || "volc.megatts.default";
+  const reqid = crypto.randomUUID();
+
+  const payload = {
+    user: { uid: "ai-drama-voice-lib-worker" },
+    req_params: {
+      text,
+      speaker: voice,
+      audio_params: {
+        format: "mp3",
+        sample_rate: 24000,
+        speech_rate: speed || 1.0,
+      },
+    },
+  };
+
+  const resp = await fetch(DOUBAO_V3_UNI_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${env.VOLC_TTS_API_KEY}`,
+      "Content-Type": "application/json",
+      "X-Api-App-Key": env.VOLC_TTS_APP_ID,
+      "X-Api-Resource-Id": resourceId,
+      "X-Api-Request-Id": reqid,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text().catch(() => "");
+    throw new Error(`V3 TTS ${resp.status}: ${errText}`);
+  }
+  return resp;
+}
+
+// ----------------------------------------------------------------------------
 //  Main fetch handler
 // ----------------------------------------------------------------------------
 
@@ -204,8 +248,8 @@ export default {
         return jsonResponse({ error: "Invalid JSON body" }, { status: 400 }, env, request);
       }
 
-      // 默认走 doubao 后端（音色复刻 S_xxx 必用）
-      const { text, voice, speed, backend = "doubao" } = body || {};
+      // 默认走 V3 单向流式（推荐 · 现代接口）
+      const { text, voice, speed, backend = "v3" } = body || {};
 
       // Validation
       if (!text || typeof text !== "string") {
@@ -231,15 +275,23 @@ export default {
         let upstream;
         if (backend === "ark") {
           upstream = await synthesizeArk({ text, voice, speed, env });
-        } else {
-          // doubao（默认）—— 必须配置 APP_ID
+        } else if (backend === "doubao") {
           if (!env.VOLC_TTS_APP_ID) {
             return jsonResponse(
-              { error: "Server misconfigured: missing VOLC_TTS_APP_ID secret (S_xxx voices require doubao backend with APP_ID)" },
+              { error: "Server misconfigured: missing VOLC_TTS_APP_ID secret" },
               { status: 500 }, env, request
             );
           }
           upstream = await synthesizeDoubao({ text, voice, speed, env });
+        } else {
+          // V3 (默认) —— 必须配置 APP_ID
+          if (!env.VOLC_TTS_APP_ID) {
+            return jsonResponse(
+              { error: "Server misconfigured: missing VOLC_TTS_APP_ID secret (V3 requires X-Api-App-Key)" },
+              { status: 500 }, env, request
+            );
+          }
+          upstream = await synthesizeV3({ text, voice, speed, env });
         }
 
         // Stream-back audio
