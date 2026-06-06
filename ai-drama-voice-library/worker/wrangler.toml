@@ -1,0 +1,18 @@
+name = "ai-drama-voice-tts"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+# 部署后会得到一个 https://ai-drama-voice-tts.<your-subdomain>.workers.dev 地址
+# 如需绑定自定义路由，取消注释下行：
+# routes = [
+#   { pattern = "xiaolu.airacle.tech/api/tts/*", zone_name = "airacle.tech" }
+# ]
+
+# Secrets 不写在这里。部署时用：
+#   wrangler secret put VOLC_TTS_API_KEY
+#   wrangler secret put VOLC_TTS_APP_ID    # 仅 doubao 后端需要
+
+[vars]
+# 可选环境变量（非 secret）。如需锁定访问来源，取消注释：
+# ALLOWED_ORIGIN = "https://xiaolu.airacle.tech"
+# VOLC_TTS_MODEL = "doubao-seed-tts-250715"

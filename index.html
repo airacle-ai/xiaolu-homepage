@@ -15,26 +15,16 @@
       --text-muted: #8b949e;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { min-height: 100%; }
 
     body {
       background-color: var(--bg);
       color: var(--text-primary);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
         "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       min-height: 100vh;
-      overflow: hidden;
+      padding: 48px 20px;
     }
 
     /* Ambient background blobs */
@@ -45,12 +35,12 @@
       opacity: 0.18;
       pointer-events: none;
       animation: float 8s ease-in-out infinite alternate;
+      z-index: 0;
     }
     .bg-blob-1 {
       width: 420px; height: 420px;
       background: radial-gradient(circle, #c8a96e, transparent 70%);
       top: -100px; left: -120px;
-      animation-delay: 0s;
     }
     .bg-blob-2 {
       width: 300px; height: 300px;
@@ -58,58 +48,38 @@
       bottom: -80px; right: -80px;
       animation-delay: 3s;
     }
-
     @keyframes float {
       0%   { transform: translate(0, 0) scale(1); }
       100% { transform: translate(20px, 30px) scale(1.05); }
     }
 
-    /* Card */
-    .card {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 52px 48px 44px;
+    .page { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* Profile header */
+    .profile {
       text-align: center;
-      width: 320px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.04) inset,
-        0 20px 60px rgba(0,0,0,0.5);
+      padding: 32px 24px 40px;
       animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
-
     @keyframes cardIn {
       from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Avatar ring */
     .avatar-wrap {
       position: relative;
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 24px;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 22px;
     }
-
     .avatar-ring {
       position: absolute;
       inset: -4px;
       border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        var(--accent) 0%,
-        transparent 40%,
-        transparent 60%,
-        var(--accent) 100%
-      );
+      background: conic-gradient(from 0deg, var(--accent) 0%, transparent 40%, transparent 60%, var(--accent) 100%);
       animation: spin 6s linear infinite;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
+    @keyframes spin { to { transform: rotate(360deg); } }
     .avatar-inner {
       position: relative;
       width: 100%;
@@ -123,7 +93,6 @@
       overflow: hidden;
       z-index: 1;
     }
-
     .avatar-placeholder {
       width: 100%;
       height: 100%;
@@ -132,37 +101,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
-      user-select: none;
+      font-size: 32px;
     }
 
-    /* Name */
-    .name {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-
-    .name-en {
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-    }
-
-    /* Divider */
+    .name { font-size: 26px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .name-en { font-size: 12px; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 18px; }
     .divider {
-      width: 40px;
-      height: 2px;
+      width: 40px; height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      margin: 0 auto 24px;
+      margin: 0 auto 18px;
       border-radius: 2px;
     }
-
-    /* Tag / badge */
     .tag {
       display: inline-block;
       background: var(--accent-soft);
@@ -174,25 +123,103 @@
       letter-spacing: 0.06em;
     }
 
-    /* Footer note */
+    /* Projects section */
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      text-align: center;
+      margin: 36px 0 22px;
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card:nth-child(1) { animation-delay: 0.05s; }
+    .project-card:nth-child(2) { animation-delay: 0.10s; }
+    .project-card:nth-child(3) { animation-delay: 0.15s; }
+    .project-card:nth-child(4) { animation-delay: 0.20s; }
+    .project-card:nth-child(5) { animation-delay: 0.25s; }
+    .project-card:nth-child(6) { animation-delay: 0.30s; }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+    }
+    .project-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .project-card:hover::after { opacity: 1; }
+
+    .project-icon {
+      font-size: 26px;
+      margin-bottom: 4px;
+    }
+    .project-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .project-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .project-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .project-tag {
+      font-size: 10px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid rgba(200,169,110,0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
     .footer {
-      margin-top: 32px;
+      margin-top: 48px;
+      text-align: center;
       font-size: 11px;
       color: var(--border);
       letter-spacing: 0.04em;
     }
 
     /* Subtle particles */
-    .particles {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
+    .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
     .particle {
       position: absolute;
-      width: 2px;
-      height: 2px;
+      width: 2px; height: 2px;
       background: var(--accent);
       border-radius: 50%;
       opacity: 0;
@@ -204,38 +231,101 @@
       90%  { opacity: 0.2; }
       100% { opacity: 0; transform: translateY(-100vh) scale(0.4); }
     }
+
+    @media (max-width: 480px) {
+      .projects { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Ambient blobs -->
   <div class="bg-blob bg-blob-1"></div>
   <div class="bg-blob bg-blob-2"></div>
-
-  <!-- Floating particles -->
   <div class="particles" id="particles"></div>
 
-  <!-- Main card -->
-  <div class="card">
-    <div class="avatar-wrap">
-      <div class="avatar-ring"></div>
-      <div class="avatar-inner">
-        <div class="avatar-placeholder">🦌</div>
+  <div class="page">
+
+    <!-- Profile -->
+    <div class="profile">
+      <div class="avatar-wrap">
+        <div class="avatar-ring"></div>
+        <div class="avatar-inner">
+          <div class="avatar-placeholder">🦌</div>
+        </div>
       </div>
+      <div class="name">小鹿</div>
+      <div class="name-en">Xiaolu</div>
+      <div class="divider"></div>
+      <span class="tag">✦ 欢迎来访</span>
     </div>
 
-    <div class="name">小鹿</div>
-    <div class="name-en">Xiaolu</div>
+    <!-- Projects -->
+    <div class="section-title">Projects</div>
+    <div class="projects">
 
-    <div class="divider"></div>
+      <a href="ai-drama-voice-library/" class="project-card">
+        <div class="project-icon">🎙️</div>
+        <div class="project-name">AI 短剧音色库</div>
+        <div class="project-desc">3 部短剧 × 7 个角色 · 火山引擎豆包 TTS · 一键试听</div>
+        <div class="project-tags">
+          <span class="project-tag">TTS</span>
+          <span class="project-tag">音色</span>
+          <span class="project-tag">NEW</span>
+        </div>
+      </a>
 
-    <span class="tag">✦ 欢迎来访</span>
+      <a href="ai-drama-scripts/" class="project-card">
+        <div class="project-icon">🎬</div>
+        <div class="project-name">AI 短剧脚本库</div>
+        <div class="project-desc">58 个选题 · 伪纪录片 × 伪综艺 · 完整方案与脚本</div>
+        <div class="project-tags">
+          <span class="project-tag">脚本</span>
+          <span class="project-tag">策划</span>
+        </div>
+      </a>
+
+      <a href="yaplan/" class="project-card">
+        <div class="project-icon">📋</div>
+        <div class="project-name">YaPlan</div>
+        <div class="project-desc">Pitch Deck 与原型设计方案展示</div>
+        <div class="project-tags">
+          <span class="project-tag">Pitch</span>
+        </div>
+      </a>
+
+      <a href="oprah/" class="project-card">
+        <div class="project-icon">💬</div>
+        <div class="project-name">Oprah</div>
+        <div class="project-desc">交互式产品原型</div>
+        <div class="project-tags">
+          <span class="project-tag">App</span>
+        </div>
+      </a>
+
+      <a href="manmanyongyou/" class="project-card">
+        <div class="project-icon">🌱</div>
+        <div class="project-name">慢慢拥有</div>
+        <div class="project-desc">Manmanyongyou — React 应用</div>
+        <div class="project-tags">
+          <span class="project-tag">React</span>
+        </div>
+      </a>
+
+      <a href="daily-report/" class="project-card">
+        <div class="project-icon">📒</div>
+        <div class="project-name">Daily Report</div>
+        <div class="project-desc">每日进展与工作笔记</div>
+        <div class="project-tags">
+          <span class="project-tag">Notes</span>
+        </div>
+      </a>
+
+    </div>
 
     <div class="footer">xiaolu.airacle.tech</div>
   </div>
 
   <script>
-    // Generate floating particles
     const container = document.getElementById('particles');
     for (let i = 0; i < 24; i++) {
       const p = document.createElement('div');

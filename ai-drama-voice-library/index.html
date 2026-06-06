@@ -56,9 +56,33 @@
   .vc-param-label { font-size: 9px; color: #666; letter-spacing: 1px; }
   .vc-param-val { font-size: 13px; color: #fff; font-weight: 600; margin-top: 2px; }
 
-  .vc-cmd { margin-top: 14px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 10px 12px; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; color: #4ade80; overflow-x: auto; cursor: pointer; transition: background 0.2s; }
+  .vc-cmd { margin-top: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 10px 12px; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; color: #4ade80; overflow-x: auto; cursor: pointer; transition: background 0.2s; }
   .vc-cmd:hover { background: #161b22; }
   .vc-cmd::before { content: '$ '; color: #666; }
+
+  /* Try-it panel */
+  .try-panel { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #30363d; }
+  .try-input { width: 100%; background: #0d1117; border: 1px solid #30363d; color: #ddd; padding: 9px 12px; border-radius: 6px; font-size: 12px; font-family: inherit; margin-bottom: 8px; resize: vertical; min-height: 48px; }
+  .try-input:focus { outline: none; border-color: #c8a96e; }
+  .try-row { display: flex; gap: 8px; align-items: center; }
+  .try-btn { flex: 1; background: linear-gradient(135deg, #c8a96e, #9c7a40); color: #fff; border: none; padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .try-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,169,110,0.3); }
+  .try-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .try-status { font-size: 10px; color: #888; min-width: 80px; text-align: right; }
+  .try-status.err { color: #f87171; }
+  .try-status.ok { color: #4ade80; }
+  .try-audio { width: 100%; margin-top: 8px; display: none; }
+  .try-audio.show { display: block; }
+
+  /* Worker config banner */
+  .worker-banner { max-width: 800px; margin: 0 auto 32px; padding: 16px 20px; background: rgba(96,165,250,0.06); border: 1px solid rgba(96,165,250,0.2); border-radius: 10px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .worker-banner .wb-icon { font-size: 20px; }
+  .worker-banner .wb-text { flex: 1; min-width: 200px; font-size: 12.5px; color: #aaa; line-height: 1.7; }
+  .worker-banner .wb-text strong { color: #60a5fa; }
+  .worker-banner input { background: #0d1117; border: 1px solid #30363d; color: #ddd; padding: 8px 12px; border-radius: 6px; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; min-width: 280px; flex: 1; }
+  .worker-banner input:focus { outline: none; border-color: #60a5fa; }
+  .worker-banner button { background: #60a5fa; color: #0d1117; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .worker-banner button:hover { opacity: 0.9; }
 
   /* Section */
   .section { margin-bottom: 56px; }
@@ -99,6 +123,17 @@
 </div>
 
 <div class="container">
+
+  <!-- Worker URL config (浏览器试听用) -->
+  <div class="worker-banner">
+    <div class="wb-icon">🌩️</div>
+    <div class="wb-text">
+      <strong>在线试听</strong> · 配置已部署的 Cloudflare Worker 地址即可在浏览器直接合成（无需本地 Python）
+    </div>
+    <input type="text" id="workerUrl" placeholder="https://ai-drama-voice-tts.<your>.workers.dev"
+      autocomplete="off" spellcheck="false">
+    <button id="saveWorkerBtn">保存</button>
+  </div>
 
   <div class="filter">
     <button class="active" data-filter="all">全部 7 个角色</button>
@@ -196,10 +231,97 @@ fetch('voice_profiles.json')
           <div class="vc-param"><div class="vc-param-label">PITCH</div><div class="vc-param-val">${v.tts_params.pitch_ratio}</div></div>
           <div class="vc-param"><div class="vc-param-label">EMOTION</div><div class="vc-param-val">${v.tts_params.emotion || '-'}</div></div>
         </div>
+        <div class="try-panel">
+          <textarea class="try-input" data-voice="${v.id}">${v.sample_text}</textarea>
+          <div class="try-row">
+            <button class="try-btn" data-voice="${v.id}" data-speed="${v.tts_params.speed_ratio}">▶ 试听</button>
+            <span class="try-status" data-voice="${v.id}"></span>
+          </div>
+          <audio class="try-audio" controls data-voice="${v.id}"></audio>
+        </div>
         <div class="vc-cmd" data-cmd="${cmd}">${cmd}</div>
       `;
       grid.appendChild(card);
     });
+
+    // ---- Worker URL state ----
+    const workerUrlInput = document.getElementById('workerUrl');
+    const saveWorkerBtn = document.getElementById('saveWorkerBtn');
+    const storedUrl = localStorage.getItem('tts_worker_url') || '';
+    workerUrlInput.value = storedUrl;
+
+    saveWorkerBtn.addEventListener('click', () => {
+      const url = workerUrlInput.value.trim().replace(/\/$/, '');
+      if (url) {
+        localStorage.setItem('tts_worker_url', url);
+        showToast('Worker 地址已保存');
+      } else {
+        localStorage.removeItem('tts_worker_url');
+        showToast('已清除 Worker 地址');
+      }
+    });
+
+    function getWorkerUrl() {
+      return (workerUrlInput.value.trim() || localStorage.getItem('tts_worker_url') || '').replace(/\/$/, '');
+    }
+
+    // ---- Try-listen handlers ----
+    document.querySelectorAll('.try-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const voiceId = btn.dataset.voice;
+        const speed = parseFloat(btn.dataset.speed) || 1.0;
+        const textArea = document.querySelector(`.try-input[data-voice="${voiceId}"]`);
+        const audio = document.querySelector(`.try-audio[data-voice="${voiceId}"]`);
+        const status = document.querySelector(`.try-status[data-voice="${voiceId}"]`);
+        const text = textArea.value.trim();
+
+        if (!text) {
+          status.textContent = '请输入文本';
+          status.className = 'try-status err';
+          return;
+        }
+        const workerUrl = getWorkerUrl();
+        if (!workerUrl) {
+          status.textContent = '请先配置 Worker';
+          status.className = 'try-status err';
+          return;
+        }
+
+        btn.disabled = true;
+        status.textContent = '合成中...';
+        status.className = 'try-status';
+
+        try {
+          const resp = await fetch(`${workerUrl}/synthesize`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ text, voice: voiceId, speed }),
+          });
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.error || `HTTP ${resp.status}`);
+          }
+          const blob = await resp.blob();
+          audio.src = URL.createObjectURL(blob);
+          audio.classList.add('show');
+          audio.play().catch(() => {});
+          status.textContent = '✓ 已生成';
+          status.className = 'try-status ok';
+        } catch (e) {
+          status.textContent = '失败:' + String(e.message || e).slice(0, 40);
+          status.className = 'try-status err';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1500);
+    }
 
     // Filter
     const buttons = document.querySelectorAll('.filter button');
