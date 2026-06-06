@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 短剧创作库 · 内容总览</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1a1f2a;
+    --border: #30363d;
+    --accent: #c8a96e;
+    --accent-soft: rgba(200, 169, 110, 0.12);
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --dim: #6e7681;
+    --doc: #a78bfa;
+    --voice: #ec4899;
+  }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.7; }
+
+  /* HERO */
+  .hero { padding: 80px 24px 56px; text-align: center; background: linear-gradient(135deg, #0d1117 0%, #1a1d2e 40%, #2d0a3d 100%); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 30%, rgba(167,139,250,0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(236,72,153,0.12) 0%, transparent 50%); pointer-events: none; }
+  .hero-mask { font-size: 56px; margin-bottom: 16px; position: relative; }
+  .hero-badge { display: inline-block; background: var(--accent-soft); border: 1px solid rgba(200,169,110,0.3); color: var(--accent); padding: 6px 16px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 20px; position: relative; }
+  .hero h1 { font-size: 2.6rem; font-weight: 700; margin-bottom: 14px; position: relative; background: linear-gradient(135deg, #fff 0%, #c8a96e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { color: var(--muted); font-size: 15px; max-width: 640px; margin: 0 auto 32px; line-height: 1.9; position: relative; }
+  .hero-stats { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; position: relative; }
+  .hero-stat-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .hero-stat-label { font-size: 11px; color: var(--dim); margin-top: 4px; letter-spacing: 2px; }
+
+  /* CONTAINER */
+  .container { max-width: 1180px; margin: 0 auto; padding: 64px 24px; }
+
+  .intro-card { background: linear-gradient(135deg, #16161d 0%, #1a1d2e 100%); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 48px; }
+  .intro-card h2 { font-size: 18px; color: var(--accent); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .intro-card p { color: var(--muted); font-size: 14px; line-height: 1.95; }
+  .intro-card p + p { margin-top: 12px; }
+  .intro-card strong { color: var(--text); }
+
+  /* MAIN MODULE CARDS */
+  .modules { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 56px; }
+  .module-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px; transition: all 0.25s; position: relative; overflow: hidden; }
+  .module-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .module-card.doc::before { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .module-card.voice::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+  .module-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
+  .module-card.doc:hover { border-color: var(--doc); }
+  .module-card.voice:hover { border-color: var(--voice); }
+
+  .mc-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
+  .mc-icon { font-size: 42px; line-height: 1; flex-shrink: 0; }
+  .mc-titles { flex: 1; }
+  .mc-name { font-size: 21px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .mc-slug { font-family: 'SF Mono', Consolas, monospace; font-size: 11px; color: var(--dim); margin-bottom: 8px; }
+  .mc-tag { display: inline-block; font-size: 10.5px; padding: 3px 10px; border-radius: 5px; font-weight: 700; letter-spacing: 1px; }
+  .mc-tag.doc { background: rgba(167,139,250,0.15); color: var(--doc); border: 1px solid rgba(167,139,250,0.3); }
+  .mc-tag.voice { background: rgba(236,72,153,0.15); color: var(--voice); border: 1px solid rgba(236,72,153,0.3); }
+
+  .mc-desc { font-size: 13.5px; color: var(--muted); line-height: 2; margin-bottom: 20px; }
+
+  .mc-section-h { font-size: 11px; color: var(--dim); letter-spacing: 2px; margin-bottom: 12px; margin-top: 22px; font-weight: 700; }
+  .mc-list { list-style: none; padding: 0; }
+  .mc-list li { padding: 10px 0; border-bottom: 1px dashed var(--border); display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
+  .mc-list li:last-child { border-bottom: none; }
+  .mc-list-dot { color: var(--accent); flex-shrink: 0; font-weight: 700; }
+  .mc-list strong { color: #fff; }
+  .mc-list-meta { color: var(--dim); font-size: 11.5px; margin-left: auto; padding-left: 12px; flex-shrink: 0; }
+
+  .mc-features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 18px; }
+  .mc-feature { background: var(--surface-2); padding: 12px; border-radius: 8px; text-align: center; }
+  .mc-feature-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .mc-feature-num.doc { color: var(--doc); }
+  .mc-feature-num.voice { color: var(--voice); }
+  .mc-feature-label { font-size: 10.5px; color: var(--dim); margin-top: 3px; letter-spacing: 1px; }
+
+  .mc-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .mc-btn { flex: 1; padding: 11px 16px; text-align: center; font-size: 13px; font-weight: 600; border-radius: 8px; text-decoration: none; transition: all 0.2s; }
+  .mc-btn.primary { color: #fff; }
+  .mc-btn.primary.doc { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+  .mc-btn.primary.voice { background: linear-gradient(135deg, #ec4899, #be185d); }
+  .mc-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+  .mc-btn.ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .mc-btn.ghost:hover { color: #fff; border-color: var(--accent); }
+
+  /* CONTENTS BREAKDOWN */
+  .breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 32px; }
+  .breakdown h3 { font-size: 16px; margin-bottom: 18px; color: #fff; display: flex; align-items: center; gap: 10px; }
+  .breakdown-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .breakdown.doc h3 .breakdown-icon { background: rgba(167,139,250,0.15); color: var(--doc); }
+  .breakdown.voice h3 .breakdown-icon { background: rgba(236,72,153,0.15); color: var(--voice); }
+
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .file-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; transition: all 0.2s; text-decoration: none; color: inherit; display: block; }
+  .file-item:hover { border-color: var(--accent); transform: translateX(2px); }
+  .file-name { font-family: 'SF Mono', Consolas, monospace; font-size: 11.5px; color: var(--accent); margin-bottom: 4px; word-break: break-all; }
+  .file-desc { font-size: 11.5px; color: var(--muted); line-height: 1.6; }
+  .file-badge { display: inline-block; background: rgba(255,255,255,0.05); color: var(--dim); font-size: 9.5px; padding: 1px 6px; border-radius: 3px; margin-right: 4px; }
+
+  /* WORKFLOW */
+  .workflow { background: linear-gradient(135deg, #1a1f2a 0%, #16161d 100%); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 32px; }
+  .workflow h3 { font-size: 17px; margin-bottom: 22px; color: var(--accent); text-align: center; }
+  .workflow-steps { display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; }
+  .ws { flex: 1; min-width: 160px; text-align: center; padding: 16px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); position: relative; }
+  .ws-num { font-size: 11px; color: var(--dim); letter-spacing: 2px; margin-bottom: 6px; }
+  .ws-icon { font-size: 24px; margin-bottom: 8px; }
+  .ws-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .ws-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  /* FOOTER */
+  footer { padding: 40px 24px; text-align: center; color: var(--dim); font-size: 12px; border-top: 1px solid var(--border); }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 800px) {
+    .hero h1 { font-size: 1.8rem; }
+    .modules { grid-template-columns: 1fr; }
+    .hero-stats { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-mask">🎬</div>
+  <div class="hero-badge">DRAMA STUDIO</div>
+  <h1>AI 短剧创作库</h1>
+  <p class="hero-sub">
+    从<strong style="color:var(--doc)">选题策划</strong>到<strong style="color:var(--voice)">角色配音</strong>的<br>
+    完整 AI 短剧创作工具链
+  </p>
+  <div class="hero-stats">
+    <div><div class="hero-stat-num">58</div><div class="hero-stat-label">完整选题</div></div>
+    <div><div class="hero-stat-num">6+</div><div class="hero-stat-label">完整脚本</div></div>
+    <div><div class="hero-stat-num">7</div><div class="hero-stat-label">角色音色</div></div>
+    <div><div class="hero-stat-num">3</div><div class="hero-stat-label">部短剧</div></div>
+    <div><div class="hero-stat-num">2</div><div class="hero-stat-label">子模块</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 简介 -->
+  <div class="intro-card">
+    <h2>📖 这是什么</h2>
+    <p>这是一套围绕 <strong>AI 短剧</strong> 制作的完整工具库，覆盖从「故事怎么选 → 怎么写 → 怎么发声」的全流程，分两个独立但互补的子模块。</p>
+    <p><strong>第一个子模块 · 选题与脚本库</strong>：基于 2026 年抖音/红果/AI 漫剧最新爆款数据，整理了 58 个完整选题（含选题原因+故事梗概+爆款打分），并写了 6 个 S 级题材的完整第一集脚本，外加伪纪录片 × 伪综艺两个新形态的完整策划方案。</p>
+    <p><strong>第二个子模块 · 配音音色库</strong>：把脚本里的角色直接对应到火山引擎豆包 TTS 大模型的 7 个真实音色 ID，提供 Python 客户端可一行命令生成配音，已封装好声音物理参数（音调/语速/情感/气声等）。</p>
+  </div>
+
+  <!-- WORKFLOW -->
+  <div class="workflow">
+    <h3>🔄 完整工作流</h3>
+    <div class="workflow-steps">
+      <div class="ws">
+        <div class="ws-num">STEP 01</div>
+        <div class="ws-icon">📋</div>
+        <div class="ws-title">选题</div>
+        <div class="ws-desc">从 58 个母表里挑题材，按市场分析选赛道</div>
+      </div>
+      <div class="ws">
+        <div class="ws-num">STEP 02</div>
+        <div class="ws-icon">✍️</div>
+        <div class="ws-title">写脚本</div>
+        <div class="ws-desc">套用 6 集示范脚本结构 + SOP 模板</div>
+      </div>
+      <div class="ws">
+        <div class="ws-num">STEP 03</div>
+        <div class="ws-icon">🎙️</div>
+        <div class="ws-title">配音</div>
+        <div class="ws-desc">脚本人物对应音色 ID，命令一行生成</div>
+      </div>
+      <div class="ws">
+        <div class="ws-num">STEP 04</div>
+        <div class="ws-icon">🎬</div>
+        <div class="ws-title">出片</div>
+        <div class="ws-desc">导入 AI 视频工具拼装成片</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <div class="modules">
+
+    <!-- 短剧脚本库 -->
+    <div class="module-card doc">
+      <div class="mc-header">
+        <div class="mc-icon">🎭</div>
+        <div class="mc-titles">
+          <div class="mc-name">短剧选题与脚本库</div>
+          <div class="mc-slug">ai-drama-scripts/</div>
+          <span class="mc-tag doc">SCRIPT MODULE</span>
+        </div>
+      </div>
+
+      <div class="mc-desc">
+        以飞书表格原有结构为底，扩充至 58 个完整选题，配套伪纪录片 × 伪综艺两个新形态的完整策划方案、6 集 S 级脚本和市场可行性报告。所有 HTML 可在线浏览，Excel 可一键下载合并粘贴。
+      </div>
+
+      <div class="mc-features">
+        <div class="mc-feature"><div class="mc-feature-num doc">58</div><div class="mc-feature-label">完整选题</div></div>
+        <div class="mc-feature"><div class="mc-feature-num doc">6+</div><div class="mc-feature-label">完整脚本</div></div>
+        <div class="mc-feature"><div class="mc-feature-num doc">5</div><div class="mc-feature-label">来源分组</div></div>
+        <div class="mc-feature"><div class="mc-feature-num doc">2</div><div class="mc-feature-label">新形态策划</div></div>
+      </div>
+
+      <div class="mc-section-h">📌 核心内容</div>
+      <ul class="mc-list">
+        <li><span class="mc-list-dot">›</span><div><strong>58 选题母表</strong>·爆款题材 / 未来题材 / 热点结合 / 伪纪录片 / 伪综艺<span class="mc-list-meta">5 大类</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>6 集 S 级完整脚本</strong>·AI 小商户 / 哑绣娘 / 修车工 / 宠物殡葬 / 养老院 / 预知暴雨<span class="mc-list-meta">已落地</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>伪纪录片《物种观察局》</strong>·BBC 严肃腔调观察日常群体<span class="mc-list-meta">EP01-03</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>伪综艺《调料恋爱岛》</strong>·熟悉综艺形式 × 拟人化主角<span class="mc-list-meta">EP01-03</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>市场可行性报告</strong>·两赛道数据 / 风险 / 决策建议<span class="mc-list-meta">7 章节</span></div></li>
+      </ul>
+
+      <div class="mc-actions">
+        <a class="mc-btn primary doc" href="https://github.com/airacle-ai/xiaolu-homepage/tree/main/ai-drama-scripts" target="_blank">查看模块</a>
+        <a class="mc-btn ghost" href="ai-drama-scripts/" target="_blank">在线浏览</a>
+      </div>
+    </div>
+
+    <!-- 音色库 -->
+    <div class="module-card voice">
+      <div class="mc-header">
+        <div class="mc-icon">🎙️</div>
+        <div class="mc-titles">
+          <div class="mc-name">短剧配音音色库</div>
+          <div class="mc-slug">ai-drama-voice-library/</div>
+          <span class="mc-tag voice">VOICE MODULE</span>
+        </div>
+      </div>
+
+      <div class="mc-desc">
+        基于火山引擎豆包语音合成大模型，把 3 部短剧的 7 个核心角色绑定到真实音色 ID，封装好每个角色的音色物理参数（音调 / 语速 / 情感 / 气声等）。Python 客户端支持火山方舟 + 豆包原生双后端，一行命令生成配音。
+      </div>
+
+      <div class="mc-features">
+        <div class="mc-feature"><div class="mc-feature-num voice">7</div><div class="mc-feature-label">音色角色</div></div>
+        <div class="mc-feature"><div class="mc-feature-num voice">3</div><div class="mc-feature-label">短剧覆盖</div></div>
+        <div class="mc-feature"><div class="mc-feature-num voice">2</div><div class="mc-feature-label">API 后端</div></div>
+        <div class="mc-feature"><div class="mc-feature-num voice">∞</div><div class="mc-feature-label">可批量生成</div></div>
+      </div>
+
+      <div class="mc-section-h">🎭 7 个角色音色</div>
+      <ul class="mc-list">
+        <li><span class="mc-list-dot">›</span><div><strong>苏棠</strong>·哑女绣娘心声·气声 whisper<span class="mc-list-meta">S_zBsEEuK42</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>沈砚白</strong>·病弱书生·breathy + 咳嗽<span class="mc-list-meta">S_yBsEEuK42</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>钱氏</strong>·刻薄继母·尖利鼻音<span class="mc-list-meta">S_xBsEEuK42</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>沈福</strong>·老仆管家·浑厚男声<span class="mc-list-meta">S_wBsEEuK42</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>林晚</strong>·温柔女主·邻家清亮<span class="mc-list-meta">S_vBsEEuK42</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>奶奶</strong>·老年回忆·颤音慈祥<span class="mc-list-meta">S_vxrEEuK42</span></div></li>
+        <li><span class="mc-list-dot">›</span><div><strong>大舅妈</strong>·市井反派·尖利刺耳<span class="mc-list-meta">S_uxrEEuK42</span></div></li>
+      </ul>
+
+      <div class="mc-actions">
+        <a class="mc-btn primary voice" href="https://github.com/airacle-ai/xiaolu-homepage/tree/main/ai-drama-voice-library" target="_blank">查看模块</a>
+        <a class="mc-btn ghost" href="ai-drama-voice-library/" target="_blank">在线浏览</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 文件清单 · 脚本库 -->
+  <div class="breakdown doc">
+    <h3><span class="breakdown-icon">🎭</span>短剧脚本库 · 文件清单</h3>
+    <div class="file-grid">
+      <a class="file-item" href="ai-drama-scripts/index.html" target="_blank">
+        <div class="file-name">index.html</div>
+        <div class="file-desc"><span class="file-badge">入口</span>模块目录索引页</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/master-topic-table.html" target="_blank">
+        <div class="file-name">master-topic-table.html</div>
+        <div class="file-desc"><span class="file-badge">核心</span>58 个选题完整母表（可筛选）</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/master-topic-table.xlsx" target="_blank">
+        <div class="file-name">master-topic-table.xlsx</div>
+        <div class="file-desc"><span class="file-badge">下载</span>选题母表 Excel 版</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/D1-mockumentary-plan.html" target="_blank">
+        <div class="file-name">D1-mockumentary-plan.html</div>
+        <div class="file-desc"><span class="file-badge">策划</span>《物种观察局》伪纪录片完整方案</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/D2-mockshow-plan.html" target="_blank">
+        <div class="file-name">D2-mockshow-plan.html</div>
+        <div class="file-desc"><span class="file-badge">策划</span>《调料恋爱岛》伪综艺完整方案</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/EP02-EP03-scripts.html" target="_blank">
+        <div class="file-name">EP02-EP03-scripts.html</div>
+        <div class="file-desc"><span class="file-badge">脚本</span>两条线 4 集完整脚本</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/market-analysis.html" target="_blank">
+        <div class="file-name">market-analysis.html</div>
+        <div class="file-desc"><span class="file-badge">研究</span>市场分析与可行性 · 7 章节</div>
+      </a>
+      <a class="file-item" href="ai-drama-scripts/original-topic-table.xlsx" target="_blank">
+        <div class="file-name">original-topic-table.xlsx</div>
+        <div class="file-desc"><span class="file-badge">下载</span>S 级题材脚本 Excel · 9 个工作表</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 文件清单 · 音色库 -->
+  <div class="breakdown voice">
+    <h3><span class="breakdown-icon">🎙️</span>短剧音色库 · 文件清单</h3>
+    <div class="file-grid">
+      <a class="file-item" href="ai-drama-voice-library/index.html" target="_blank">
+        <div class="file-name">index.html</div>
+        <div class="file-desc"><span class="file-badge">入口</span>7 个音色卡片可视化展示</div>
+      </a>
+      <a class="file-item" href="ai-drama-voice-library/voice_profiles.json" target="_blank">
+        <div class="file-name">voice_profiles.json</div>
+        <div class="file-desc"><span class="file-badge">配置</span>7 个角色音色物理参数 + TTS 参数</div>
+      </a>
+      <a class="file-item" href="ai-drama-voice-library/python/tts_client.py" target="_blank">
+        <div class="file-name">python/tts_client.py</div>
+        <div class="file-desc"><span class="file-badge">SDK</span>火山方舟 + 豆包原生双后端客户端</div>
+      </a>
+      <a class="file-item" href="ai-drama-voice-library/python/requirements.txt" target="_blank">
+        <div class="file-name">python/requirements.txt</div>
+        <div class="file-desc"><span class="file-badge">依赖</span>requests + python-dotenv</div>
+      </a>
+      <a class="file-item" href="ai-drama-voice-library/.env.example" target="_blank">
+        <div class="file-name">.env.example</div>
+        <div class="file-desc"><span class="file-badge">配置</span>API Key 环境变量模板</div>
+      </a>
+      <a class="file-item" href="ai-drama-voice-library/README.md" target="_blank">
+        <div class="file-name">README.md</div>
+        <div class="file-desc"><span class="file-badge">文档</span>详细使用文档 + 角色清单</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 调用示例 -->
+  <div class="breakdown voice">
+    <h3><span class="breakdown-icon">⚡</span>一行命令生成配音</h3>
+    <div style="background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 20px; font-family: 'SF Mono', Consolas, monospace; font-size: 13px; color: #4ade80; line-height: 2; overflow-x: auto;">
+<span style="color: var(--dim)"># 用角色名调用（自动套用预设参数）</span>
+$ python tts_client.py --character 苏棠
+$ python tts_client.py --character 林晚 --text "奶奶，我找到了。"
+
+<span style="color: var(--dim)"># 直接用音色 ID</span>
+$ python tts_client.py --voice S_uxrEEuK42 --text "哎哟喂！"
+
+<span style="color: var(--dim)"># 批量为所有角色生成样例（7 个音频文件）</span>
+$ python tts_client.py --batch
+
+<span style="color: var(--dim)"># 列出所有可用音色</span>
+$ python tts_client.py --list
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>AI 短剧创作库 · 选题脚本 × 角色配音</div>
+  <div style="margin-top:6px">
+    🦌 <a href="https://xiaolu.airacle.tech" target="_blank">xiaolu.airacle.tech</a> ·
+    <a href="https://github.com/airacle-ai/xiaolu-homepage" target="_blank">GitHub 仓库</a>
+  </div>
+</footer>
+
+</body>
+</html>
