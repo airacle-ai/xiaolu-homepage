@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xiaolu-homepage · 仓库内容总览</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1a1f2a;
+    --border: #30363d;
+    --accent: #c8a96e;
+    --accent-soft: rgba(200, 169, 110, 0.12);
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --dim: #6e7681;
+  }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+  /* HERO */
+  .hero { padding: 72px 24px 56px; text-align: center; background: linear-gradient(135deg, #0d1117 0%, #1a1d2e 50%, #2d0a3d 100%); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 30%, rgba(200,169,110,0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(236,72,153,0.08) 0%, transparent 50%); pointer-events: none; }
+  .hero-deer { font-size: 56px; margin-bottom: 12px; position: relative; }
+  .hero-badge { display: inline-block; background: var(--accent-soft); border: 1px solid rgba(200,169,110,0.3); color: var(--accent); padding: 6px 16px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; margin-bottom: 18px; position: relative; }
+  .hero h1 { font-size: 2.6rem; font-weight: 700; margin-bottom: 14px; position: relative; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { color: var(--muted); font-size: 15px; max-width: 600px; margin: 0 auto 28px; line-height: 1.9; position: relative; }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; margin-bottom: 20px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: 1px solid transparent; }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), #9c7a40); color: #fff; box-shadow: 0 4px 16px rgba(200,169,110,0.25); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,169,110,0.35); }
+  .btn-ghost { color: var(--muted); border-color: var(--border); }
+  .btn-ghost:hover { color: #fff; border-color: var(--accent); }
+  .hero-meta { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; position: relative; font-size: 12px; color: var(--dim); }
+  .hero-meta strong { color: var(--text); }
+
+  /* CONTAINER */
+  .container { max-width: 1200px; margin: 0 auto; padding: 56px 24px; }
+
+  /* SECTION */
+  .section { margin-bottom: 64px; }
+  .section-num { font-size: 11px; letter-spacing: 4px; color: var(--dim); font-weight: 700; margin-bottom: 6px; }
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+  .section-desc { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
+
+  /* PROJECT CARD */
+  .projects { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
+  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all 0.25s; position: relative; overflow: hidden; }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0.85; }
+  .project-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 14px 40px rgba(0,0,0,0.45); }
+  .project-card.accent-blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .project-card.accent-purple::before { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .project-card.accent-pink::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+  .project-card.accent-green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+  .project-card.accent-orange::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .project-card.accent-gold::before { background: linear-gradient(90deg, #c8a96e, #9c7a40); }
+
+  .pc-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+  .pc-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
+  .pc-titles { flex: 1; min-width: 0; }
+  .pc-name { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .pc-slug { font-family: 'SF Mono', Consolas, monospace; font-size: 11px; color: var(--dim); }
+  .pc-status { font-size: 10px; padding: 3px 8px; border-radius: 5px; font-weight: 700; letter-spacing: 1px; flex-shrink: 0; }
+  .status-live { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+  .status-doc { background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+  .status-mvp { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+  .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.9; margin-bottom: 14px; }
+  .pc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .pc-tag { font-size: 10.5px; padding: 3px 10px; border-radius: 5px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid rgba(255,255,255,0.08); }
+  .pc-tag.tech { background: rgba(96,165,250,0.08); color: #60a5fa; border-color: rgba(96,165,250,0.2); }
+
+  .pc-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; padding: 12px; background: var(--surface-2); border-radius: 8px; }
+  .pc-meta-item .ml { font-size: 9px; letter-spacing: 1.5px; color: var(--dim); margin-bottom: 2px; }
+  .pc-meta-item .mv { font-size: 12px; color: #ddd; font-weight: 600; }
+
+  .pc-files { font-size: 11px; color: var(--dim); line-height: 1.8; margin-bottom: 16px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .pc-files code { background: rgba(200,169,110,0.08); color: var(--accent); padding: 1px 6px; border-radius: 3px; font-size: 10.5px; font-family: 'SF Mono', Consolas, monospace; margin-right: 4px; }
+
+  .pc-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pc-btn { flex: 1; padding: 9px 14px; text-align: center; font-size: 12px; font-weight: 600; border-radius: 7px; text-decoration: none; transition: all 0.2s; min-width: 0; }
+  .pc-btn.primary { background: linear-gradient(135deg, var(--accent), #9c7a40); color: #fff; }
+  .pc-btn.primary:hover { box-shadow: 0 4px 12px rgba(200,169,110,0.3); }
+  .pc-btn.ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .pc-btn.ghost:hover { color: #fff; border-color: var(--accent); }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 48px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px; text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+
+  /* FOOTER */
+  footer { padding: 40px 24px; text-align: center; color: var(--dim); font-size: 12px; border-top: 1px solid var(--border); }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.8rem; }
+    .projects { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-deer">🦌</div>
+  <div class="hero-badge">REPOSITORY OVERVIEW</div>
+  <h1>xiaolu-homepage</h1>
+  <p class="hero-sub">
+    小鹿（Xiaolu）的项目仓库总览<br>
+    个人主页 · 6 个子项目 · 日报集
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://github.com/airacle-ai/xiaolu-homepage" target="_blank">
+      🐙 GitHub 仓库
+    </a>
+    <a class="btn btn-ghost" href="https://xiaolu.airacle.tech" target="_blank">
+      🌐 在线主页
+    </a>
+  </div>
+  <div class="hero-meta">
+    <span><strong>6</strong> 项目</span>
+    <span><strong>3</strong> 日报</span>
+    <span>持续更新中</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">子项目</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">独立产品MVP</div></div>
+    <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">AI短剧子库</div></div>
+    <div class="stat-card"><div class="stat-num">58</div><div class="stat-label">选题数</div></div>
+    <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">音色配置</div></div>
+  </div>
+
+  <!-- 产品项目 -->
+  <div class="section">
+    <div class="section-num">SECTION 01</div>
+    <div class="section-title">🚀 产品 MVP 项目</div>
+    <div class="section-desc">独立的功能性应用，每个都是从0到1搭建的完整产品原型</div>
+
+    <div class="projects">
+
+      <!-- oprah -->
+      <div class="project-card accent-blue">
+        <div class="pc-head">
+          <div class="pc-icon">🎙️</div>
+          <div class="pc-titles">
+            <div class="pc-name">Oprah Demo</div>
+            <div class="pc-slug">/oprah</div>
+          </div>
+          <span class="pc-status status-live">LIVE</span>
+        </div>
+        <div class="pc-desc">为 Airacle 团队恢复的 Demo 项目。已接入 Cloudflare Pages Functions LLM 代理（TokenRouter / PaleBlueDot），Supabase 可选；可纯 localStorage 跑离线 demo。</div>
+        <div class="pc-tags">
+          <span class="pc-tag tech">React</span>
+          <span class="pc-tag tech">TypeScript</span>
+          <span class="pc-tag tech">Vite</span>
+          <span class="pc-tag tech">Supabase</span>
+          <span class="pc-tag tech">Cloudflare Pages</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">类型</div><div class="mv">LLM 演示</div></div>
+          <div class="pc-meta-item"><div class="ml">部署</div><div class="mv">CF Pages</div></div>
+        </div>
+        <div class="pc-files">
+          <code>src/</code><code>functions/</code><code>supabase/</code><code>vite.config.ts</code>
+        </div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="./oprah/" target="_blank">查看</a>
+          <a class="pc-btn ghost" href="https://github.com/airacle-ai/xiaolu-homepage/tree/main/oprah" target="_blank">源码</a>
+        </div>
+      </div>
+
+      <!-- yaplan -->
+      <div class="project-card accent-green">
+        <div class="pc-head">
+          <div class="pc-icon">🌱</div>
+          <div class="pc-titles">
+            <div class="pc-name">芽计 · YaPlan</div>
+            <div class="pc-slug">/yaplan</div>
+          </div>
+          <span class="pc-status status-doc">设计完成</span>
+        </div>
+        <div class="pc-desc">亲子家庭 AI 财务规划工具。完成从方案设计、原型、汇报 PPT 到微信小程序 Demo 的全流程交付。覆盖三个生命周期段用户的财务决策需求。</div>
+        <div class="pc-tags">
+          <span class="pc-tag tech">设计方案</span>
+          <span class="pc-tag tech">HTML 原型</span>
+          <span class="pc-tag tech">PPT / PDF</span>
+          <span class="pc-tag tech">竞赛投递</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">类型</div><div class="mv">产品提案</div></div>
+          <div class="pc-meta-item"><div class="ml">交付物</div><div class="mv">原型+PPT</div></div>
+        </div>
+        <div class="pc-files">
+          <code>pitch-deck.html</code><code>prototype.html</code><code>showcase.html</code><code>design-proposal.md</code><code>yaplan-pitch.pptx</code>
+        </div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="./yaplan/showcase.html" target="_blank">看 Showcase</a>
+          <a class="pc-btn ghost" href="./yaplan/" target="_blank">所有文件</a>
+        </div>
+      </div>
+
+      <!-- manmanyongyou -->
+      <div class="project-card accent-orange">
+        <div class="pc-head">
+          <div class="pc-icon">✨</div>
+          <div class="pc-titles">
+            <div class="pc-name">慢慢拥有</div>
+            <div class="pc-slug">/manmanyongyou</div>
+          </div>
+          <span class="pc-status status-mvp">MVP</span>
+        </div>
+        <div class="pc-desc">"把想要的东西，一格一格点亮。" 愿望清单式存钱小工具。不接银行卡、不接支付、不做记账分析——只解决一件事：把目标拆成一格一格，每存一笔就点亮一格。</div>
+        <div class="pc-tags">
+          <span class="pc-tag tech">React 18</span>
+          <span class="pc-tag tech">TypeScript</span>
+          <span class="pc-tag tech">Vite</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">类型</div><div class="mv">前端工具</div></div>
+          <div class="pc-meta-item"><div class="ml">核心</div><div class="mv">愿望清单+存钱</div></div>
+        </div>
+        <div class="pc-files">
+          <code>src/</code><code>package.json</code><code>vite.config.ts</code>
+        </div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="./manmanyongyou/" target="_blank">查看</a>
+          <a class="pc-btn ghost" href="https://github.com/airacle-ai/xiaolu-homepage/tree/main/manmanyongyou" target="_blank">源码</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AI 短剧库 -->
+  <div class="section">
+    <div class="section-num">SECTION 02</div>
+    <div class="section-title">🎬 AI 短剧创作库</div>
+    <div class="section-desc">从选题、脚本到配音的完整 AI 短剧创作工具链</div>
+
+    <div class="projects">
+
+      <!-- ai-drama-scripts -->
+      <div class="project-card accent-purple">
+        <div class="pc-head">
+          <div class="pc-icon">🎭</div>
+          <div class="pc-titles">
+            <div class="pc-name">AI 短剧选题与脚本库</div>
+            <div class="pc-slug">/ai-drama-scripts</div>
+          </div>
+          <span class="pc-status status-live">完整</span>
+        </div>
+        <div class="pc-desc">58 个完整选题（原16 + 新调研10 + 伪纪录片16 + 伪综艺16）。含 6 个 S 级题材完整脚本、伪纪录片《物种观察局》× 伪综艺《调料恋爱岛》策划方案+EP01-03 脚本、市场可行性分析报告。</div>
+        <div class="pc-tags">
+          <span class="pc-tag">选题母表</span>
+          <span class="pc-tag">完整脚本</span>
+          <span class="pc-tag">市场分析</span>
+          <span class="pc-tag">Excel下载</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">选题数</div><div class="mv">58 个</div></div>
+          <div class="pc-meta-item"><div class="ml">脚本数</div><div class="mv">6 集 +</div></div>
+        </div>
+        <div class="pc-files">
+          <code>master-topic-table.html</code><code>D1-mockumentary-plan.html</code><code>D2-mockshow-plan.html</code><code>EP02-EP03-scripts.html</code><code>market-analysis.html</code>
+        </div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="./ai-drama-scripts/" target="_blank">打开</a>
+          <a class="pc-btn ghost" href="./ai-drama-scripts/master-topic-table.html" target="_blank">看选题表</a>
+        </div>
+      </div>
+
+      <!-- ai-drama-voice-library -->
+      <div class="project-card accent-pink">
+        <div class="pc-head">
+          <div class="pc-icon">🎙️</div>
+          <div class="pc-titles">
+            <div class="pc-name">AI 短剧音色库</div>
+            <div class="pc-slug">/ai-drama-voice-library</div>
+          </div>
+          <span class="pc-status status-live">可调用</span>
+        </div>
+        <div class="pc-desc">基于火山引擎豆包 TTS 大模型的 7 个角色音色配置。完整 Python 客户端（支持火山方舟 + 豆包原生双后端），含可视化展示页和命令一键复制。API Key 用环境变量管理。</div>
+        <div class="pc-tags">
+          <span class="pc-tag tech">火山引擎</span>
+          <span class="pc-tag tech">豆包 TTS</span>
+          <span class="pc-tag tech">Python SDK</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">音色数</div><div class="mv">7 个角色</div></div>
+          <div class="pc-meta-item"><div class="ml">剧目</div><div class="mv">3 部短剧</div></div>
+        </div>
+        <div class="pc-files">
+          <code>index.html</code><code>voice_profiles.json</code><code>python/tts_client.py</code><code>.env.example</code>
+        </div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="./ai-drama-voice-library/" target="_blank">打开</a>
+          <a class="pc-btn ghost" href="./ai-drama-voice-library/voice_profiles.json" target="_blank">看配置</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 主页与日报 -->
+  <div class="section">
+    <div class="section-num">SECTION 03</div>
+    <div class="section-title">📄 主页与文档</div>
+    <div class="section-desc">仓库根入口与日报记录</div>
+
+    <div class="projects">
+
+      <!-- 主页 -->
+      <div class="project-card accent-gold">
+        <div class="pc-head">
+          <div class="pc-icon">🦌</div>
+          <div class="pc-titles">
+            <div class="pc-name">小鹿主页</div>
+            <div class="pc-slug">/index.html</div>
+          </div>
+          <span class="pc-status status-live">LIVE</span>
+        </div>
+        <div class="pc-desc">仓库根目录的个人主页。深色背景 + 金色高光 + 粒子动画，简洁优雅的 landing page。是访问 xiaolu.airacle.tech 的入口。</div>
+        <div class="pc-tags">
+          <span class="pc-tag tech">原生 HTML</span>
+          <span class="pc-tag tech">CSS 动画</span>
+          <span class="pc-tag tech">无依赖</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">域名</div><div class="mv">xiaolu.airacle.tech</div></div>
+          <div class="pc-meta-item"><div class="ml">大小</div><div class="mv">6 KB</div></div>
+        </div>
+        <div class="pc-files"><code>index.html</code></div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="https://xiaolu.airacle.tech" target="_blank">访问主页</a>
+          <a class="pc-btn ghost" href="https://github.com/airacle-ai/xiaolu-homepage/blob/main/index.html" target="_blank">查看源码</a>
+        </div>
+      </div>
+
+      <!-- daily-report -->
+      <div class="project-card accent-blue">
+        <div class="pc-head">
+          <div class="pc-icon">📋</div>
+          <div class="pc-titles">
+            <div class="pc-name">日报集</div>
+            <div class="pc-slug">/daily-report</div>
+          </div>
+          <span class="pc-status status-doc">3 篇</span>
+        </div>
+        <div class="pc-desc">阶段性工作日报。记录小鹿主页搭建、芽计 YaPlan 全流程交付等里程碑式工作。Markdown 格式，便于追溯。</div>
+        <div class="pc-tags">
+          <span class="pc-tag">Markdown</span>
+          <span class="pc-tag">里程碑</span>
+          <span class="pc-tag">追溯记录</span>
+        </div>
+        <div class="pc-meta">
+          <div class="pc-meta-item"><div class="ml">篇数</div><div class="mv">3 篇</div></div>
+          <div class="pc-meta-item"><div class="ml">最新</div><div class="mv">2026-05-20</div></div>
+        </div>
+        <div class="pc-files">
+          <code>daily-report.md</code><code>daily-report-yaplan.md</code><code>daily-report-2026-05-20.md</code>
+        </div>
+        <div class="pc-actions">
+          <a class="pc-btn primary" href="https://github.com/airacle-ai/xiaolu-homepage/tree/main/daily-report" target="_blank">看日报</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 仓库地图 -->
+  <div class="section">
+    <div class="section-num">SECTION 04</div>
+    <div class="section-title">🗂️ 仓库目录树</div>
+    <div class="section-desc">全部文件结构一览</div>
+
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; font-family: 'SF Mono', Consolas, monospace; font-size: 12.5px; line-height: 2; color: #aaa; overflow-x: auto;">
+<span style="color:var(--accent)">xiaolu-homepage/</span>
+├── <span style="color:#fbbf24">index.html</span>                    <span style="color:var(--dim)"># 小鹿主页 · LIVE</span>
+├── <span style="color:#60a5fa">oprah/</span>                        <span style="color:var(--dim"># React+Vite+Supabase Demo</span>
+│   ├── src/  functions/  supabase/
+│   └── package.json
+├── <span style="color:#10b981">yaplan/</span>                       <span style="color:var(--dim)"># 芽计 亲子家庭AI财务规划</span>
+│   ├── pitch-deck.html  prototype.html  showcase.html
+│   ├── design-proposal.md
+│   └── yaplan-pitch.pptx
+├── <span style="color:#f59e0b">manmanyongyou/</span>                <span style="color:var(--dim)"># 慢慢拥有 · 愿望清单存钱</span>
+│   ├── src/  package.json
+│   └── vite.config.ts
+├── <span style="color:#a78bfa">ai-drama-scripts/</span>             <span style="color:var(--dim)"># AI短剧选题脚本库 · 58个选题</span>
+│   ├── index.html  master-topic-table.html
+│   ├── D1-mockumentary-plan.html (伪纪录片方案)
+│   ├── D2-mockshow-plan.html (伪综艺方案)
+│   ├── EP02-EP03-scripts.html  market-analysis.html
+│   └── *.xlsx
+├── <span style="color:#ec4899">ai-drama-voice-library/</span>       <span style="color:var(--dim)"># AI短剧音色库 · 火山引擎TTS</span>
+│   ├── index.html  voice_profiles.json
+│   ├── python/tts_client.py
+│   ├── .env.example  README.md
+│   └── samples/
+└── <span style="color:#60a5fa">daily-report/</span>                 <span style="color:var(--dim)"># 工作日报 · 3篇</span>
+    ├── daily-report.md
+    ├── daily-report-yaplan.md
+    └── daily-report-2026-05-20.md
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>xiaolu-homepage · 仓库内容总览 · 2026.06</div>
+  <div style="margin-top:6px">
+    🦌 <a href="https://xiaolu.airacle.tech" target="_blank">xiaolu.airacle.tech</a> ·
+    <a href="https://github.com/airacle-ai/xiaolu-homepage" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
