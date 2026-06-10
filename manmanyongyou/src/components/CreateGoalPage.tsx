@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import type { Goal, Theme } from '../types'
-import { THEMES, PRESET_IMAGES } from '../presets'
+import type { Direction, Goal, Theme } from '../types'
+import { THEMES, PRESET_IMAGES, getCoverImages } from '../presets'
 import { uid } from '../storage'
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function CreateGoalPage({ onCancel, onCreate }: Props) {
+  const [direction, setDirection] = useState<Direction>('save')
   const [title, setTitle] = useState('')
   const [targetAmount, setTargetAmount] = useState<string>('')
   const [unitAmount, setUnitAmount] = useState<string>('')
@@ -17,6 +18,7 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
   const [customUrl, setCustomUrl] = useState<string>('')
   const [error, setError] = useState<string>('')
 
+  const isSpend = direction === 'spend'
   const target = parseFloat(targetAmount) || 0
   const unit = parseFloat(unitAmount) || 0
   const totalCells = unit > 0 && target > 0 ? Math.ceil(target / unit) : 0
@@ -27,14 +29,22 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
     return `总共会有 ${totalCells} 格`
   }, [target, unit, totalCells])
 
-  const presetImages = PRESET_IMAGES[theme]
+  const coverImages = getCoverImages(direction, theme)
+
+  // 切换方向时，同步默认封面
+  function switchDirection(d: Direction) {
+    setDirection(d)
+    setCustomUrl('')
+    const imgs = getCoverImages(d, theme)
+    setImageUrl(imgs[0])
+  }
 
   function handleSubmit() {
     setError('')
-    if (!title.trim()) return setError('给目标起个名字吧')
-    if (target <= 0) return setError('目标金额要大于 0')
+    if (!title.trim()) return setError(isSpend ? '给这份预算起个名字吧' : '给目标起个名字吧')
+    if (target <= 0) return setError(isSpend ? '预算金额要大于 0' : '目标金额要大于 0')
     if (unit <= 0) return setError('每格金额要大于 0')
-    if (unit > target) return setError('每格金额不能大于目标金额')
+    if (unit > target) return setError('每格金额不能大于总金额')
     if (totalCells > 100) return setError('总格子数不能超过 100，请调大每格金额')
 
     const finalImage = customUrl.trim() || imageUrl
@@ -47,6 +57,7 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
       unitAmount: unit,
       image: finalImage,
       theme,
+      direction,
       createdAt: now,
       updatedAt: now,
       records: [],
@@ -58,15 +69,35 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
     <div>
       <div className="page-header">
         <button className="btn-icon" onClick={onCancel} aria-label="返回">←</button>
-        <div className="page-header-title">创建新目标</div>
+        <div className="page-header-title">{isSpend ? '新建预算' : '创建新目标'}</div>
       </div>
 
       <div className="form-page">
+        {/* —— 模式切换 —— */}
+        <div className="mode-seg">
+          <button
+            className={direction === 'save' ? 'active' : ''}
+            onClick={() => switchDirection('save')}
+            type="button"
+          >
+            🌷 想拥有
+            <span className="mode-sub">存一笔，点亮一格</span>
+          </button>
+          <button
+            className={'spend ' + (direction === 'spend' ? 'active' : '')}
+            onClick={() => switchDirection('spend')}
+            type="button"
+          >
+            🌿 想留住
+            <span className="mode-sub">花一笔，熄灭一格</span>
+          </button>
+        </div>
+
         <div className="field">
-          <label className="field-label">想拥有什么？</label>
+          <label className="field-label">{isSpend ? '想守住什么钱？' : '想拥有什么？'}</label>
           <input
             className="field-input"
-            placeholder="例如：买下我的第一台相机"
+            placeholder={isSpend ? '例如：这个月的咖啡预算' : '例如：买下我的第一台相机'}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={30}
@@ -74,12 +105,12 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
         </div>
 
         <div className="field">
-          <label className="field-label">目标金额（元）</label>
+          <label className="field-label">{isSpend ? '预算金额（元）' : '目标金额（元）'}</label>
           <input
             className="field-input"
             type="number"
             inputMode="decimal"
-            placeholder="3000"
+            placeholder={isSpend ? '600' : '3000'}
             value={targetAmount}
             onChange={(e) => setTargetAmount(e.target.value)}
           />
@@ -91,37 +122,41 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
             className="field-input"
             type="number"
             inputMode="decimal"
-            placeholder="50"
+            placeholder={isSpend ? '20' : '50'}
             value={unitAmount}
             onChange={(e) => setUnitAmount(e.target.value)}
           />
           <div className="field-hint">{cellsHint}</div>
         </div>
 
-        <div className="field">
-          <label className="field-label">为它选一个主题</label>
-          <div className="theme-chips">
-            {THEMES.map((t) => (
-              <button
-                key={t.value}
-                className={`theme-chip ${theme === t.value ? 'active' : ''}`}
-                onClick={() => {
-                  setTheme(t.value)
-                  setImageUrl(PRESET_IMAGES[t.value][0])
-                  setCustomUrl('')
-                }}
-                type="button"
-              >
-                <span>{t.emoji}</span> {t.label}
-              </button>
-            ))}
+        {!isSpend && (
+          <div className="field">
+            <label className="field-label">为它选一个主题</label>
+            <div className="theme-chips">
+              {THEMES.map((t) => (
+                <button
+                  key={t.value}
+                  className={`theme-chip ${theme === t.value ? 'active' : ''}`}
+                  onClick={() => {
+                    setTheme(t.value)
+                    setImageUrl(PRESET_IMAGES[t.value][0])
+                    setCustomUrl('')
+                  }}
+                  type="button"
+                >
+                  <span>{t.emoji}</span> {t.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="field">
-          <label className="field-label">挑一张让你心动的图</label>
+          <label className="field-label">
+            {isSpend ? '挑一张让你想守住的图' : '挑一张让你心动的图'}
+          </label>
           <div className="image-grid">
-            {presetImages.map((url) => (
+            {coverImages.map((url) => (
               <div
                 key={url}
                 className={`image-tile ${imageUrl === url && !customUrl ? 'active' : ''}`}
@@ -143,8 +178,11 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
         {error && <div className="field-error">{error}</div>}
 
         <div className="form-actions">
-          <button className="btn btn-primary btn-block" onClick={handleSubmit}>
-            把它放进我的愿望清单
+          <button
+            className={`btn ${isSpend ? 'btn-spend' : 'btn-primary'} btn-block`}
+            onClick={handleSubmit}
+          >
+            {isSpend ? '开始守住这份预算' : '把它放进我的愿望清单'}
           </button>
         </div>
       </div>

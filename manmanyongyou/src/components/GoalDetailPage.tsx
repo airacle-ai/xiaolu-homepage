@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
-import type { Goal } from '../types'
-import { createRecord } from '../storage'
+import type { Category, Goal } from '../types'
+import { createRecord, deriveCells } from '../storage'
+import { CATEGORY_MAP } from '../presets'
 import SaveRecordModal from './SaveRecordModal'
 import ShareCard from './ShareCard'
 import EditGoalModal from './EditGoalModal'
+import CategoryPie from './CategoryPie'
 
 interface Props {
   goal: Goal
@@ -26,25 +28,23 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
   const [showShare, setShowShare] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
-  const [justLitRange, setJustLitRange] = useState<{ from: number; to: number } | null>(null)
+  // save: 新点亮的格子 / spend: 新熄灭的格子（在格子轴上的索引区间）
+  const [animRange, setAnimRange] = useState<{ from: number; to: number } | null>(null)
 
-  const totalCells = useMemo(
-    () => Math.max(1, Math.ceil(goal.targetAmount / goal.unitAmount)),
-    [goal.targetAmount, goal.unitAmount],
+  const { totalCells, consumed, litCells, isDone, isSpend } = useMemo(
+    () => deriveCells(goal),
+    [goal],
   )
-  const litCells = Math.min(totalCells, Math.floor(goal.savedAmount / goal.unitAmount))
   const pct = Math.min(100, (goal.savedAmount / goal.targetAmount) * 100)
-  const remaining = Math.max(0, goal.targetAmount - goal.savedAmount)
-  const isDone = goal.savedAmount >= goal.targetAmount
+  const remainingAmount = Math.max(0, goal.targetAmount - goal.savedAmount)
 
-  // adaptive grid columns
   const cols = totalCells <= 25 ? 5 : totalCells <= 49 ? 7 : totalCells <= 64 ? 8 : 10
 
-  function handleSave(amount: number, note?: string) {
-    const prevLit = litCells
+  function handleSave(amount: number, note?: string, category?: Category) {
+    const prevConsumed = consumed
     const newSaved = Math.min(goal.targetAmount, goal.savedAmount + amount)
-    const newLit = Math.min(totalCells, Math.floor(newSaved / goal.unitAmount))
-    const record = createRecord(amount, note)
+    const newConsumed = Math.min(totalCells, Math.floor(newSaved / goal.unitAmount))
+    const record = createRecord(amount, note, category)
     const updated: Goal = {
       ...goal,
       savedAmount: newSaved,
@@ -53,21 +53,30 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
     }
     onUpdate(updated)
     setShowSave(false)
-    if (newLit > prevLit) {
-      setJustLitRange({ from: prevLit, to: newLit })
-      setTimeout(() => setJustLitRange(null), 1200)
+    if (newConsumed > prevConsumed) {
+      // save 模式：新点亮的是 [prev, new) 区间，UI 索引就是这个区间
+      // spend 模式：新熄灭的是 [totalCells - new, totalCells - prev) —— 因为 lit 是从尾向前消失
+      const range = isSpend
+        ? { from: totalCells - newConsumed, to: totalCells - prevConsumed }
+        : { from: prevConsumed, to: newConsumed }
+      setAnimRange(range)
+      setTimeout(() => setAnimRange(null), 1300)
     }
   }
 
   function handleEdit(patch: Partial<Goal>) {
     const updated: Goal = { ...goal, ...patch, updatedAt: Date.now() }
-    // 重新夹紧 savedAmount
     if (patch.targetAmount && updated.savedAmount > updated.targetAmount) {
       updated.savedAmount = updated.targetAmount
     }
     onUpdate(updated)
     setShowEdit(false)
   }
+
+  // —— spend 模式独有的派生 ——
+  const remainingForSpend = Math.max(0, goal.targetAmount - goal.savedAmount)
+  const totalSpent = goal.savedAmount
+  const consumedRecords = isSpend ? goal.records.filter((r) => r.category) : []
 
   return (
     <div>
@@ -79,49 +88,87 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
       <div className="detail-body">
         <h2 className="detail-title">
           {goal.title}
-          {isDone && <span className="done-tag">已拥有</span>}
+          <span className={`mode-badge ${isSpend ? 'spend' : 'save'}`}>
+            {isSpend ? '🌿 预算' : '🌷 目标'}
+          </span>
+          {isDone && <span className={`done-tag ${isSpend ? 'spend' : ''}`}>
+            {isSpend ? '全部花完' : '已拥有'}
+          </span>}
         </h2>
 
         {isDone && (
-          <div className="done-banner">
-            <div className="done-banner-title">🎉 你已经拥有它了</div>
-            <div className="done-banner-sub">恭喜你，一格一格点亮的小目标，终于完成了</div>
+          <div className={`done-banner ${isSpend ? 'spend' : ''}`}>
+            <div className="done-banner-title">
+              {isSpend ? '🌱 这份预算已花完' : '🎉 你已经拥有它了'}
+            </div>
+            <div className="done-banner-sub">
+              {isSpend
+                ? '记录还在，要不要复制一份开启下一份？'
+                : '恭喜你，一格一格点亮的小目标，终于完成了'}
+            </div>
           </div>
         )}
 
         <div className="detail-stats">
           <div className="detail-amount-row">
-            <span className="detail-amount-saved">¥{goal.savedAmount.toLocaleString()}</span>
-            <span className="detail-amount-target">/ ¥{goal.targetAmount.toLocaleString()}</span>
+            <span className={`detail-amount-saved ${isSpend ? 'spend' : ''}`}>
+              ¥{(isSpend ? remainingForSpend : goal.savedAmount).toLocaleString()}
+            </span>
+            <span className="detail-amount-target">
+              {isSpend
+                ? `还能花 · 总预算 ¥${goal.targetAmount.toLocaleString()}`
+                : `/ ¥${goal.targetAmount.toLocaleString()}`}
+            </span>
           </div>
           <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${pct}%` }} />
+            <div
+              className={`progress-fill ${isSpend ? 'spend' : ''}`}
+              style={{ width: `${pct}%` }}
+            />
           </div>
           <div className="detail-info-row">
-            <span>{isDone ? '已经买下啦' : `还差 ¥${remaining.toLocaleString()}`}</span>
+            <span>
+              {isSpend
+                ? `已花 ¥${totalSpent.toLocaleString()}`
+                : isDone
+                  ? '已经买下啦'
+                  : `还差 ¥${remainingAmount.toLocaleString()}`}
+            </span>
             <span>{pct.toFixed(1)}%</span>
           </div>
         </div>
 
         <div className="cells-section">
           <div className="cells-header">
-            <span className="cells-title">点亮格子板</span>
-            <span className="cells-count">{litCells} / {totalCells}</span>
+            <span className="cells-title">
+              {isSpend ? '守住格子板' : '点亮格子板'}
+            </span>
+            <span className="cells-count">
+              {isSpend
+                ? `还剩 ${litCells} / ${totalCells} 格`
+                : `${litCells} / ${totalCells}`}
+            </span>
           </div>
-          <div className="cells-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+          <div
+            className="cells-grid"
+            style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+          >
             {Array.from({ length: totalCells }).map((_, i) => {
-              const lit = i < litCells
-              const justLit =
-                justLitRange && i >= justLitRange.from && i < justLitRange.to
+              const lit = isSpend ? i < litCells : i < litCells
+              const inAnim = animRange && i >= animRange.from && i < animRange.to
+              const cellClass = isSpend
+                ? 'cell' + (lit ? ' spend-lit' : '') + (inAnim ? ' just-dimmed' : '')
+                : 'cell' + (lit ? ' lit' : '') + (inAnim ? ' just-lit shimmer' : '')
+              const delayIdx = animRange
+                ? isSpend
+                  ? animRange.to - 1 - i  // spend 模式按从后向前的次序错峰
+                  : i - animRange.from
+                : 0
               return (
                 <div
                   key={i}
-                  className={
-                    'cell' +
-                    (lit ? ' lit' : '') +
-                    (justLit ? ' just-lit shimmer' : '')
-                  }
-                  style={justLit ? { animationDelay: `${(i - justLitRange!.from) * 60}ms` } : undefined}
+                  className={cellClass}
+                  style={inAnim ? { animationDelay: `${delayIdx * 60}ms` } : undefined}
                 />
               )
             })}
@@ -129,48 +176,83 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
         </div>
 
         <div className="detail-actions">
-          <button className="btn btn-primary" onClick={() => setShowSave(true)} disabled={isDone}>
-            {isDone ? '✨ 已经拥有' : '存一笔 · 点亮一格'}
+          <button
+            className={`btn ${isSpend ? 'btn-spend' : 'btn-primary'}`}
+            onClick={() => setShowSave(true)}
+            disabled={isDone}
+          >
+            {isDone
+              ? (isSpend ? '🌿 已经花完' : '✨ 已经拥有')
+              : (isSpend ? '花一笔 · 熄灭一格' : '存一笔 · 点亮一格')}
           </button>
           <button className="btn btn-ghost" onClick={() => setShowShare(true)}>
             生成分享图
           </button>
           <button className="btn btn-ghost" onClick={() => setShowEdit(true)}>
-            编辑目标
+            编辑{isSpend ? '预算' : '目标'}
           </button>
         </div>
 
         <div className="row-between" style={{ marginBottom: 16 }}>
           <span className="text-mute">每格 ¥{goal.unitAmount}</span>
           <button className="btn btn-danger btn-sm" onClick={() => setShowConfirmDelete(true)}>
-            删除目标
+            删除{isSpend ? '预算' : '目标'}
           </button>
         </div>
 
+        {/* spend 模式：分类饼图 */}
+        {isSpend && consumedRecords.length > 0 && <CategoryPie records={goal.records} />}
+
         <div className="records-section">
-          <div className="records-title">存钱记录（{goal.records.length}）</div>
+          <div className="records-title">
+            {isSpend ? '花销记录' : '存钱记录'}（{goal.records.length}）
+          </div>
           {goal.records.length === 0 ? (
             <div className="text-mute" style={{ padding: '12px 0' }}>
-              还没有记录，第一笔由你开始 ✨
+              {isSpend ? '还没有花销记录，希望越久越好 🌿' : '还没有记录，第一笔由你开始 ✨'}
             </div>
           ) : (
-            [...goal.records].reverse().map((r) => (
-              <div key={r.id} className="record-item">
-                <div className="record-info">
-                  <span className="record-note">{r.note || '存了一笔'}</span>
-                  <span className="record-date">{formatDateTime(r.createdAt)}</span>
+            [...goal.records].reverse().map((r) => {
+              const cat = r.category ? CATEGORY_MAP[r.category] : null
+              return (
+                <div key={r.id} className="record-item">
+                  <div className="record-info">
+                    <span className="record-note">
+                      {cat && <span style={{ marginRight: 4 }}>{cat.emoji}</span>}
+                      {r.note || (isSpend ? '花了一笔' : '存了一笔')}
+                      {cat && (
+                        <span
+                          style={{
+                            fontSize: 10,
+                            color: cat.color,
+                            marginLeft: 6,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {cat.label}
+                        </span>
+                      )}
+                    </span>
+                    <span className="record-date">{formatDateTime(r.createdAt)}</span>
+                  </div>
+                  <span
+                    className="record-amount"
+                    style={isSpend ? { color: '#5C7A5E' } : undefined}
+                  >
+                    {isSpend ? '−' : '+'}¥{r.amount.toLocaleString()}
+                  </span>
                 </div>
-                <span className="record-amount">+¥{r.amount.toLocaleString()}</span>
-              </div>
-            ))
+              )
+            })
           )}
         </div>
       </div>
 
       {showSave && (
         <SaveRecordModal
+          direction={isSpend ? 'spend' : 'save'}
           unitAmount={goal.unitAmount}
-          remaining={remaining}
+          remaining={isSpend ? remainingForSpend : remainingAmount}
           onClose={() => setShowSave(false)}
           onSubmit={handleSave}
         />
@@ -186,13 +268,22 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
       {showConfirmDelete && (
         <div className="modal-mask modal-center" onClick={() => setShowConfirmDelete(false)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
-            <h3 className="modal-title">确认删除「{goal.title}」？</h3>
+            <h3 className="modal-title">
+              确认删除「{goal.title}」？
+            </h3>
             <div className="text-mute" style={{ textAlign: 'center' }}>
-              删除后无法恢复，所有存钱记录会一起消失
+              删除后无法恢复，所有记录会一起消失
             </div>
             <div className="confirm-actions">
-              <button className="btn btn-ghost" onClick={() => setShowConfirmDelete(false)}>再想想</button>
-              <button className="btn btn-primary" onClick={() => onDelete(goal.id)}>确认删除</button>
+              <button className="btn btn-ghost" onClick={() => setShowConfirmDelete(false)}>
+                再想想
+              </button>
+              <button
+                className={`btn ${isSpend ? 'btn-spend' : 'btn-primary'}`}
+                onClick={() => onDelete(goal.id)}
+              >
+                确认删除
+              </button>
             </div>
           </div>
         </div>

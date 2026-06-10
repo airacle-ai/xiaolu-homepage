@@ -1,4 +1,4 @@
-import type { Theme } from './types'
+import type { Category, Direction, Theme } from './types'
 
 export const THEMES: { value: Theme; label: string; emoji: string }[] = [
   { value: 'home', label: '买房', emoji: '🏡' },
@@ -10,7 +10,13 @@ export const THEMES: { value: Theme; label: string; emoji: string }[] = [
   { value: 'other', label: '其他', emoji: '✨' },
 ]
 
-// 使用 Unsplash 直链图片，覆盖每个主题
+// 预算模式（spend）用的封面预设——更宁静、抑制消费的画面
+const SPEND_COVER_IMAGES = [
+  'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=800&q=80',
+  'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&q=80',
+  'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=80',
+]
+
 export const PRESET_IMAGES: Record<Theme, string[]> = {
   home: [
     'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80',
@@ -49,7 +55,27 @@ export const PRESET_IMAGES: Record<Theme, string[]> = {
   ],
 }
 
-export const ENCOURAGE_QUOTES = [
+export function getCoverImages(direction: Direction, theme: Theme): string[] {
+  return direction === 'spend' ? SPEND_COVER_IMAGES : PRESET_IMAGES[theme]
+}
+
+// —— v0.2 新增：类目（仅 spend 模式使用，且永远可选）——
+export const CATEGORIES: { value: Category; label: string; emoji: string; color: string }[] = [
+  { value: 'food',    label: '餐饮',     emoji: '🍜', color: '#F08A6E' },
+  { value: 'transit', label: '交通',     emoji: '🚇', color: '#8AA98B' },
+  { value: 'wear',    label: '衣物美容', emoji: '👗', color: '#F7C77B' },
+  { value: 'tech',    label: '数码',     emoji: '💻', color: '#7A95A8' },
+  { value: 'home',    label: '居家',     emoji: '🛋️', color: '#C6A78F' },
+  { value: 'fun',     label: '娱乐',     emoji: '🎬', color: '#B89BC0' },
+  { value: 'other',   label: '其他',     emoji: '✨', color: '#A39A91' },
+]
+
+export const CATEGORY_MAP: Record<Category, typeof CATEGORIES[number]> = CATEGORIES.reduce(
+  (acc, c) => { acc[c.value] = c; return acc },
+  {} as Record<Category, typeof CATEGORIES[number]>,
+)
+
+export const ENCOURAGE_QUOTES_SAVE = [
   '慢慢来，也是在靠近。',
   '今天也买下了一点点未来。',
   '不是一下子拥有，是一格一格靠近。',
@@ -58,6 +84,16 @@ export const ENCOURAGE_QUOTES = [
   '攒下来的不是钱，是底气。',
 ]
 
-export function pickQuote(seed: number): string {
-  return ENCOURAGE_QUOTES[seed % ENCOURAGE_QUOTES.length]
+export const ENCOURAGE_QUOTES_SPEND = [
+  '今天没花掉的钱，是悄悄存下的生活。',
+  '守住自己的小宇宙。',
+  '不被花掉，也是一种拥有。',
+  '一格一格守下来，原来这么踏实。',
+  '不是少买，是把钱留给真正想要的。',
+  '克制，是温柔地对自己负责。',
+]
+
+export function pickQuote(direction: Direction, seed: number): string {
+  const arr = direction === 'spend' ? ENCOURAGE_QUOTES_SPEND : ENCOURAGE_QUOTES_SAVE
+  return arr[seed % arr.length]
 }
