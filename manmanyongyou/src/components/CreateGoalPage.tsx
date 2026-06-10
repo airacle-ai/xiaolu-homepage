@@ -17,6 +17,8 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
   const [imageUrl, setImageUrl] = useState<string>(PRESET_IMAGES.tech[0])
   const [customUrl, setCustomUrl] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [monthly, setMonthly] = useState<boolean>(false)
+  const [resetDay, setResetDay] = useState<number>(1)
 
   const isSpend = direction === 'spend'
   const target = parseFloat(targetAmount) || 0
@@ -61,6 +63,9 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
       createdAt: now,
       updatedAt: now,
       records: [],
+      ...(isSpend && monthly
+        ? { cycleResetDay: resetDay, cycleStartedAt: now }
+        : {}),
     }
     onCreate(goal)
   }
@@ -128,6 +133,45 @@ export default function CreateGoalPage({ onCancel, onCreate }: Props) {
           />
           <div className="field-hint">{cellsHint}</div>
         </div>
+
+        {isSpend && (
+          <div className="field">
+            <div className="toggle-row">
+              <div>
+                <div className="toggle-row-label">🔁 每月自动重置</div>
+                <div className="toggle-row-hint">
+                  {monthly
+                    ? `每月 ${resetDay} 号归零，旧周期会被归档保留`
+                    : '一次性预算，花完就结束'}
+                </div>
+              </div>
+              <div
+                className={`switch ${monthly ? 'on' : ''}`}
+                onClick={() => setMonthly((m) => !m)}
+                role="switch"
+                aria-checked={monthly}
+              />
+            </div>
+            {monthly && (
+              <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span className="field-hint" style={{ marginTop: 0 }}>每月</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={28}
+                  value={resetDay}
+                  onChange={(e) => {
+                    const n = parseInt(e.target.value) || 1
+                    setResetDay(Math.max(1, Math.min(28, n)))
+                  }}
+                  className="field-input"
+                  style={{ width: 64, padding: '6px 10px', textAlign: 'center' }}
+                />
+                <span className="field-hint" style={{ marginTop: 0 }}>号归零</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {!isSpend && (
           <div className="field">

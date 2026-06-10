@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Goal } from './types'
-import { loadGoals, saveGoals } from './storage'
+import { autoApplyArchive, autoApplyCycleReset, loadGoals, saveGoals } from './storage'
 import HomePage from './components/HomePage'
 import CreateGoalPage from './components/CreateGoalPage'
 import GoalDetailPage from './components/GoalDetailPage'
@@ -11,7 +11,10 @@ type View =
   | { name: 'detail'; id: string }
 
 export default function App() {
-  const [goals, setGoals] = useState<Goal[]>(() => loadGoals())
+  const [goals, setGoals] = useState<Goal[]>(() => {
+    const now = new Date()
+    return loadGoals().map((g) => autoApplyArchive(autoApplyCycleReset(g, now), now))
+  })
   const [view, setView] = useState<View>({ name: 'home' })
 
   useEffect(() => {
@@ -42,6 +45,7 @@ export default function App() {
             goals={goals}
             onCreate={() => setView({ name: 'create' })}
             onOpen={(id) => setView({ name: 'detail', id })}
+            onUpdate={handleUpdate}
           />
         )}
         {view.name === 'create' && (

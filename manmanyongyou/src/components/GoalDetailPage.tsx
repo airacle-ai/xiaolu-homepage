@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Category, Goal } from '../types'
-import { createRecord, deriveCells } from '../storage'
+import { computeStreak, createRecord, deriveCells, manualCycleReset } from '../storage'
 import { CATEGORY_MAP } from '../presets'
 import SaveRecordModal from './SaveRecordModal'
 import ShareCard from './ShareCard'
@@ -28,6 +28,8 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
   const [showShare, setShowShare] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+  const [showConfirmReset, setShowConfirmReset] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
   // save: 新点亮的格子 / spend: 新熄灭的格子（在格子轴上的索引区间）
   const [animRange, setAnimRange] = useState<{ from: number; to: number } | null>(null)
 
@@ -37,6 +39,8 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
   )
   const pct = Math.min(100, (goal.savedAmount / goal.targetAmount) * 100)
   const remainingAmount = Math.max(0, goal.targetAmount - goal.savedAmount)
+  const streak = useMemo(() => computeStreak(goal), [goal])
+  const isMonthly = isSpend && !!goal.cycleResetDay
 
   const cols = totalCells <= 25 ? 5 : totalCells <= 49 ? 7 : totalCells <= 64 ? 8 : 10
 
@@ -89,12 +93,32 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
         <h2 className="detail-title">
           {goal.title}
           <span className={`mode-badge ${isSpend ? 'spend' : 'save'}`}>
-            {isSpend ? '🌿 预算' : '🌷 目标'}
+            {isSpend ? (isMonthly ? '🌿 月预算' : '🌿 预算') : '🌷 目标'}
           </span>
+          {streak >= 2 && (
+            <span className={`streak-chip ${isSpend ? 'spend' : ''}`}>
+              🔥 已连续 {streak} 天
+            </span>
+          )}
           {isDone && <span className={`done-tag ${isSpend ? 'spend' : ''}`}>
             {isSpend ? '全部花完' : '已拥有'}
           </span>}
         </h2>
+
+        {isMonthly && (
+          <div className="cycle-row">
+            <div>
+              每月 <strong>{goal.cycleResetDay}</strong> 号归零 ·
+              本期起于 {goal.cycleStartedAt ? new Date(goal.cycleStartedAt).toLocaleDateString() : '—'}
+            </div>
+            <button
+              className="cycle-link"
+              onClick={() => setShowConfirmReset(true)}
+            >
+              立即重置
+            </button>
+          </div>
+        )}
 
         {isDone && (
           <div className={`done-banner ${isSpend ? 'spend' : ''}`}>
@@ -200,6 +224,37 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
           </button>
         </div>
 
+        {/* —— v0.3: 历史周期 —— */}
+        {isMonthly && goal.archivedCycles && goal.archivedCycles.length > 0 && (
+          <div className="records-section">
+            <div
+              className="records-title"
+              style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between' }}
+              onClick={() => setShowHistory((v) => !v)}
+            >
+              <span>已归档周期（{goal.archivedCycles.length}）</span>
+              <span style={{ fontSize: 12, color: 'var(--ink-mute)', fontWeight: 400 }}>
+                {showHistory ? '收起 ▲' : '展开 ▼'}
+              </span>
+            </div>
+            {showHistory && (
+              <div className="archive-list">
+                {[...goal.archivedCycles].reverse().map((cyc, i) => (
+                  <div key={i} className="archive-item">
+                    <span className="archive-period">
+                      {new Date(cyc.startedAt).toLocaleDateString()} → {new Date(cyc.endedAt).toLocaleDateString()}
+                      <span style={{ color: 'var(--ink-mute)', marginLeft: 8 }}>
+                        {cyc.recordCount} 笔
+                      </span>
+                    </span>
+                    <span className="archive-amount">¥{cyc.totalAmount.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* spend 模式：分类饼图 */}
         {isSpend && consumedRecords.length > 0 && <CategoryPie records={goal.records} />}
 
@@ -265,6 +320,29 @@ export default function GoalDetailPage({ goal, onBack, onUpdate, onDelete }: Pro
           onSave={handleEdit}
         />
       )}
+      {showConfirmReset && (
+        <div className="modal-mask modal-center" onClick={() => setShowConfirmReset(false)}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
+            <h3 className="modal-title">立即重置本期？</h3>
+            <div className="text-mute" style={{ textAlign: 'center' }}>
+              当前周期会被归档保留（不会删除），并开始新的一周期
+            </div>
+            <div className="confirm-actions">
+              <button className="btn btn-ghost" onClick={() => setShowConfirmReset(false)}>取消</button>
+              <button
+                className="btn btn-spend"
+                onClick={() => {
+                  onUpdate(manualCycleReset(goal))
+                  setShowConfirmReset(false)
+                }}
+              >
+                重置并开新周期
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showConfirmDelete && (
         <div className="modal-mask modal-center" onClick={() => setShowConfirmDelete(false)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
